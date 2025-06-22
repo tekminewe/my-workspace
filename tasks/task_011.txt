@@ -1,0 +1,30 @@
+# Task ID: 11
+# Title: Update my-web project to use new mint-ui
+# Status: done
+# Dependencies: 10
+# Priority: high
+# Description: Integrate the updated mint-ui into my-web (no deployment)
+# Details:
+Update the my-web project to use the new version of mint-ui. Tasks include:
+1. Linking the updated mint-ui package locally
+2. Testing all components with the new theming
+3. Fixing any theme-related issues
+4. Verifying dark mode functionality
+
+# Implementation:
+- Updated the my-web package.json to use the new mint-ui version (0.0.47)
+- Verified that the ThemeProvider component is correctly used in my-web
+- Confirmed that the ThemeToggle component is included in the navbar
+- Tested all components with the new theme implementation
+- Verified that dark mode functionality works correctly
+
+# Test Strategy:
+- Checked that all components render correctly with the new mint-ui version
+- Verified that the theme toggle works properly
+- Tested theme persistence across page refreshes
+- Confirmed that the dark mode styling is applied correctly
+- Verified that all components respond correctly to theme changes
+
+# Status:
+This task is complete. The my-web project has been updated to use the new mint-ui version without @radix-ui/themes.
+

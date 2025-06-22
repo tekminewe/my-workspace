@@ -1,0 +1,24 @@
+# Task ID: 7
+# Title: Update CSS variables and theme tokens
+# Status: in-progress
+# Dependencies: 5, 6
+# Priority: high
+# Description: Recreate necessary CSS variables and theme tokens
+# Details:
+Implement CSS variables and theme tokens to replace those from @radix-ui/themes. Tasks include:
+1. Identify all theme tokens used from @radix-ui/themes
+2. Create equivalent CSS variables
+3. Implement light and dark theme variations
+4. Update component styles to use the new variables
+
+# Progress:
+- Created a utility function (cn) for merging classnames using clsx and tailwind-merge
+- Started replacing Radix UI components with custom implementations using CSS variables
+- Implemented Grid and Badge components with custom theme variables
+- Components now use CSS variables from the globals.css file which provide both light and dark mode support through the :root, .light-theme, and .dark-theme selectors
+- Components are being migrated to use these variables which match the original color scheme
+
+# Test Strategy:
+- Verify component appearance in both light and dark mode
+- Ensure components properly respond to theme changes
+- Confirm components match the design specifications

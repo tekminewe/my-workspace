@@ -1,0 +1,31 @@
+# Task ID: 12
+# Title: Implement theme toggle in navbar
+# Status: done
+# Dependencies: 11
+# Priority: high
+# Description: Add dark/light theme toggle next to login button in navbar
+# Details:
+Add a theme toggle button to the navbar next to the login button. Tasks include:
+1. Creating a theme toggle component with dark/light mode icons
+2. Placing the toggle in the navbar next to the login button
+3. Connecting the toggle to the theme provider
+4. Implementing localStorage persistence for theme selection (already done in ThemeProvider)
+5. Ensuring the toggle reflects the current theme state
+
+# Implementation:
+- Successfully implemented the ThemeToggle component that uses the useTheme hook
+- Used sun/moon icons from react-icons (FiSun and FiMoon) for light/dark mode
+- The toggle component is already correctly placed in the Navbar component next to the login button
+- The toggle shows the correct icon based on current theme
+- Theme persistence works correctly using localStorage
+
+# Test Strategy:
+- Verified that clicking the toggle changes the theme
+- Confirmed that the toggle shows the correct icon for each theme
+- Verified theme persistence works between page refreshes
+- Tested the visual appearance in both light and dark modes
+- Added appropriate aria-label to ensure accessibility
+
+# Status:
+This task is complete. The ThemeToggle component is implemented in both mint-ui and my-web, and it's correctly placed in the navbar next to the login button.
+

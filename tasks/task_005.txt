@@ -1,0 +1,28 @@
+# Task ID: 5
+# Title: Remove @radix-ui/themes CSS import
+# Status: done
+# Dependencies: 3, 4
+# Priority: high
+# Description: Remove the @radix-ui/themes CSS import and address styling issues
+# Details:
+In this task, remove the @radix-ui/themes CSS import from the project and address any immediate styling issues. Tasks include:
+1. Identify where @radix-ui/themes/styles.css is imported
+2. Remove the import
+3. Create replacement CSS as needed
+4. Address any styling regressions
+
+# Implementation:
+- Confirmed that @radix-ui/themes/styles.css was imported in src/globals.css
+- Successfully removed the import from src/globals.css
+- Verified that the existing CSS variables in globals.css provide the necessary styling
+- The CSS variables already included comprehensive light and dark mode styling
+- Created custom component implementations that use these CSS variables
+
+# Testing Results:
+- Visually verified that components maintain their styling after CSS import removal
+- Checked components in both light and dark mode
+- Verified that theme switching still works correctly
+- Confirmed that no critical styling regressions were introduced
+
+# Status:
+This task is complete. The @radix-ui/themes CSS import has been successfully removed without introducing any styling regressions.

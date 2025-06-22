@@ -1,0 +1,61 @@
+# Task ID: 1
+# Title: Audit @radix-ui/themes usage in mint-ui
+# Status: done
+# Dependencies: 
+# Priority: high
+# Description: Identify how @radix-ui/themes is used in the mint-ui library
+# Details:
+This task involves analyzing the mint-ui codebase to identify where and how @radix-ui/themes is being used. Create a comprehensive inventory that includes:
+1. Which files import @radix-ui/themes
+2. What specific features of @radix-ui/themes are being used (CSS variables, theme context, etc.)
+3. How theming is implemented throughout the components
+4. Assess the complexity of replacing @radix-ui/themes while maintaining the current theming capabilities
+
+# Findings:
+Completed the audit of @radix-ui/themes usage in mint-ui. Here's a summary of the findings:
+
+1. Files importing @radix-ui/themes:
+   - grid/grid.tsx
+   - badge/badge.tsx
+   - product-list/product-list.tsx
+   - text-input/text-input.tsx
+   - product-item/product-item.tsx
+   - data-table/data-table.tsx
+   - icon-button/icon-button.tsx
+   - post-item/post-item.tsx
+   - select/select.tsx
+   - mobile-navigation-menu/item.tsx
+   - success-card/success-card.tsx
+   - rich-text-editor/figure-bubble-menu.tsx
+   - switch/switch.tsx
+   - link/link.tsx
+   - callout/callout.tsx
+   - popover/popover.tsx
+   - small-text/small-text.tsx
+   - multi-select/multi-select.tsx
+   - separator/separator.tsx
+   - text-area/text-area.tsx
+   - skeleton/skeleton.tsx
+
+2. @radix-ui/themes features being used:
+   - Component imports (Grid, Badge, Box, Card, Table, etc.)
+   - Styling via Radix UI theme tokens
+   - CSS variables for theming
+
+3. Theming implementation:
+   - Light/dark mode toggle using ThemeProvider
+   - CSS variables for color schemes
+   - Shared component styling via Radix UI themes
+
+4. Complexity assessment:
+   - Medium complexity to replace
+   - Need to create custom implementations for each component
+   - CSS variables already exist in the codebase for theming
+   - Dark mode implementation is already working via ThemeProvider
+
+# Implementation Strategy:
+1. Replace simple components first (Badge, Grid)
+2. Address complex components later
+3. Utilize existing CSS variables in globals.css
+4. Ensure the new components maintain the same API for backward compatibility
+
