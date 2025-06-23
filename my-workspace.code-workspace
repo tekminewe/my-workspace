@@ -1,11 +1,10 @@
 {
-  "folders": [
-    { "path": "my-web" },
-    { "path": "mint-ui" },
-    { "path": "my-service" },
-    { "path": "my-workspace" }
-  ],
-  "settings": {
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
     "editor.formatOnSave": true,
     "eslint.enable": true,
     "prettier.enable": true,
