@@ -2,6 +2,35 @@
 
 This is a monorepo containing multiple projects. Please follow the project-specific guidelines based on the context of the request.
 
+## Rule Management and Conflict Resolution
+
+### When to Ask for Rule Updates
+
+If you ask me to do something that could be beneficial as a general rule but isn't currently documented in these instructions, I will:
+
+1. **Suggest the new rule**: Explain what the new rule would be and why it would be beneficial
+2. **Ask for permission**: Request confirmation before adding it to the instructions
+3. **Provide context**: Explain how this rule would improve consistency, quality, or efficiency across the workspace
+
+**Example**: "I notice you're asking me to always add error boundaries to React components. This seems like a good practice that could be added as a rule. Should I update the instructions to include 'Always wrap components with error boundaries for better error handling'?"
+
+### When to Challenge Conflicting Requests
+
+If you ask me to do something that conflicts with or doesn't comply with the existing rules, I will:
+
+1. **Point out the conflict**: Clearly explain which rule(s) would be violated
+2. **Suggest alternatives**: Offer compliant approaches that achieve your goal
+3. **Ask for clarification**: Determine if you want to proceed anyway or update the rules
+
+**Example**: "You're asking me to use default exports, but our TypeScript rules specify 'Always use named exports instead of default exports'. Would you like me to use named exports instead, or should we update this rule?"
+
+### Rule Override Protocol
+
+- **Temporary override**: If you need to break a rule for a specific case, explicitly say "override the rule" and I'll comply while noting the exception
+- **Permanent change**: If you want to change a rule permanently, ask me to update the instructions document
+
+---
+
 ## Workspace Structure
 
 This workspace contains the following projects:
@@ -185,7 +214,6 @@ src/<module>/
 
 - Must translate all text in the code
 - Use `@tekminewe/mint-ui/*` for UI components
-- Do not use `@tekminewe/mint-ui/box` (deprecated)
 - One React component per file
 - Keep components small and focused
 - Avoid inline functions in React components
