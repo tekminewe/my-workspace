@@ -132,6 +132,7 @@ interface MyComponentProps {
 - Create stories for each component variant and state
 - Include both dark and light mode variants in stories
 - Show all variants/states in the same storybook
+- Create an `AllVariants` story that combines all component states and variants into a single comprehensive story for Chromatic snapshot cost optimization, while maintaining individual stories for development
 
 **Accessibility (WCAG 2.1 AA Compliance):**
 
@@ -161,6 +162,61 @@ src/components/<component>/
 - CSS variables for theming located in `src/globals.css`
 - ThemeProvider automatically detects user system preferences
 - Built-in ThemeToggle component for switching themes
+
+**Color Standards & Consistency:**
+
+### Required Files for React Component Development
+
+When building React components in mint-ui, you **MUST** reference these files:
+
+1. **`mint-ui/src/components/utils/component-colors.ts`** - Standardized color utilities (import and use these)
+2. **`mint-ui/docs/color-quick-reference.md`** - Copy/paste ready color combinations
+3. **`mint-ui/src/components/tailwind-plugin/index.ts`** - Tailwind config with detailed color usage comments
+4. **`mint-ui/docs/component-color-standards.md`** - Complete color system documentation
+
+### Mandatory Color Usage
+
+- **MANDATORY**: Use standardized color utilities from `mint-ui/src/components/utils/component-colors.ts`
+- **REFERENCE**: `mint-ui/docs/color-quick-reference.md` for copy/paste ready color combinations
+- **UNDERSTAND**: Tailwind config comments in `mint-ui/src/components/tailwind-plugin/index.ts` explain color usage and inversion strategy
+- **DETAILED DOCS**: `mint-ui/docs/component-color-standards.md` for complete system documentation
+- **ALWAYS**: Test in both light and dark modes (colors invert automatically)
+- **NEVER**: Write manual color combinations - use `getCardColors()`, `SURFACE_COLORS`, `TEXT_COLORS`, `BORDER_COLORS`
+
+### Standard Color Imports
+
+```typescript
+import {
+  getCardColors,
+  SURFACE_COLORS,
+  TEXT_COLORS,
+  BORDER_COLORS,
+} from '../utils/component-colors';
+```
+
+### Component Color Patterns
+
+- **Cards/Panels**: Use `getCardColors('default')` for standard card styling
+- **Elevated surfaces** (dropdowns, modals): Use `getCardColors('elevated')`
+- **Subtle backgrounds**: Use `getCardColors('subtle')`
+- **Individual elements**: Mix `SURFACE_COLORS.surface`, `TEXT_COLORS.primary`, `BORDER_COLORS.default`
+
+### Critical Requirements
+
+- **Test in both light and dark modes** - Colors behave differently due to smart inversion
+- **Understand color inversion** - `neutral-800` becomes light gray in dark mode, not dark gray
+- **Reference documentation** - Always check `mint-ui/docs/component-color-standards.md` for detailed explanations
+- **Never assume** - The same Tailwind class produces different colors in light vs dark mode
+
+### Example Implementation
+
+```typescript
+// ❌ DON'T - Manual colors that break in dark mode
+className="bg-white dark:bg-neutral-900 text-black dark:text-white border border-gray-200"
+
+// ✅ DO - Standardized colors that work in both modes
+className={cn('p-4', getCardColors('default'), 'border')}
+```
 
 **Component Update Process:**
 
@@ -217,6 +273,32 @@ src/<module>/
 - One React component per file
 - Keep components small and focused
 - Avoid inline functions in React components
+
+**Color & UI Consistency:**
+
+### Mint-UI Component Usage & Custom Component Development
+
+- **USE** `@tekminewe/mint-ui/*` components which handle theming automatically
+- **REFERENCE** `mint-ui/docs/color-quick-reference.md` when building custom components
+- **FOLLOW** mint-ui color patterns for consistency across the application
+- **TEST** in both light and dark modes when building custom UI elements
+
+### When Building Custom Components (Beyond mint-ui)
+
+If you need to build custom UI elements not covered by mint-ui:
+
+1. **REFERENCE** `mint-ui/docs/color-quick-reference.md` for copy/paste ready color combinations
+2. **FOLLOW** mint-ui color patterns documented in `mint-ui/src/components/tailwind-plugin/index.ts`
+3. **UNDERSTAND** color inversion strategy from `mint-ui/docs/component-color-standards.md`
+4. **TEST** in both light and dark modes for consistency with mint-ui components
+5. **NEVER** manually write color combinations like `bg-white dark:bg-neutral-900`
+
+### Reference Files for Custom Development
+
+- **`mint-ui/src/components/utils/component-colors.ts`** - Color utility functions (reference for patterns)
+- **`mint-ui/docs/color-quick-reference.md`** - Ready-to-use color combinations
+- **`mint-ui/src/components/tailwind-plugin/index.ts`** - Tailwind config with color usage comments
+- **`mint-ui/docs/component-color-standards.md`** - Complete color system documentation
 
 **GraphQL Client:**
 
