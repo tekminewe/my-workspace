@@ -581,3 +581,89 @@ import {
   NavigationMenuItem,
 } from '@tekminewe/mint-ui/navigation-menu';
 ```
+
+---
+
+## Theme Override System:
+
+### How My-Web Overrides Mint-UI Colors
+
+My-web uses a CSS custom property override system to customize mint-ui's theme colors. This is the **ONLY** correct way to theme mint-ui components from consuming applications.
+
+### Key Principles:
+
+1. **NEVER modify mint-ui directly** - Keep it generic and reusable
+2. **ALWAYS override via CSS custom properties** in my-web's `globals.css`
+3. **USE primary color system** - Override `--color-primary-XXX` variables (NOT accent colors)
+4. **INCLUDE dark mode overrides** - Define both `:root` and `.dark` variants
+5. **TEST in both themes** - Ensure colors work in light and dark modes
+
+### Override Implementation:
+
+```css
+/* my-web/src/app/[lang]/globals.css */
+:root {
+  /* Override mint-ui primary colors with brand-specific theme */
+  --color-primary-50: 255 247 237; /* Lightest backgrounds */
+  --color-primary-500: 245 158 11; /* Main brand color */
+  --color-primary-600: 217 119 6; /* Hover states */
+  /* ... complete palette 50-900 */
+}
+
+.dark {
+  /* Dark mode color overrides - usually inverted */
+  --color-primary-50: 120 53 15; /* Darkest for dark mode */
+  --color-primary-500: 251 146 60; /* Brighter for dark backgrounds */
+  /* ... complete inverted palette */
+}
+```
+
+### Component Usage:
+
+All mint-ui components automatically use overridden colors:
+
+```tsx
+// ✅ CORRECT - Mint-UI components use overridden primary colors
+<Button>Auto-themed CTA</Button>
+<Card>Auto-themed card</Card>
+
+// ✅ CORRECT - Manual usage for custom elements
+<div className="bg-primary-500 text-white">Custom branded element</div>
+<span className="text-primary-600">Branded text</span>
+
+// ❌ WRONG - Don't use hardcoded colors that break theming
+<div className="bg-orange-500">This won't follow theme overrides</div>
+```
+
+### Color Psychology for Affiliate Marketing:
+
+- **Orange (#f59e0b)**: Optimal for affiliate conversions - creates urgency without aggression
+- **Red**: Too aggressive, can create anxiety
+- **Blue**: Professional but less action-oriented
+- **Green**: Good for success states, less urgency
+- **Purple**: Premium feel but lower conversion rates
+
+### Documentation Location:
+
+- **Theme documentation**: `my-web/docs/theme-override.md`
+- **Implementation details**: CSS overrides in `my-web/src/app/[lang]/globals.css`
+- **Color reference**: Use mint-ui's existing color documentation as reference for structure
+
+---
+
+## Code Cleanup Rules
+
+When completing any task, always clean up:
+
+1. **Remove unused CSS classes** - Search for usage before keeping utility classes
+2. **Remove outdated documentation** - Delete files with incorrect/obsolete information
+3. **Consolidate redundant files** - Don't keep multiple docs saying the same thing
+4. **Verify build passes** - Always test build after cleanup
+5. **Search for consistency** - Use grep to find inconsistent naming/approaches
+
+### Documentation Standards
+
+- **Keep it minimal**: One accurate file is better than multiple outdated ones
+- **Match implementation**: Documentation should reflect actual code, not aspirational code
+- **Use consistent terminology**: If code uses "primary", docs should use "primary" (not "accent")
+- **Include examples**: Show actual usage patterns, not theoretical ones
