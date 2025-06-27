@@ -129,10 +129,12 @@ interface MyComponentProps {
 
 **Storybook Requirements:**
 
-- Create stories for each component variant and state
-- Include both dark and light mode variants in stories
-- Show all variants/states in the same storybook
-- Create an `AllVariants` story that combines all component states and variants into a single comprehensive story for Chromatic snapshot cost optimization, while maintaining individual stories for development
+- Create only ONE story per component: the `AllVariants` story
+- The `AllVariants` story must combine all component states, variants, sizes, and use cases into a single comprehensive showcase
+- DO NOT include both light and dark mode variants in the story - Storybook provides built-in theme switching capabilities
+- Use single theme (light mode by default) and let Storybook's theme addon handle dark mode testing
+- Optimize for Chromatic snapshot cost by having a single story instead of multiple individual stories
+- The story should be well-organized with clear sections and headings for different variants
 
 **Accessibility (WCAG 2.1 AA Compliance):**
 
@@ -224,6 +226,17 @@ className={cn('p-4', getCardColors('default'), 'border')}
 - Ensure components work in both light and dark themes
 - Test theme switching functionality after component changes
 
+## Component Styling Synchronization Rules
+
+- **TextInput and SearchDialog Input Synchronization**: When updating TextInput component styles, always ensure the SearchDialog input (Command.Input) uses identical styling. Both components should use the same:
+  - SURFACE_COLORS.surface for background
+  - TEXT_COLORS.primary for text color
+  - BORDER_COLORS.default for borders
+  - Focus states (focus:ring-2 focus:ring-primary-500 focus:border-transparent)
+  - Sizing and padding (py-2 px-3)
+  - Appearance settings (appearance-none)
+- This ensures consistent form input experience across the component library.
+
 ### 2. My-Service (NestJS GraphQL API)
 
 **Technology Stack:**
@@ -273,6 +286,34 @@ src/<module>/
 - One React component per file
 - Keep components small and focused
 - Avoid inline functions in React components
+
+**Client Component Wrapper Rule:**
+
+- **CRITICAL**: When using client components from mint-ui (components that use React context like `ThemeToggle`, `useTheme`, etc.) in server components, always create a wrapper client component
+- **WHY**: Prevents "React context not found" errors when server components try to use client-side context
+- **EXAMPLE**: Create `src/components/theme-toggle.tsx` as a client wrapper:
+
+  ```tsx
+  'use client';
+
+  import { ThemeToggle as MintThemeToggle } from '@tekminewe/mint-ui/theme';
+
+  export interface ThemeToggleProps {
+    /**
+     * Class name for the toggle button
+     * @default undefined
+     * @example "mr-2"
+     */
+    className?: string;
+  }
+
+  export const ThemeToggle = ({ className }: ThemeToggleProps) => {
+    return <MintThemeToggle className={className} />;
+  };
+  ```
+
+- **USAGE**: Import the wrapper instead of the mint-ui component directly in server components
+- **BEST PRACTICE**: Define proper TypeScript interfaces and JSDoc comments for wrapper components to maintain type safety and documentation consistency
 
 **Color & UI Consistency:**
 
