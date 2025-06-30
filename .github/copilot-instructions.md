@@ -171,54 +171,88 @@ src/components/<component>/
 
 When building React components in mint-ui, you **MUST** reference these files:
 
-1. **`mint-ui/src/components/utils/component-colors.ts`** - Standardized color utilities (import and use these)
-2. **`mint-ui/docs/color-quick-reference.md`** - Copy/paste ready color combinations
-3. **`mint-ui/src/components/tailwind-plugin/index.ts`** - Tailwind config with detailed color usage comments
-4. **`mint-ui/docs/component-color-standards.md`** - Complete color system documentation
+1. **`mint-ui/src/components/utils/component-colors.ts`** - Centralized color system (USE THESE)
+2. **`mint-ui/docs/component-standardization-status.md`** - Implementation patterns and examples
+3. **`mint-ui/docs/color-quick-reference.md`** - Copy/paste ready color combinations
+4. **`mint-ui/src/components/tailwind-plugin/index.ts`** - Tailwind config with detailed color usage comments
 
-### Mandatory Color Usage
+### Component Color System (CRITICAL)
 
 - **MANDATORY**: Use standardized color utilities from `mint-ui/src/components/utils/component-colors.ts`
-- **REFERENCE**: `mint-ui/docs/color-quick-reference.md` for copy/paste ready color combinations
-- **UNDERSTAND**: Tailwind config comments in `mint-ui/src/components/tailwind-plugin/index.ts` explain color usage and inversion strategy
-- **DETAILED DOCS**: `mint-ui/docs/component-color-standards.md` for complete system documentation
-- **ALWAYS**: Test in both light and dark modes (colors invert automatically)
-- **NEVER**: Write manual color combinations - use `getCardColors()`, `SURFACE_COLORS`, `TEXT_COLORS`, `BORDER_COLORS`
+- **NEVER**: Write hardcoded color combinations like `bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800`
+- **ALWAYS**: Import and use appropriate color constants and helper functions
+- **CHECK FIRST**: Review existing utilities before creating new color patterns
+- **EXTEND SYSTEM**: Add new patterns to `component-colors.ts` when needed (don't create one-off solutions)
 
 ### Standard Color Imports
 
 ```typescript
 import {
+  // Helper functions for complex components
   getCardColors,
+  getButtonColors,
+  getIconButtonColors,
+  
+  // Semantic color constants
   SURFACE_COLORS,
   TEXT_COLORS,
   BORDER_COLORS,
+  INTERACTION_COLORS,
+  SKELETON_COLORS,
+  NAVIGATION_COLORS,
 } from '../utils/component-colors';
 ```
 
-### Component Color Patterns
+### Component-Specific Usage Patterns
 
-- **Cards/Panels**: Use `getCardColors('default')` for standard card styling
-- **Elevated surfaces** (dropdowns, modals): Use `getCardColors('elevated')`
-- **Subtle backgrounds**: Use `getCardColors('subtle')`
-- **Individual elements**: Mix `SURFACE_COLORS.surface`, `TEXT_COLORS.primary`, `BORDER_COLORS.default`
+- **Buttons**: Use `getButtonColors(variant, color)` for all button styling
+- **IconButtons**: Use `getIconButtonColors(variant, color)` for all icon button styling
+- **Cards/Surfaces**: Use `getCardColors(variant)` or individual `SURFACE_COLORS.*`
+- **Navigation Items**: Use `NAVIGATION_COLORS.item` and `NAVIGATION_COLORS.itemDisabled`
+- **Loading States**: Use `SKELETON_COLORS.primary` for all skeleton animations
+- **Interactive Elements**: Use `INTERACTION_COLORS.hover`, `INTERACTION_COLORS.focus`
+- **Individual Elements**: Mix semantic constants like `SURFACE_COLORS.surface`, `TEXT_COLORS.primary`
+
+### Component Color Standardization Process
+
+When creating or updating components:
+
+1. **Search existing patterns** in `component-colors.ts` for similar use cases
+2. **Use helper functions** (`getButtonColors`, `getCardColors`) for complex styling
+3. **Import semantic constants** (`INTERACTION_COLORS`, `SURFACE_COLORS`) for simple cases
+4. **Extend the system** if new patterns are needed (add to `component-colors.ts`)
+5. **Update documentation** (`component-standardization-status.md`) when adding new patterns
+6. **Test thoroughly** in both light and dark themes
+
+### Example Implementations
+
+```typescript
+// ✅ Button component
+<button className={cn(baseStyles, getButtonColors('solid', 'primary'))}>
+
+// ✅ Card component  
+<div className={cn('rounded-lg p-4', getCardColors('elevated'))}>
+
+// ✅ Interactive list item
+<li className={cn('p-2 rounded', NAVIGATION_COLORS.item)}>
+
+// ✅ Loading skeleton
+<div className={cn('animate-pulse rounded', SKELETON_COLORS.primary)}>
+
+// ✅ Hover interactions
+<div className={cn('p-4', INTERACTION_COLORS.hover, TEXT_COLORS.primary)}>
+
+// ❌ WRONG - Manual colors that break theming
+className="bg-white hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800"
+```
 
 ### Critical Requirements
 
 - **Test in both light and dark modes** - Colors behave differently due to smart inversion
-- **Understand color inversion** - `neutral-800` becomes light gray in dark mode, not dark gray
-- **Reference documentation** - Always check `mint-ui/docs/component-color-standards.md` for detailed explanations
-- **Never assume** - The same Tailwind class produces different colors in light vs dark mode
-
-### Example Implementation
-
-```typescript
-// ❌ DON'T - Manual colors that break in dark mode
-className="bg-white dark:bg-neutral-900 text-black dark:text-white border border-gray-200"
-
-// ✅ DO - Standardized colors that work in both modes
-className={cn('p-4', getCardColors('default'), 'border')}
-```
+- **Follow established patterns** - Check `docs/component-standardization-status.md` for examples
+- **Maintain consistency** with existing standardized components
+- **Never hardcode** color combinations that should use the centralized system
+- **ALWAYS VERIFY COLOR AVAILABILITY** - Before using any Tailwind color class, check `mint-ui/src/components/tailwind-plugin/index.ts` to confirm the color exists in the design system
 
 **Component Update Process:**
 
