@@ -192,7 +192,7 @@ import {
   getCardColors,
   getButtonColors,
   getIconButtonColors,
-  
+
   // Semantic color constants
   SURFACE_COLORS,
   TEXT_COLORS,
@@ -230,7 +230,7 @@ When creating or updating components:
 // ✅ Button component
 <button className={cn(baseStyles, getButtonColors('solid', 'primary'))}>
 
-// ✅ Card component  
+// ✅ Card component
 <div className={cn('rounded-lg p-4', getCardColors('elevated'))}>
 
 // ✅ Interactive list item
@@ -269,7 +269,7 @@ className="bg-white hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutr
   - Focus states (focus:ring-2 focus:ring-primary-500 focus:border-transparent)
   - Sizing and padding (py-2 px-3)
   - Appearance settings (appearance-none)
-- This ensures consistent form input experience across the component library.
+  - This ensures consistent form input experience across the component library.
 
 ### 2. My-Service (NestJS GraphQL API)
 
@@ -320,6 +320,15 @@ src/<module>/
 - One React component per file
 - Keep components small and focused
 - Avoid inline functions in React components
+
+**Component Architecture & Prop Threading:**
+
+- **PROPS-BASED ARCHITECTURE**: Design components to receive data as props rather than fetching internally
+- **CLEAR DATA FLOW**: Layout → Page → Components with explicit prop passing
+- **TYPED INTERFACES**: Always define proper TypeScript interfaces for component props
+- **PROP THREADING**: When components need data from parent layouts, pass it through the component tree
+- **AVOID PROP DRILLING**: For deeply nested components, consider React Context or state management
+- **INTERFACE CONSISTENCY**: When multiple components need the same data shape, use shared type definitions
 
 **Client Component Wrapper Rule:**
 
@@ -382,6 +391,44 @@ If you need to build custom UI elements not covered by mint-ui:
 - Run `pnpm gen:graphql` to generate types
 - Add proper dynamic typing to `query<T>` calls
 
+**Server-Side Data Fetching Rules:**
+
+- **PREFER server-side data fetching** in layouts and page components over client-side queries
+- **FETCH ONCE, PASS DOWN**: Fetch data in layouts/pages and pass as props to child components
+- **ELIMINATE redundant client queries**: Remove client-side queries when data can be fetched server-side
+- **USE comprehensive queries**: Prefer queries that fetch related data (e.g., `GET_SITE_WITH_METADATA` vs `GET_SITE`)
+- **PASS data as props**: Navigation and reusable components should accept data as props instead of doing their own queries
+- **COMPONENT REFACTORING**: When converting client components to accept server data:
+  1. Add data types to component props interface
+  2. Remove client-side query hooks (`useQuery`, `useSession` for data)
+  3. Remove GraphQL imports that are no longer needed
+  4. Update parent components to pass the data
+  5. Keep client-side hooks only for UI state (theme, user interactions)
+
+**Example Pattern:**
+
+```tsx
+// ✅ GOOD: Layout fetches data server-side
+const { data } = await query<GetSiteWithMetadataQuery>({
+  query: GET_SITE_WITH_METADATA,
+  context: { headers: { 'Accept-Language': lang } },
+});
+
+// ✅ GOOD: Pass data to components
+<Navbar site={data.site} languages={data.languages} />;
+
+// ✅ GOOD: Component accepts data as props
+export const SiteLogo = ({ site, languages, currentLanguage }: Props) => {
+  const { theme } = useTheme(); // Only client state
+  // Use server data for logo selection
+};
+
+// ❌ AVOID: Client components doing their own data queries
+export const SiteLogo = ({ currentLanguage }: Props) => {
+  const { data } = useQuery(GET_SITE_WITH_METADATA); // Redundant query
+};
+```
+
 **Error Handling:**
 
 - Handle GraphQL errors appropriately in components
@@ -395,6 +442,10 @@ If you need to build custom UI elements not covered by mint-ui:
 - Implement proper loading states with Skeleton components
 - Avoid unnecessary re-renders by memoizing functions and objects
 - Use Suspense boundaries for code splitting where appropriate
+- **PREFER server-side data fetching**: Reduces client-side loading states and improves initial page load
+- **ELIMINATE redundant queries**: Multiple components should not query for the same data independently
+- **BATCH related data**: Use comprehensive queries to fetch related data in a single request
+- **MINIMIZE client-side effects**: Keep `useEffect` and client queries to a minimum for better performance
 
 **Internationalization:**
 
@@ -501,6 +552,61 @@ functions/<function>/
 - Combine multiple queries when called in the same context
 - Generate types after schema changes
 - Use strongly typed GraphQL clients
+- **PREFER comprehensive queries**: Use queries that fetch all related data needed (e.g., `GET_SITE_WITH_METADATA` over `GET_SITE` when logos are needed)
+- **AVOID N+1 queries**: Design queries to fetch related data in a single request rather than multiple separate queries
+
+### Comprehensive Query Guidelines
+
+**CREATE queries that fetch all related data needed by components:**
+
+```graphql
+# ✅ GOOD: Comprehensive query with all related data
+query GetSiteWithMetadata {
+  site {
+    id
+    domain
+    logo {
+      id
+      url
+    }
+    metadatas {
+      languageId
+      name
+      description
+      logo {
+        id
+        url
+      }
+      darkLogo {
+        id
+        url
+      } # Include ALL related fields
+    }
+  }
+  languages {
+    id
+    name
+    code
+    shortName
+    isSupported
+    isDefault
+  }
+}
+
+# ❌ AVOID: Incomplete queries that require additional requests
+query GetSiteBasic {
+  site {
+    id
+    name # Missing related data like logos, metadata
+  }
+}
+```
+
+**Query Naming Conventions:**
+
+- Use descriptive names: `GET_SITE_WITH_METADATA` vs `GET_SITE`
+- Include data scope: `GET_ADVERTISER_WITH_CAMPAIGNS` vs `GET_ADVERTISER`
+- Follow consistent patterns across the codebase
 
 ## Testing Requirements
 
@@ -742,3 +848,234 @@ When completing any task, always clean up:
 - **Match implementation**: Documentation should reflect actual code, not aspirational code
 - **Use consistent terminology**: If code uses "primary", docs should use "primary" (not "accent")
 - **Include examples**: Show actual usage patterns, not theoretical ones
+
+## Backend-Frontend Data Consistency Rules
+
+### Critical Debugging Practices
+
+**ALWAYS verify Prisma includes when debugging missing data:**
+
+1. **Check backend Prisma includes FIRST** when frontend data is missing or null
+2. **Test GraphQL queries directly** using curl/Postman before blaming frontend code
+3. **Use `console.log` in development** to verify data shape at each layer
+4. **Regenerate Prisma client** after schema changes with `pnpm gen:prisma`
+
+### Backend Service Data Fetching Rules (My-Service)
+
+**Prisma Include Consistency:**
+
+- **ALWAYS include ALL related fields** that the frontend expects
+- **VERIFY includes match GraphQL schema** - if schema returns `darkLogo`, service must include it
+- **CONSISTENT includes across methods** - if `getSite` includes `darkLogo`, so should `updateSite` and `getSiteMetadatas`
+- **TEST with direct GraphQL queries** to verify backend returns expected data
+
+**Common Prisma Include Patterns:**
+
+```typescript
+// ✅ GOOD: Complete includes for all expected data
+include: {
+  metadatas: {
+    include: {
+      logo: true,
+      darkLogo: true, // Don't forget related fields!
+    },
+    where: { languageId: language },
+  },
+}
+
+// ❌ BAD: Missing includes cause null/undefined on frontend
+include: {
+  metadatas: {
+    include: {
+      logo: true,
+      // Missing darkLogo: true - causes frontend issues!
+    },
+  },
+}
+```
+
+**Backend Testing Commands:**
+
+```bash
+# Test GraphQL directly when debugging
+curl -X POST http://localhost:3020/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ site { metadatas { darkLogo { url } } } }"}'
+
+# Regenerate Prisma after schema changes
+pnpm gen:prisma
+```
+
+### Frontend Data Flow Verification (My-Web)
+
+**Server-Side Data Debugging:**
+
+```typescript
+// ✅ GOOD: Debug server data in development
+if (process.env.NODE_ENV === 'development') {
+  console.log('Layout data:', {
+    metadatas: data.site?.metadatas?.map((m) => ({
+      languageId: m.languageId,
+      hasExpectedField: !!m.expectedField, // Verify data presence
+    })),
+  });
+}
+```
+
+**Component Prop Verification:**
+
+```typescript
+// ✅ GOOD: Verify props contain expected data
+export const MyComponent = ({ site, languages }: Props) => {
+  // Debug in development to catch missing data early
+  if (process.env.NODE_ENV === 'development' && !site.metadatas?.length) {
+    console.warn('MyComponent: Missing metadatas in site prop');
+  }
+};
+```
+
+### Debugging Workflow for Missing Data
+
+1. **Frontend reports missing data** → Check browser console logs
+2. **Verify frontend props** → Add debug logging to component
+3. **Check GraphQL query** → Test query directly with curl
+4. **Inspect backend service** → Verify Prisma includes are complete
+5. **Check schema consistency** → Ensure schema matches service includes
+6. **Regenerate types** → Run `pnpm gen:prisma` and `pnpm gen:graphql`
+7. **Test end-to-end** → Verify fix with browser
+
+### Schema-Service Alignment Rules
+
+**GraphQL Schema and Prisma Service Must Match:**
+
+- If GraphQL schema defines `darkLogo: Media`, Prisma service MUST include `darkLogo: true`
+- If frontend expects nested data, backend MUST include the full relationship chain
+- Update ALL service methods when adding new relationships
+- Test with real data, not just TypeScript compilation
+
+**Example - Logo Management:**
+
+```typescript
+// GraphQL Schema defines:
+type SiteMetadata {
+  logo: Media
+  darkLogo: Media  # ← Frontend expects this
+}
+
+// Backend service MUST include both:
+include: {
+  logo: true,
+  darkLogo: true,  # ← Required for schema compliance
+}
+```
+
+---
+
+## UI/UX Improvement Guidelines
+
+When tasked with improving user interfaces, follow this systematic approach:
+
+### Analysis Phase
+1. **Identify Specific Issues**: Pinpoint exact problems (confusing buttons, poor layout, accessibility issues, inconsistent styling)
+2. **Understand User Flow**: Analyze how users interact with the interface
+3. **Check Current Implementation**: Review existing code patterns and dependencies
+4. **Assess Impact Scope**: Determine if changes affect foundational components (mint-ui) or application-level components
+
+### Implementation Strategy
+1. **Component Hierarchy Approach**: 
+   - Fix foundational components first (ImageInput, Button, Form components in mint-ui)
+   - Then improve application-level layouts and pages
+   - This prevents cascading fixes and ensures consistency
+2. **Maintain Backward Compatibility**: Don't break existing component usage
+3. **Follow Design System**: Always use existing color utilities, spacing, and patterns from `component-colors.ts`
+
+### Visual Design Principles
+- **Clear Visual Hierarchy**: Use proper heading sizes (h1, h2, h3) and semantic structure
+- **Logical Content Grouping**: Group related form fields and separate different content types
+- **Consistent Spacing**: Use systematic spacing patterns (space-y-4, space-y-6, etc.)
+- **Responsive Design**: Implement responsive grids (md:grid-cols-2) and mobile-first approach
+- **Semantic HTML**: Use proper HTML elements for better accessibility and SEO
+
+### Quality Assurance
+1. **Multi-Theme Testing**: Verify appearance in both light and dark themes
+2. **Responsive Testing**: Check layout on mobile, tablet, and desktop sizes
+3. **Accessibility Validation**: Ensure proper focus management, ARIA labels, and keyboard navigation
+4. **Cross-Browser Testing**: Test in different browsers for consistency
+
+---
+
+## Component Enhancement Process
+
+When enhancing existing components in mint-ui or my-web:
+
+### Pre-Enhancement Analysis
+1. **Read Current Implementation**: Understand existing patterns, props interfaces, and dependencies
+2. **Check Usage Patterns**: Search codebase for how component is currently used
+3. **Review Related Components**: Look for similar components that might need consistent updates
+4. **Identify Breaking Changes**: Plan to avoid breaking existing implementations
+
+### Enhancement Workflow
+1. **Update Base Component**: Make changes to the core component (e.g., ImageInput in mint-ui)
+2. **Update Storybook Stories**: Modify stories to demonstrate new functionality with `AllVariants` pattern
+3. **Build and Test mint-ui**: Run `pnpm build` to ensure no compilation errors
+4. **Update Application Usage**: Modify consuming applications (my-web) to use enhanced features
+5. **Build Application**: Test that consuming applications still build and function correctly
+
+### Documentation Requirements
+1. **Update Component Props**: Add JSDoc comments for new props with examples
+2. **Create Implementation Docs**: Document the changes and reasoning (like site-form-improvements.md)
+3. **Update Available Components List**: Add new components to copilot-instructions.md import list
+4. **Version Documentation**: Note which version introduced new features
+
+### Testing Checklist
+- [ ] Component builds without TypeScript errors
+- [ ] Storybook stories render correctly
+- [ ] Works in both light and dark themes
+- [ ] Responsive design functions properly
+- [ ] Consuming applications build successfully
+- [ ] Existing functionality remains intact
+- [ ] New features work as expected
+
+---
+
+## Self-Learning and Continuous Improvement Process
+
+After completing any significant development task, perform this self-evaluation:
+
+### Post-Task Analysis Questions
+1. **Pattern Recognition**: "What systematic approach did I follow that could benefit future similar tasks?"
+2. **Problem-Solving Process**: "What debugging or troubleshooting workflow proved effective?"
+3. **Quality Improvements**: "What practices ensured high-quality outcomes?"
+4. **Efficiency Gains**: "What steps could be streamlined or automated for future tasks?"
+5. **Knowledge Gaps**: "What information would have made this task faster or better?"
+
+### Rule Evaluation Criteria
+**Update copilot-instructions.md when you identify:**
+- **Systematic approaches** that apply to multiple similar tasks
+- **Best practices** that prevent common issues or bugs
+- **Quality assurance processes** that catch problems early
+- **Debugging workflows** that save significant time
+- **Design patterns** that improve consistency across the codebase
+
+### Examples of Update-Worthy Patterns
+**From our recent site form improvements:**
+- UI/UX improvement methodology (analyze → implement → test → document)
+- Component enhancement process (base component → stories → build → application → test)
+- Form layout design patterns (section grouping, responsive grids, semantic structure)
+- File input UX patterns (clear buttons, image previews, proper labeling)
+
+### Documentation Standards for Learnings
+1. **Be Specific**: Include exact steps, code patterns, and command sequences
+2. **Provide Context**: Explain why the approach works and when to use it
+3. **Include Examples**: Show both correct (✅) and incorrect (❌) implementations
+4. **Reference Files**: Point to specific files and line numbers when relevant
+5. **Cross-Reference**: Link related guidelines and patterns within the instructions
+
+### Continuous Improvement Workflow
+1. **Immediate Reflection**: After each task, ask "Should this process be documented?"
+2. **Pattern Recognition**: Look for recurring approaches across multiple tasks
+3. **Quality Enhancement**: Identify practices that consistently improve outcomes
+4. **Knowledge Capture**: Document insights that aren't obvious from code alone
+5. **Validation**: Test new guidelines on subsequent tasks to ensure effectiveness
+
+This creates a self-improving system where each development task contributes to better accuracy and efficiency in future work.
