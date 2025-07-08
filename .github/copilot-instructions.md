@@ -399,6 +399,21 @@ import { FilterGroup } from '@tekminewe/mint-ui/filter-group';
 - Use dependency injection patterns
 - Follow NestJS module structure
 
+**Language and Localization Standards:**
+
+- **Always use HTTP headers for language detection**: API endpoints should get language from `Accept-Language` header via `AuthService.getAcceptLanguage()`
+- **No language parameters in GraphQL queries**: Language should not be passed as GraphQL variables
+- **Consistent header handling**: Use `setContext` in Apollo Client to set `Accept-Language` header
+- **Backend-driven localization**: Content (like category names) should be localized in the backend using database metadata, not frontend dictionaries
+- **Fallback handling**: Always provide fallback to `EN_US` when requested language is unavailable
+
+**GraphQL Best Practices:**
+
+- Remove language parameters from queries when implementing header-based localization
+- Use `@Public()` decorator for endpoints that don't require authentication
+- Implement proper error handling with meaningful error messages
+- Follow consistent naming conventions for resolvers and services
+
 **Common Tasks:**
 
 - Generate Prisma client: `pnpm gen:prisma`
@@ -495,6 +510,14 @@ import { FilterGroup } from '@tekminewe/mint-ui/filter-group';
 - **Testing Strategy**: Write unit tests for complex admin form logic and data transformations
 - **Code Organization**: Keep admin-specific components in dedicated directories (`/src/page/admin-*`, `/src/components/admin-*`)
 - **Documentation**: Document complex admin workflows and business logic with inline comments
+
+**GraphQL and API Integration:**
+
+- **Header-based language detection**: Use `Accept-Language` header for API language, not query parameters
+- **Apollo Client configuration**: Set up `setContext` link to handle dynamic headers for language switching
+- **Backend localization**: Leverage backend-driven content localization instead of frontend dictionaries
+- **Cache management**: Use `cache-and-network` fetchPolicy for queries that depend on language headers
+- **Type generation**: Regenerate GraphQL types after API changes using `pnpm gen:graphql`
 
 **Common Tasks:**
 
@@ -654,14 +677,22 @@ components/
 - **Avoid text truncation** in critical UI elements like navigation labels and filter options
 - **Use consistent translation keys** between mobile and desktop variants
 - **Plan for variable text lengths** in responsive layouts (German text can be 30% longer than English)
+- **Header-based language switching**: Implement language detection via `Accept-Language` headers, not query parameters
 
 ```typescript
-// ✅ GOOD: Flexible layout that accommodates text length
+// ✅ GOOD: Flexible layout that accommodates text length + header-based language
 <Button className="min-w-[120px] px-4 py-2">
   {dictionary.filters.title}
 </Button>
 
-// ❌ BAD: Fixed width that may truncate text
+// Apollo context for language headers
+context: {
+  headers: {
+    'Accept-Language': language || 'en-US',
+  },
+},
+
+// ❌ BAD: Fixed width that may truncate text + language as query param
 <Button className="w-20">
   {dictionary.filters.title}
 </Button>
@@ -744,22 +775,14 @@ Based on the successful mobile filter implementation, use this proven pattern fo
 **1. Component Structure:**
 
 ```typescript
-// Desktop-only sidebar (hidden on mobile)
+// Desktop sidebar (hidden on mobile)
 <FilterSidebar className="hidden lg:block" {...filterProps} />
 
 // Mobile-only components (hidden on desktop)
 <div className="lg:hidden">
-  <MobileFilterButton
-    activeFiltersCount={selectedFilters.length}
-    onClick={() => setIsMobileFilterOpen(true)}
-  />
+  <MobileFilterButton onClick={() => setMobileOpen(true)} />
 </div>
-
-<MobileFilterDrawer
-  open={isMobileFilterOpen}
-  onOpenChange={setIsMobileFilterOpen}
-  {...filterProps}
-/>
+<MobileFilterDrawer open={mobileOpen} onOpenChange={setMobileOpen} {...filterProps} />
 ```
 
 **2. State Management Pattern:**

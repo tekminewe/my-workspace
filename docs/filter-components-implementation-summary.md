@@ -257,3 +257,173 @@ This implementation serves as a **reusable pattern for future responsive filteri
 ✅ **Documentation**: Complete Storybook stories with interactive examples
 
 The foundation is now ready for implementing the category filter functionality in the stores page!
+
+## Backend Localization Implementation (UPDATED - Header-Based)
+
+### Overview
+
+Successfully migrated category name translation from frontend dictionaries to backend-driven localization using GraphQL with **HTTP header-based language detection**.
+
+### Changes Made
+
+**Backend GraphQL API:**
+
+- ✅ `getAllCategories()` method returns localized names based on `Accept-Language` header
+- ✅ **Removed language parameters** from GraphQL queries - language comes from headers only
+- ✅ Uses `AdvertiserCategoryMetadata` table for localized category names
+- ✅ Fallback to category ID if no localized name is found
+- ✅ Supports all languages: `en-US`, `en-MY`, `zh-MY`
+
+**Frontend Updates:**
+
+- ✅ Updated Apollo Client with `setContext` link to handle `Accept-Language` headers
+- ✅ Updated `useAdvertiserCategories` hook to pass language via headers, not query variables
+- ✅ Removed language parameter from GraphQL `advertiserCategories` query
+- ✅ Updated `useCategoryFilter` hook to use backend-provided names directly
+- ✅ Cleaned up unused `categoryNames` from all dictionary files
+
+**Benefits:**
+
+- 🌍 **Single Source of Truth**: Category names managed in database, not duplicated in frontend
+- 🚀 **Dynamic Content**: New categories can be added without frontend code changes
+- 🔧 **Easier Maintenance**: Translators can update category names directly in backend
+- 📱 **Consistent Experience**: Same localized names across all client applications
+- 🌐 **HTTP Standards Compliant**: Uses standard `Accept-Language` header for language negotiation
+
+### GraphQL Query Examples (Header-Based)
+
+**English Request:**
+
+```bash
+curl -H "Accept-Language: en-US" \
+  -d '{"query":"{ advertiserCategories { id name description } }"}' \
+  http://localhost:3020/graphql
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "advertiserCategories": [
+      { "id": "Electronics", "name": "Electronics", "description": null },
+      { "id": "Fashion", "name": "Fashion", "description": null }
+    ]
+  }
+}
+```
+
+**Chinese Request:**
+
+```bash
+curl -H "Accept-Language: zh-MY" \
+  -d '{"query":"{ advertiserCategories { id name description } }"}' \
+  http://localhost:3020/graphql
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "advertiserCategories": [
+      { "id": "Electronics", "name": "电子产品", "description": null },
+      { "id": "Fashion", "name": "时尚", "description": null }
+    ]
+  }
+}
+```
+
+### Code Changes Summary
+
+**Backend Updated Files:**
+
+- `my-service/src/affiliate/advertiser-category.resolver.ts` - Removed language parameter, uses headers only
+- Cleaned up unused imports (`Args`, `LanguageEnum`)
+
+**Frontend Updated Files:**
+
+- `my-web/src/services/apollo-client.ts` - Added `setContext` link for header handling
+- `my-web/src/hooks/use-advertiser-categories.ts` - Language passed via headers, not variables
+- `my-web/src/graphql/queries/get-advertiser-categories.ts` - Removed language parameter
+- `my-web/src/hooks/use-category-filter.ts` - Removed dictionary dependency, use backend names
+- `my-web/src/components/store-list.tsx` - Updated hook usage
+- `my-web/src/dictionaries/*.json` - Removed unused `categoryNames` sections
+
+**Technical Implementation:**
+
+- Backend uses `AuthService.getAcceptLanguage()` to read headers and convert to `LanguageEnum`
+- Frontend uses Apollo's `setContext` to dynamically set `Accept-Language` header
+- Apollo cache properly invalidates when language changes via headers
+- Clean separation of concerns: UI text in frontend, content in backend
+
+---
+
+## ✅ **Final Implementation Status (July 2025)**
+
+### **Complete Feature Set Implemented**
+
+The mobile-responsive, multi-language category filter system is **fully implemented and production-ready** with the following features:
+
+#### **🎯 Core Functionality**
+
+- ✅ **Mobile-responsive filter UI** with dedicated mobile/desktop components
+- ✅ **Multi-language support** via HTTP header-based backend localization
+- ✅ **Real-time category filtering** with server-side GraphQL integration
+- ✅ **URL state persistence** for bookmarking and sharing
+- ✅ **Multi-select categories** with removable filter chips
+- ✅ **Search functionality** within category lists
+- ✅ **Active filter indicators** showing current selections
+
+#### **🏗️ Technical Architecture**
+
+- ✅ **4 new mint-ui primitives**: FilterSection, FilterChip, SearchableCheckboxList, FilterGroup
+- ✅ **Mobile-first responsive design** with progressive enhancement
+- ✅ **Header-based language detection** following HTTP standards
+- ✅ **Apollo Client integration** with dynamic header management
+- ✅ **Backend-driven localization** using database metadata
+- ✅ **TypeScript type safety** throughout the entire stack
+
+#### **📱 Mobile Experience**
+
+- ✅ **Touch-optimized interface** with 44px minimum touch targets
+- ✅ **Slide-out drawer** for mobile filter interface
+- ✅ **Responsive grid layouts** (1/2/3 columns based on screen size)
+- ✅ **Gesture-friendly interactions** and proper spacing
+- ✅ **State synchronization** between mobile and desktop
+
+#### **🌐 Internationalization**
+
+- ✅ **HTTP standard compliance** using `Accept-Language` headers
+- ✅ **Real-time language switching** without page reload
+- ✅ **Backend localized content** for category names
+- ✅ **Frontend UI translations** for all filter interface text
+- ✅ **Support for all languages**: en-US, en-MY, zh-MY
+
+#### **🔧 Developer Experience**
+
+- ✅ **Reusable component patterns** documented for future use
+- ✅ **Comprehensive documentation** with examples and patterns
+- ✅ **Build system integration** with both mint-ui and my-web
+- ✅ **GraphQL code generation** for type safety
+- ✅ **Storybook documentation** for all new components
+
+### **Quality Assurance**
+
+- ✅ **TypeScript compilation** passes without errors
+- ✅ **Build systems** working correctly for all projects
+- ✅ **GraphQL schema** properly synchronized
+- ✅ **Responsive behavior** tested across device sizes
+- ✅ **Language switching** verified with curl tests
+
+### **Ready for Production Use**
+
+The implementation provides:
+
+- **Professional user experience** across all devices
+- **Maintainable codebase** following established patterns
+- **Scalable architecture** for future filter enhancements
+- **Standards compliance** with HTTP and accessibility guidelines
+- **Performance optimization** with proper caching and lazy loading
+
+This filter system serves as a **reference implementation** for future responsive, multi-language filtering interfaces across the workspace! 🚀
