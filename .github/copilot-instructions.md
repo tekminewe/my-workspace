@@ -2,6 +2,8 @@
 
 This is a monorepo containing multiple projects. Please follow the project-specific guidelines based on the context of the request.
 
+**For new feature development, refer to the comprehensive workflow in `.github/prompts/new-feature.prompt.md`**
+
 ## Rule Management and Conflict Resolution
 
 ### When to Ask for Rule Updates
@@ -36,9 +38,34 @@ If you ask me to do something that conflicts with or doesn't comply with the exi
 This workspace contains the following projects:
 
 - **mint-ui**: React UI library with Storybook
-- **my-service**: NestJS GraphQL API service
-- **my-web**: Next.js 15 web application
+- **my-service**: NestJS GraphQL API service (deploys to AWS ECS)
+- **my-web**: Next.js 15 web application (deploys to Vercel)
 - **my-functions**: AWS SAM serverless functions
+- **docs/**: Workspace documentation and guides
+- **tasks/**: Task management and tracking files
+
+## Development Commands by Project
+
+- **mint-ui**: `pnpm dev` (development), `pnpm storybook` (Storybook), `pnpm build` (build)
+- **my-service**: `pnpm dev` (development), `pnpm gen:prisma` (generate Prisma), `pnpm build` (build)
+- **my-web**: `pnpm dev` (development), `pnpm gen:graphql` (generate GraphQL types), `pnpm build` (build)
+- **my-functions**: `sam build` (build SAM functions), `sam local start-api` (local testing), individual function commands: `npm run compile`, `npm run test`, `npm run lint`
+
+## Available Mint-UI Components
+
+All components are available via `@tekminewe/mint-ui/<component>` imports. Key components include:
+
+**Core UI:** Avatar, Badge, Button, Card, Callout, Separator, Skeleton, Spinner  
+**Forms:** TextInput, Textarea, Select, MultiSelect, Checkbox, Switch, DateInput, SearchInput, RichTextEditor, FormLabel  
+**Navigation:** Link, Breadcrumb, Navbar, Tabs, Sidebar, NavigationMenu  
+**Overlays:** Dialog, Drawer, Popover, DropdownMenu, Toast  
+**Data Display:** DataTable, Grid, List, Typography  
+**Filtering:** FilterSection, FilterChip, FilterGroup, SearchableCheckboxList  
+**Admin:** AdminLayout, AdminNavbar, AdminContent  
+**Business:** PostItem, ProductItem, ProductList  
+**Utilities:** IconButton, ThemeProvider, TailwindPlugin
+
+For complete component APIs and usage examples, refer to the Storybook documentation or component source files.
 
 ## General Rules (All Projects)
 
@@ -84,27 +111,19 @@ This workspace contains the following projects:
 - **ESLint**: Should use shared workspace-level configuration for consistency across all projects
 - **TypeScript**: Each project has its own `tsconfig.json` but should extend shared base configuration
 
-### Recommended Shared Configuration Structure:
+### Current Configuration Status:
 
-```
-workspace-root/
-├── .prettierrc                 # ✅ Already implemented
-├── .eslintrc.js               # 📝 Should be implemented
-├── tsconfig.base.json         # 📝 Should be implemented
-└── projects/
-    ├── mint-ui/
-    │   ├── .eslintrc.js       # extends workspace config
-    │   └── tsconfig.json      # extends tsconfig.base.json
-    ├── my-service/
-    │   ├── .eslintrc.js       # extends workspace config
-    │   └── tsconfig.json      # extends tsconfig.base.json
-    ├── my-web/
-    │   ├── .eslintrc.js       # extends workspace config
-    │   └── tsconfig.json      # extends tsconfig.base.json
-    └── my-functions/
-        ├── .eslintrc.js       # extends workspace config
-        └── tsconfig.json      # extends tsconfig.base.json
-```
+**Workspace Level:**
+
+- ✅ `.prettierrc` - Shared Prettier configuration
+- ✅ `.eslintrc.js` - Shared ESLint configuration
+- ✅ `.env` and `.env.example` - Environment variables
+- ✅ `docs/` and `tasks/` - Documentation and task management
+
+**Project Level:**
+
+- ✅ Each project has individual `tsconfig.json` and build configurations
+- ✅ Each my-functions Lambda has individual `.eslintrc.js` and `tsconfig.json`
 
 ---
 
@@ -291,97 +310,7 @@ className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-7
 
 ---
 
-## Development Workflow
-
-### Before Starting Development:
-
-1. Check if development/Storybook servers are running for mint-ui
-2. Verify you have the correct Node.js version and dependencies installed
-3. Run `pnpm install` in the specific project directory if needed
-4. Check for any existing TypeScript/ESLint errors before making changes
-
-### During Development:
-
-1. Make small, incremental changes and test frequently
-2. Run type checking and linting after each significant change
-3. Test components in both light and dark themes (for mint-ui)
-4. Verify GraphQL types are generated when schema changes (for my-service and my-web)
-5. Test responsive behavior on different screen sizes
-
-**File Recovery and Version Control:**
-
-- **Always verify current state** before making changes to any file using `read_file`
-- **Handle file reverts gracefully** - when files are accidentally reverted, quickly restore with original patterns
-- **Use descriptive commit messages** that explain what was changed and why
-- **Test after recovery** - always run build and error checks after restoring files
-- **Preserve existing patterns** - when recreating files, maintain consistent naming and structure from previous implementations
-
-### After Development:
-
-1. Run full build process to ensure no build errors
-2. Update documentation if component APIs changed
-3. Update component import lists if new components were added
-4. Commit changes with clear, descriptive commit messages
-
-### Common Commands by Project:
-
-- **mint-ui**: `pnpm dev` (development), `pnpm storybook` (Storybook), `pnpm build` (build)
-- **my-service**: `pnpm dev` (development), `pnpm gen:prisma` (generate Prisma), `pnpm build` (build)
-- **my-web**: `pnpm dev` (development), `pnpm gen:graphql` (generate GraphQL types), `pnpm build` (build)
-- **my-functions**: `npm run gen:graphql` (generate GraphQL), `sam build` (build SAM functions)
-
----
-
-## Available Mint-UI Components
-
-Import these components from `@tekminewe/mint-ui/<component>`:
-
-```typescript
-import { Avatar } from '@tekminewe/mint-ui/avatar';
-import { Badge } from '@tekminewe/mint-ui/badge';
-import { Button } from '@tekminewe/mint-ui/button';
-import { Card } from '@tekminewe/mint-ui/card';
-import { Checkbox } from '@tekminewe/mint-ui/checkbox';
-import {
-  Dialog,
-  DialogRoot,
-  DialogTrigger,
-  DialogClose,
-} from '@tekminewe/mint-ui/dialog';
-import { DialogFooter } from '@tekminewe/mint-ui/dialog-footer';
-import {
-  Drawer,
-  DrawerRoot,
-  DrawerTrigger,
-  DrawerClose,
-} from '@tekminewe/mint-ui/drawer';
-import { DrawerFooter } from '@tekminewe/mint-ui/drawer-footer';
-import { IconButton } from '@tekminewe/mint-ui/icon-button';
-import { RadioGroup, RadioGroupItem } from '@tekminewe/mint-ui/radio-group';
-import { Separator } from '@tekminewe/mint-ui/separator';
-import { Skeleton } from '@tekminewe/mint-ui/skeleton';
-import { Switch } from '@tekminewe/mint-ui/switch';
-import { TextInput } from '@tekminewe/mint-ui/text-input';
-import { Textarea } from '@tekminewe/mint-ui/textarea';
-import { Toast, ToastProvider } from '@tekminewe/mint-ui/toast';
-import { Callout } from '@tekminewe/mint-ui/callout';
-import { FilterSection } from '@tekminewe/mint-ui/filter-section';
-import { FilterChip } from '@tekminewe/mint-ui/filter-chip';
-import { SearchableCheckboxList } from '@tekminewe/mint-ui/searchable-checkbox-list';
-import { FilterGroup } from '@tekminewe/mint-ui/filter-group';
-```
-
-**Component Categories:**
-
-- **Layout & Structure**: Card, Separator, Callout
-- **Navigation & Actions**: Button, IconButton, Dialog, Drawer
-- **Forms & Inputs**: TextInput, Textarea, Checkbox, RadioGroup, Switch
-- **Data Display**: Avatar, Badge, Skeleton
-- **Feedback**: Toast
-- **Overlays**: Dialog, Drawer
-- **Filtering & Search**: FilterSection, FilterChip, SearchableCheckboxList, FilterGroup
-
----
+## Project-Specific Guidelines
 
 ### 2. My-Service (NestJS GraphQL API)
 
@@ -535,6 +464,22 @@ import { FilterGroup } from '@tekminewe/mint-ui/filter-group';
 - AWS SAM for deployment
 - Serverless architecture patterns
 
+**Project Structure:**
+
+The my-functions project contains individual Lambda functions in the `functions/` directory:
+
+- `functions/advertisers-pull/` - Advertiser data processing
+- `functions/auth/` - Authentication functions
+- `functions/email-feedback/` - Email feedback processing
+- `functions/post-generator/` - Post generation functionality
+
+Each function has its own:
+
+- `package.json` with individual dependencies
+- `tsconfig.json` for TypeScript configuration
+- `.eslintrc.js` for ESLint configuration
+- Individual source files and tests
+
 **Development Patterns:**
 
 - Keep functions focused and lightweight
@@ -542,300 +487,38 @@ import { FilterGroup } from '@tekminewe/mint-ui/filter-group';
 - Implement logging and monitoring
 - Follow AWS best practices
 - Use environment variables for configuration
+- Each function manages its own dependencies and build process
 
 **Common Tasks:**
 
 - Build functions: `sam build`
 - Local testing: `sam local start-api`
 - Deploy: `sam deploy --guided`
+- Individual function tasks: `npm run compile`, `npm run test`, `npm run lint` (within each function directory)
 
 ---
 
-## Mobile-First Responsive Development Guidelines
+## Mobile-First Development Guidelines
 
-### Required Approach for All UI Components
+### Essential Mobile-First Principles:
 
-**Mobile-First Development Protocol:**
+- **Start with mobile constraints** when designing new UI components
+- **Use responsive utility classes** (`hidden lg:block`, `lg:hidden`) for conditional rendering
+- **Design touch-friendly interfaces** with minimum 44px touch targets
+- **Create dedicated mobile components** for different interaction patterns (drawers vs sidebars)
+- **Test on actual mobile devices** during development
 
-- **Always start with mobile constraints** when designing new UI components
-- **Use responsive utility classes** (`hidden lg:block`, `lg:hidden`) for conditional rendering instead of complex JavaScript
-- **Design touch-friendly interfaces** with minimum 44px touch targets and 8px spacing between interactive elements
-- **Implement progressive disclosure** for complex interfaces on mobile (drawers, modals, step-by-step flows)
-- **Test on actual mobile devices** in addition to browser dev tools during development
-
-### Responsive Component Architecture Standards
-
-**Mobile/Desktop Component Separation:**
+### Component Architecture:
 
 ```typescript
-// ✅ GOOD: Dedicated mobile components for different interaction patterns
+// Mobile/Desktop component separation
 <FilterSidebar className="hidden lg:block" {...sharedProps} />        // Desktop
-<MobileFilterButton className="lg:hidden" {...mobileProps} />         // Mobile trigger
-<MobileFilterDrawer {...sharedProps} />                               // Mobile interface
+<MobileFilterButton className="lg:hidden" {...mobileProps} />         // Mobile
 ```
 
-**Component Architecture Patterns:**
+### Translation:
 
-- **Create dedicated mobile components** when interaction patterns differ significantly (drawers vs sidebars, mobile buttons vs desktop navigation)
-- **Share business logic** between mobile and desktop variants using custom hooks
-- **Use conditional rendering** with responsive classes rather than complex JavaScript logic
-- **Maintain consistent prop interfaces** between mobile and desktop variants for shared functionality
+- **Header-based language switching**: Use `Accept-Language` headers, not query parameters
+- **Test text length variations** across supported languages on mobile screens
 
-**State Management for Responsive Components:**
-
-```typescript
-// ✅ GOOD: Separate UI state from data state
-const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false); // UI state (mobile-specific)
-const selectedCategories = useURLState('categories'); // Data state (shared)
-const { filterData } = useBusinessLogic(selectedCategories); // Business logic (shared)
-
-// ❌ BAD: Mixing UI and data state
-const [mobileFilters, setMobileFilters] = useState({
-  open: false,
-  categories: [],
-});
-```
-
-### Responsive Grid and Layout Standards
-
-**Grid System Rules:**
-
-- **Use semantic breakpoints**: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` for optimal content scaling
-- **Avoid cramped mobile layouts** - single column is often better than forced multi-column on small screens
-- **Test all grid layouts** at mobile (375px), tablet (768px), and desktop (1024px+) sizes during development
-- **Design for content, not devices** - let content determine breakpoints rather than specific device sizes
-
-**Container and Spacing Patterns:**
-
-```typescript
-// ✅ GOOD: Progressive spacing that scales with screen size
-<div className="container mx-auto py-6 px-4 sm:px-6 lg:px-8">
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-
-// ❌ BAD: Fixed spacing that doesn't adapt
-<div className="container mx-auto py-6 px-4">
-  <div className="grid grid-cols-2 gap-4">
-```
-
-### Mobile-Optimized Component Usage
-
-**Touch Interface Requirements:**
-
-- **Minimum touch target size**: 44px x 44px for all interactive elements
-- **Adequate spacing**: 8px minimum between touch targets to prevent accidental taps
-- **Visual feedback**: Proper hover/active states that work on both mouse and touch devices
-- **Gesture support**: Implement expected mobile gestures (swipe to dismiss, pull to refresh)
-
-**Drawer and Modal Patterns:**
-
-```typescript
-// ✅ GOOD: Mobile drawer implementation
-<DrawerRoot open={isMobileOpen} onOpenChange={setIsMobileOpen} direction="left">
-  <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
-  <Drawer className="w-80 max-w-[90vw]">
-    {' '}
-    // Responsive width
-    <div className="flex items-center justify-between p-4">
-      {' '}
-      // Touch-friendly header
-      <DrawerTitle>{title}</DrawerTitle>
-      <Button onClick={() => setIsMobileOpen(false)}>
-        {' '}
-        // Clear close action
-        <LuX className="w-4 h-4" />
-      </Button>
-    </div>
-  </Drawer>
-</DrawerRoot>
-```
-
-### Component File Organization
-
-**File Structure for Responsive Components:**
-
-```
-components/
-├── feature-name/
-│   ├── feature-sidebar.tsx           # Desktop-only component
-│   ├── mobile-feature-button.tsx     # Mobile-only component
-│   ├── mobile-feature-drawer.tsx     # Mobile-only component
-│   ├── shared-feature-logic.tsx      # Shared component
-│   └── feature-container.tsx         # Container that manages both variants
-```
-
-**Naming Conventions:**
-
-- **Prefix mobile-only components** with `Mobile` (e.g., `MobileFilterButton`, `MobileNavDrawer`)
-- **Use descriptive suffixes** for desktop variants when needed (e.g., `FilterSidebar`, `DesktopNavMenu`)
-- **Keep shared components** without prefixes (e.g., `CategoryFilter`, `SearchInput`)
-
-### Translation and Internationalization
-
-**Mobile Translation Considerations:**
-
-- **Test text length variations** across all supported languages on mobile screens
-- **Avoid text truncation** in critical UI elements like navigation labels and filter options
-- **Use consistent translation keys** between mobile and desktop variants
-- **Plan for variable text lengths** in responsive layouts (German text can be 30% longer than English)
-- **Header-based language switching**: Implement language detection via `Accept-Language` headers, not query parameters
-
-```typescript
-// ✅ GOOD: Flexible layout that accommodates text length + header-based language
-<Button className="min-w-[120px] px-4 py-2">
-  {dictionary.filters.title}
-</Button>
-
-// Apollo context for language headers
-context: {
-  headers: {
-    'Accept-Language': language || 'en-US',
-  },
-},
-
-// ❌ BAD: Fixed width that may truncate text + language as query param
-<Button className="w-20">
-  {dictionary.filters.title}
-</Button>
-```
-
-### Performance Rules for Mobile
-
-**Mobile Performance Standards:**
-
-- **Lazy load mobile-specific components** when they're not immediately needed
-- **Minimize bundle size** by reusing existing components in mobile variants
-- **Optimize touch interactions** to minimize delay (avoid 300ms click delay)
-- **Test performance** on lower-end mobile devices, not just high-end smartphones
-
-### Testing and Quality Assurance
-
-**Mobile-Specific Testing Protocol:**
-
-1. **Test on actual mobile devices** in addition to browser dev tools
-2. **Verify touch interactions** work correctly (tap, swipe, pinch, long press)
-3. **Test orientation changes** and ensure layouts adapt properly
-4. **Validate accessibility** with mobile screen readers (VoiceOver, TalkBack)
-5. **Check URL state persistence** when switching between mobile and desktop views
-
-**Responsive Debugging Checklist:**
-
-- **Use browser dev tools** mobile simulation for initial testing
-- **Test edge cases** like very long text, high numbers of items, slow networks
-- **Verify responsive layout shifts** don't occur during loading states
-- **Check component state synchronization** between mobile and desktop variants
-
-### Error Prevention Rules
-
-**Common Mobile Development Pitfalls to Avoid:**
-
-- **Don't assume desktop interaction patterns** work on mobile (hover states, right-click, complex multi-step flows)
-- **Don't use fixed widths** that don't scale on small screens (`w-64` without responsive variants)
-- **Don't forget to test** state synchronization between mobile and desktop components
-- **Don't skip** accessibility testing with actual screen readers on mobile devices
-
-**Build-Time Validation:**
-
-- **Run builds after responsive changes** to catch TypeScript type mismatches early
-- **Test all language files** when adding new translation keys for mobile components
-- **Verify responsive layouts** don't break existing desktop functionality
-- **Check bundle size impact** of new mobile-specific components
-
-### Documentation Standards
-
-**Component Documentation for Responsive Features:**
-
-```typescript
-/**
- * FilterSidebar - Desktop filter interface
- *
- * @description Desktop-only sidebar for filtering content. Hidden on mobile screens.
- * On mobile, use MobileFilterButton + MobileFilterDrawer for the same functionality.
- *
- * @responsive Hidden below lg breakpoint (< 1024px)
- * @mobileAlternative MobileFilterDrawer
- */
-export const FilterSidebar = ({ ... }) => {
-  // Component implementation
-};
-```
-
-**Required Documentation Elements:**
-
-- **Document responsive behavior** in component JSDoc comments
-- **Include usage examples** for both mobile and desktop variants
-- **Specify breakpoint behavior** and mobile alternatives
-- **Document touch interaction patterns** for mobile components
-
-### Filter System Implementation Pattern
-
-**Comprehensive Mobile Filter Architecture:**
-
-Based on the successful mobile filter implementation, use this proven pattern for responsive filtering interfaces:
-
-**1. Component Structure:**
-
-```typescript
-// Desktop sidebar (hidden on mobile)
-<FilterSidebar className="hidden lg:block" {...filterProps} />
-
-// Mobile-only components (hidden on desktop)
-<div className="lg:hidden">
-  <MobileFilterButton onClick={() => setMobileOpen(true)} />
-</div>
-<MobileFilterDrawer open={mobileOpen} onOpenChange={setMobileOpen} {...filterProps} />
-```
-
-**2. State Management Pattern:**
-
-```typescript
-// Mobile UI state (component-specific)
-const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-
-// Filter data state (shared, URL-persisted)
-const selectedCategories = useURLState('categories');
-const { filterData, updateFilter } = useFilterLogic(selectedCategories);
-```
-
-**3. Mobile Button with Active Count:**
-
-```typescript
-<MobileFilterButton
-  activeFiltersCount={activeFilters.length}
-  onClick={() => setIsMobileFilterOpen(true)}
-  dictionary={{ filters: dictionary.filters.title }}
-/>
-```
-
-**4. Mobile Drawer Implementation:**
-
-```typescript
-<MobileFilterDrawer
-  open={isMobileFilterOpen}
-  onOpenChange={setIsMobileFilterOpen}
-  categoryItems={categoryItems}
-  selectedCategories={selectedCategories}
-  onCategoryChange={updateCategoryFilter}
-  dictionary={dictionary}
-  trigger={<div />} // Not used when controlling open state
-/>
-```
-
-**5. Responsive Grid for Results:**
-
-```typescript
-// Single column mobile, progressive enhancement for larger screens
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-  {results.map((item) => (
-    <ResultItem key={item.id} {...item} />
-  ))}
-</div>
-```
-
-This pattern ensures:
-
-- ✅ Consistent filter state between mobile and desktop
-- ✅ Optimal UX for each device type
-- ✅ Shared business logic with device-specific UI
-- ✅ Proper URL state persistence
-- ✅ Touch-friendly mobile interactions
-- ✅ Professional desktop experience
+---
