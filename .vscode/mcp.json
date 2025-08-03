@@ -1,4 +1,25 @@
 {
+  // 💡 Inputs are prompted on first server start, then stored securely by VS Code.
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "anthropic-key",
+      "description": "Anthropic API Key",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "openai-key",
+      "description": "OpenAI API Key",
+      "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "perplexity-key",
+      "description": "Perplexity API Key",
+      "password": true
+    }
+  ],
   "servers": {
     "task-master-ai": {
       "command": "npx",
@@ -8,13 +29,21 @@
         "task-master-ai"
       ],
       "env": {
-        "ANTHROPIC_API_KEY": "",
-        "OPENAI_API_KEY": ""
+        "ANTHROPIC_API_KEY": "${input:anthropic-key}",
+        "OPENAI_API_KEY": "${input:openai-key}"
       }
     },
     "github": {
       "type": "http",
       "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "perplexity": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "server-perplexity-ask"],
+      "env": {
+        "PERPLEXITY_API_KEY": "${input:perplexity-key}"
+      }
     }
   }
 }

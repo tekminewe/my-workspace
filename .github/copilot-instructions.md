@@ -44,6 +44,31 @@ This workspace contains the following projects:
 - **docs/**: Workspace documentation and guides
 - **tasks/**: Task management and tracking files
 
+## Project Management
+
+### GitHub Projects
+
+This workspace uses GitHub Projects for comprehensive project management and feature tracking. **Active project board is fully set up and operational.**
+
+**🎯 Active Project Board:** [Acquisition Strategy & Feature Development](https://github.com/users/tekminewe/projects/1)
+
+**Key Features:**
+
+- **Acquisition Strategy Tracking**: 10 issues created and added to project board
+- **Phase-based Development**: Organized implementation roadmap with 4 development phases
+- **Cross-platform Coordination**: Links features across my-web, my-service, mint-ui, and my-functions
+- **Social Media Integration**: Specialized tracking for Facebook, Instagram, TikTok, and general social features
+- **Automated Setup**: Created via GitHub CLI with all issues pre-populated
+
+**Quick Reference:**
+
+- **Project Board**: https://github.com/users/tekminewe/projects/1
+- **Setup Complete**: [`docs/project-board-setup-complete.md`](../docs/project-board-setup-complete.md)
+- **Backlog Details**: [`docs/acquisition-strategy-backlog.md`](../docs/acquisition-strategy-backlog.md)
+- **Setup Automation**: [`scripts/setup-project-board.sh`](../scripts/setup-project-board.sh)
+- **Label System**: Priority, type, platform, and phase-based categorization
+- **Issue Templates**: Standardized feature requests with technical requirements
+
 ## Development Commands by Project
 
 - **mint-ui**: `pnpm dev` (development), `pnpm storybook` (Storybook), `pnpm build` (build)

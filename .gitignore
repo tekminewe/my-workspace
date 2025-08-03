@@ -22,3 +22,13 @@ node_modules/
 
 # OS specific
 .DS_Store
+
+# VS Code settings (keep some, ignore sensitive ones)
+.vscode/mcp.json
+.vscode/settings.json
+# But allow example files to be committed
+!.vscode/mcp.json.example
+
+# Task files
+# tasks.json
+# tasks/ 
