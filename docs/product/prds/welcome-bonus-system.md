@@ -3,22 +3,22 @@
 ## Document Information
 
 - **Feature Name**: Welcome Bonus System
-- **Document Version**: 1.0
+- **Document Version**: 1.1
 - **Created Date**: August 3, 2025
-- **Last Updated**: August 3, 2025
+- **Last Updated**: August 4, 2025
 - **Product Manager**: [TBD]
 - **Engineering Lead**: [TBD]
 - **GitHub Issue**: [#2](https://github.com/tekminewe/my-workspace/issues/2)
 
 ## Executive Summary
 
-The Welcome Bonus System is a foundational user acquisition feature that provides new users with an immediate $5 bonus upon email verification. This incentive reduces signup friction, encourages first purchases, and improves early user engagement. The feature is critical for converting visitors into active users and establishing trust in the cashback platform.
+The Welcome Bonus System is a foundational user acquisition feature that provides new users with an achievement-based bonus that they can claim after earning equivalent cashback through actual platform usage. This gamified approach encourages genuine engagement, reduces fraud, and ensures users understand the platform's value before receiving rewards. The feature transforms from immediate gratification to earned achievement, creating better user quality and retention.
 
 ## Background & Context
 
 ### Problem Statement
 
-New users joining cashback platforms often experience hesitation about making their first purchase due to uncertainty about the service's legitimacy and value proposition. Without immediate value demonstration, signup-to-first-purchase conversion rates remain low, increasing customer acquisition costs.
+New users joining cashback platforms often experience hesitation about making their first purchase due to uncertainty about the service's legitimacy and value proposition. Traditional immediate bonuses can be abused by fraudulent signups and don't ensure genuine user engagement. Without earned value demonstration, users may claim bonuses without understanding the platform's core benefits, leading to low retention and high acquisition costs.
 
 ### Current State
 
@@ -26,6 +26,8 @@ New users joining cashback platforms often experience hesitation about making th
 - No immediate incentive for new user activation
 - High drop-off rates between signup and first purchase
 - Limited tools for acquisition campaigns
+- Risk of bonus abuse from fraudulent signups
+- No requirement for users to understand platform value before receiving rewards
 
 ### Strategic Goals
 
@@ -38,13 +40,14 @@ New users joining cashback platforms often experience hesitation about making th
 
 ### Vision Statement
 
-Provide every new user with immediate, tangible value that demonstrates our platform's benefits while incentivizing meaningful engagement and first purchases.
+Provide every new user with immediate, tangible value that demonstrates our platform's benefits while incentivizing meaningful engagement and first purchases through an achievement-based reward system.
 
 ### Success Criteria
 
 - **Primary**: 25% increase in signup-to-first-purchase conversion rate
 - **Secondary**: 15% improvement in 30-day user retention
 - **Operational**: Maintain fraud rate below 2% of total bonuses granted
+- **Engagement**: 80% of users who earn the threshold amount proceed to claim their bonus
 
 ### Key Performance Indicators (KPIs)
 
@@ -75,11 +78,14 @@ Provide every new user with immediate, tangible value that demonstrates our plat
 
 #### Welcome Bonus Grant System
 
-- **Requirement**: Automatically grant $5 bonus upon email verification
+- **Requirement**: Grant achievement-based bonus when user earns equivalent cashback amount
 - **Acceptance Criteria**:
-  - Bonus appears in account within 60 seconds of verification
-  - Visible confirmation in UI and email notification
-  - Bonus amount configurable via admin interface
+  - Bonus amount configurable via admin console
+  - Uses site's default currency setting
+  - User must earn cashback equal to bonus amount before claiming
+  - Bonus displays as "unlocked" achievement when threshold reached
+  - Direct wallet credit upon claiming (no voucher system)
+  - Wallet transaction log entry created for audit trail
 - **Priority**: Must Have
 
 #### Fraud Prevention
@@ -94,10 +100,10 @@ Provide every new user with immediate, tangible value that demonstrates our plat
 
 #### Bonus Expiration Management
 
-- **Requirement**: Implement 30-day expiration for unused bonuses
+- **Requirement**: Implement 6-month expiration for unused bonuses
 - **Acceptance Criteria**:
   - Clear expiration date display in UI
-  - Email reminders at 7-day and 1-day before expiration
+  - Email reminders at 30-day and 7-day before expiration
   - Automatic bonus removal after expiration
   - Grace period handling for customer service
 - **Priority**: Must Have
@@ -116,21 +122,24 @@ Provide every new user with immediate, tangible value that demonstrates our plat
 
 #### Onboarding Integration
 
-- **Requirement**: Seamlessly integrate bonus into new user flow
+- **Requirement**: Seamlessly integrate bonus achievement into new user flow
 - **Acceptance Criteria**:
-  - Bonus announcement during signup process
-  - Prominent display in post-verification success page
-  - Clear instructions on how to use bonus
+  - Bonus achievement announcement during signup process
+  - Clear explanation of earning requirement
+  - Progress tracking prominently displayed in dashboard
+  - Celebration UI when bonus becomes claimable
   - Integration with existing onboarding steps
 - **Priority**: Must Have
 
 #### Visual Design
 
-- **Requirement**: Create engaging, trustworthy bonus presentation
+- **Requirement**: Create engaging achievement-based bonus presentation
 - **Acceptance Criteria**:
-  - Branded bonus graphics and messaging
-  - Clear monetary value display ($5.00)
-  - Trust indicators (security badges, terms)
+  - Progress bar showing cashback earned toward bonus threshold
+  - Achievement badge system for unlocked bonus
+  - Clear monetary value display with site currency
+  - Celebratory animation when bonus becomes claimable
+  - Trust indicators and clear terms
   - Mobile-responsive design
 - **Priority**: Must Have
 
@@ -140,74 +149,102 @@ Provide every new user with immediate, tangible value that demonstrates our plat
 
 #### Components Required
 
-- `WelcomeBonusCard`: Display bonus information and CTA
-- `BonusCountdown`: Show expiration timer
-- `BonusUsageModal`: Guide users on using bonus
-- `OnboardingBonusStep`: Integration with signup flow
+- `WelcomeBonusAchievement`: Display bonus progress and claim button
+- `BonusProgressBar`: Show cashback earned toward threshold
+- `BonusClaimModal`: Handle bonus claiming flow
+- `OnboardingBonusExplanation`: Explain achievement system to new users
+- `BonusCountdown`: Show expiration timer for claimable bonus
 
 #### Pages/Routes
 
-- `/bonus/welcome`: Dedicated bonus explanation page
-- Integration with `/signup` and `/verify-email` flows
-- Bonus section in `/account/dashboard`
+- `/bonus/welcome`: Dedicated bonus achievement explanation page
+- Integration with `/signup` and onboarding flows
+- Enhanced bonus progress section in `/account/dashboard`
+- `/bonus/claim`: Bonus claiming confirmation page
 
 #### State Management
 
-- Bonus status tracking in user context
-- Real-time balance updates
-- Expiration countdown management
+- Bonus achievement status and progress tracking in user context
+- Real-time cashback earnings updates toward threshold
+- Wallet balance updates upon bonus claiming
+- Achievement unlock notifications
 
 ### Backend Implementation (my-service)
 
 #### Database Schema
 
 ```sql
-CREATE TABLE user_bonuses (
+-- Welcome Bonus Achievement Tracking
+CREATE TABLE user_welcome_bonuses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id),
-  bonus_type bonus_type_enum NOT NULL DEFAULT 'welcome',
-  amount DECIMAL(10,2) NOT NULL,
-  currency VARCHAR(3) NOT NULL DEFAULT 'USD',
+  bonus_amount DECIMAL(10,2) NOT NULL,
+  currency_id currency_enum NOT NULL,
+  threshold_amount DECIMAL(10,2) NOT NULL, -- Amount user must earn to claim
+  earned_amount DECIMAL(10,2) DEFAULT 0,   -- Current cashback earned
   granted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  eligible_at TIMESTAMP WITH TIME ZONE,    -- When threshold was reached
+  claimed_at TIMESTAMP WITH TIME ZONE,     -- When bonus was claimed
   expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-  used_at TIMESTAMP WITH TIME ZONE,
-  status bonus_status_enum NOT NULL DEFAULT 'active',
+  status welcome_bonus_status_enum NOT NULL DEFAULT 'active',
   source_ip INET,
   device_fingerprint VARCHAR(255),
+  wallet_transaction_id UUID REFERENCES wallet_transactions(id), -- Link to wallet credit
   notes TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TYPE bonus_type_enum AS ENUM ('welcome', 'referral', 'promotional');
-CREATE TYPE bonus_status_enum AS ENUM ('active', 'used', 'expired', 'revoked');
+-- Site configuration for bonus settings
+CREATE TABLE site_bonus_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  bonus_amount DECIMAL(10,2) NOT NULL DEFAULT 5.00,
+  currency_id currency_enum NOT NULL,
+  expiration_days INTEGER NOT NULL DEFAULT 180, -- 6 months default
+  enabled BOOLEAN NOT NULL DEFAULT true,
+  fraud_detection_enabled BOOLEAN NOT NULL DEFAULT true,
+  max_daily_grants INTEGER DEFAULT 1000,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE INDEX idx_user_bonuses_user_id ON user_bonuses(user_id);
-CREATE INDEX idx_user_bonuses_status ON user_bonuses(status);
-CREATE INDEX idx_user_bonuses_expires_at ON user_bonuses(expires_at);
+CREATE TYPE welcome_bonus_status_enum AS ENUM ('active', 'eligible', 'claimed', 'expired', 'revoked');
+
+-- Indexes for performance
+CREATE INDEX idx_user_welcome_bonuses_user_id ON user_welcome_bonuses(user_id);
+CREATE INDEX idx_user_welcome_bonuses_status ON user_welcome_bonuses(status);
+CREATE INDEX idx_user_welcome_bonuses_expires_at ON user_welcome_bonuses(expires_at);
+CREATE UNIQUE INDEX idx_user_welcome_bonuses_one_per_user ON user_welcome_bonuses(user_id) WHERE status != 'revoked';
 ```
 
 #### API Endpoints
 
-- `POST /api/bonuses/welcome`: Grant welcome bonus
-- `GET /api/bonuses/user/:userId`: Retrieve user bonuses
-- `PUT /api/bonuses/:bonusId/use`: Apply bonus to purchase
-- `POST /api/admin/bonuses/config`: Update bonus configuration
+- `POST /api/bonuses/welcome/create`: Initialize welcome bonus for new user
+- `GET /api/bonuses/welcome/status/:userId`: Get user's welcome bonus status and progress
+- `POST /api/bonuses/welcome/claim`: Claim bonus when threshold reached (creates wallet credit)
+- `PUT /api/bonuses/welcome/progress`: Update earned amount (called when user earns cashback)
+- `GET /api/admin/bonuses/config`: Get current bonus configuration
+- `PUT /api/admin/bonuses/config`: Update bonus settings (amount, currency, expiration)
+- `GET /api/admin/bonuses/analytics`: Bonus program analytics and metrics
 
 #### Services Required
 
-- `BonusService`: Core bonus management logic
+- `WelcomeBonusService`: Core achievement-based bonus logic
+- `WalletService`: Integration for bonus claims and transaction logging
+- `CashbackTrackingService`: Monitor user earnings toward bonus threshold
 - `FraudPreventionService`: Abuse detection and prevention
-- `EmailService`: Bonus-related notifications
-- `AnalyticsService`: Bonus usage tracking
+- `EmailService`: Bonus-related notifications and achievement alerts
+- `AnalyticsService`: Achievement and claim tracking
 
 ### Integration Requirements
 
 #### Email Service Integration
 
-- Welcome bonus confirmation email
-- Expiration reminder emails (7-day, 1-day)
-- Bonus usage confirmation
+- Welcome bonus achievement announcement email
+- Progress milestone notifications (25%, 50%, 75% toward threshold)
+- Bonus unlock celebration email when threshold reached
+- Expiration reminder emails (30-day, 7-day before expiration)
+- Bonus claim confirmation email
 - Email template management
 
 #### Analytics Integration
@@ -217,12 +254,22 @@ CREATE INDEX idx_user_bonuses_expires_at ON user_bonuses(expires_at);
 - Fraud attempt logging
 - A/B testing capability for bonus amounts
 
+#### Wallet System Integration
+
+- Direct wallet credit when bonus is claimed
+- Wallet transaction log entries for audit trail
+- Integration with existing wallet balance displays
+- Real-time balance updates across all interfaces
+- Wallet transaction categorization (bonus credit)
+- Support for multi-currency wallet systems
+
 #### Payment System Integration
 
-- Bonus application during checkout
-- Balance calculation and display
-- Refund handling for bonus portions
-- Financial reconciliation
+- Integration with cashback earning tracking
+- Real-time cashback accumulation toward bonus threshold
+- No payment processing required (direct wallet credit)
+- Financial reconciliation for bonus credits
+- Audit trail integration with existing financial systems
 
 ### Security & Compliance
 
@@ -268,8 +315,8 @@ CREATE INDEX idx_user_bonuses_expires_at ON user_bonuses(expires_at);
 
 - **Bonus Amount Testing**: $3, $5, $10, $15 variants
 - **Messaging Testing**: Different value propositions and CTAs
-- **Timing Testing**: Immediate vs. delayed bonus grant
-- **Expiration Testing**: 15-day, 30-day, 60-day expiration periods
+- **Threshold Testing**: Different earning requirements (50%, 100%, 150% of bonus amount)
+- **Expiration Testing**: 3-month, 6-month, 12-month expiration periods
 
 ## Implementation Timeline
 
