@@ -1,0 +1,305 @@
+name: Security Audit (DISABLED)
+
+on:
+  # Disabled - uncomment the lines below to re-enable
+  # schedule:
+  #   # Run security audit every Monday at 9 AM UTC
+  #   - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      scan_type:
+        description: 'Type of security scan to run'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - dependencies
+          - containers
+          - secrets
+
+concurrency:
+  group: security-audit
+  cancel-in-progress: false
+
+jobs:
+  # Dependency vulnerability scanning
+  dependency-audit:
+    if: github.event.inputs.scan_type == 'dependencies' || github.event.inputs.scan_type == 'full' || github.event.schedule
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [my-service, my-web, mint-ui]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Install dependencies
+        working-directory: ./${{ matrix.project }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Run dependency audit
+        working-directory: ./${{ matrix.project }}
+        run: |
+          echo "🔍 Running dependency audit for ${{ matrix.project }}"
+          pnpm audit --audit-level moderate --json > audit-${{ matrix.project }}.json || true
+
+          # Check if there are any vulnerabilities
+          if [ -s audit-${{ matrix.project }}.json ] && [ "$(cat audit-${{ matrix.project }}.json)" != "{}" ]; then
+            echo "⚠️ Vulnerabilities found in ${{ matrix.project }}"
+            pnpm audit --audit-level moderate
+            exit 1
+          else
+            echo "✅ No vulnerabilities found in ${{ matrix.project }}"
+          fi
+
+  # Container security scanning
+  container-security:
+    if: github.event.inputs.scan_type == 'containers' || github.event.inputs.scan_type == 'full' || github.event.schedule
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image (my-service)
+        working-directory: ./my-service
+        run: |
+          docker build -t my-service-security-scan .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'my-service-security-scan'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Fail on high/critical vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'my-service-security-scan'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: 1
+
+  # Secret scanning
+  secret-scan:
+    if: github.event.inputs.scan_type == 'secrets' || github.event.inputs.scan_type == 'full' || github.event.schedule
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run TruffleHog secret scanner
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+  # SAST (Static Application Security Testing)
+  sast-analysis:
+    if: github.event.inputs.scan_type == 'full' || github.event.schedule
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript,typescript
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:security-audit'
+
+  # License compliance check
+  license-check:
+    if: github.event.inputs.scan_type == 'full' || github.event.schedule
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        project: [my-service, my-web, mint-ui]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Install license checker
+        run: npm install -g license-checker
+
+      - name: Install dependencies
+        working-directory: ./${{ matrix.project }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Check licenses
+        working-directory: ./${{ matrix.project }}
+        run: |
+          echo "📄 Checking licenses for ${{ matrix.project }}"
+          license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;CC0-1.0;Unlicense' \
+            --excludePrivatePackages \
+            --json > licenses-${{ matrix.project }}.json
+
+          echo "✅ License check passed for ${{ matrix.project }}"
+
+  # Infrastructure security check
+  infrastructure-security:
+    if: github.event.inputs.scan_type == 'full' || github.event.schedule
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Checkov static analysis
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: .
+          framework: dockerfile,github_actions
+          output_format: sarif
+          output_file_path: checkov-results.sarif
+
+      - name: Upload Checkov scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: checkov-results.sarif
+
+  # Generate security report
+  security-report:
+    needs:
+      [
+        dependency-audit,
+        container-security,
+        secret-scan,
+        sast-analysis,
+        license-check,
+        infrastructure-security,
+      ]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate security summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const results = {
+              'Dependency Audit': '${{ needs.dependency-audit.result }}',
+              'Container Security': '${{ needs.container-security.result }}',
+              'Secret Scan': '${{ needs.secret-scan.result }}',
+              'SAST Analysis': '${{ needs.sast-analysis.result }}',
+              'License Check': '${{ needs.license-check.result }}',
+              'Infrastructure Security': '${{ needs.infrastructure-security.result }}'
+            };
+
+            const statusEmoji = {
+              'success': '✅',
+              'failure': '❌',
+              'cancelled': '⚠️',
+              'skipped': '⏭️'
+            };
+
+            let summary = '## 🔒 Security Audit Report\n\n';
+            summary += `**Scan Date**: ${new Date().toISOString()}\n`;
+            summary += `**Triggered by**: ${context.actor}\n`;
+            summary += `**Repository**: ${context.repo.owner}/${context.repo.repo}\n\n`;
+
+            let hasFailures = false;
+            let hasWarnings = false;
+
+            for (const [check, result] of Object.entries(results)) {
+              if (result !== 'skipped') {
+                summary += `${statusEmoji[result] || '❓'} **${check}**: ${result}\n`;
+                if (result === 'failure') hasFailures = true;
+                if (result === 'cancelled') hasWarnings = true;
+              }
+            }
+
+            summary += '\n---\n';
+
+            if (hasFailures) {
+              summary += '🚨 **Action Required**: Critical security issues found. Please review and address immediately.\n';
+            } else if (hasWarnings) {
+              summary += '⚠️ **Attention**: Some security checks were cancelled or incomplete.\n';
+            } else {
+              summary += '🎉 **All Clear**: No critical security issues detected.\n';
+            }
+
+            summary += '\n### Next Steps\n';
+            summary += '- Review detailed results in the Security tab\n';
+            summary += '- Address any high/critical vulnerabilities\n';
+            summary += '- Update dependencies if needed\n';
+            summary += '- Consider implementing additional security measures\n';
+
+            console.log(summary);
+            core.summary.addRaw(summary);
+            await core.summary.write();
+
+            // Create or update security issue if failures exist
+            if (hasFailures) {
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: 'security,automated',
+                state: 'open'
+              });
+              
+              const issueBody = `${summary}\n\n*This issue was automatically created by the security audit workflow.*`;
+              
+              if (issues.length === 0) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: '🔒 Security Audit Failed - Action Required',
+                  body: issueBody,
+                  labels: ['security', 'automated', 'priority-high']
+                });
+              } else {
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issues[0].number,
+                  body: issueBody
+                });
+              }
+            }

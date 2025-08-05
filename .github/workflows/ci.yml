@@ -1,0 +1,301 @@
+# name: CI/CD Pipeline
+
+# on:
+#   push:
+#     branches: [main, develop]
+#     paths:
+#       - 'my-service/**'
+#       - 'my-web/**'
+#       - 'mint-ui/**'
+#       - 'my-functions/**'
+#       - '.github/workflows/**'
+#   pull_request:
+#     branches: [main, develop]
+#     paths:
+#       - 'my-service/**'
+#       - 'my-web/**'
+#       - 'mint-ui/**'
+#       - 'my-functions/**'
+#       - '.github/workflows/**'
+
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
+
+# jobs:
+#   # Detect changes to determine which services to build/test
+#   changes:
+#     runs-on: ubuntu-latest
+#     outputs:
+#       my-service: ${{ steps.changes.outputs.my-service }}
+#       my-web: ${{ steps.changes.outputs.my-web }}
+#       mint-ui: ${{ steps.changes.outputs.mint-ui }}
+#       my-functions: ${{ steps.changes.outputs.my-functions }}
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - uses: dorny/paths-filter@v3
+#         id: changes
+#         with:
+#           filters: |
+#             my-service:
+#               - 'my-service/**'
+#             my-web:
+#               - 'my-web/**'
+#             mint-ui:
+#               - 'mint-ui/**'
+#             my-functions:
+#               - 'my-functions/**'
+
+#   # Lint and test mint-ui (dependency for my-web)
+#   mint-ui:
+#     needs: changes
+#     if: needs.changes.outputs.mint-ui == 'true' || needs.changes.outputs.my-web == 'true'
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: latest
+
+#       - name: Install dependencies
+#         working-directory: ./mint-ui
+#         run: pnpm install --frozen-lockfile
+
+#       - name: Lint
+#         working-directory: ./mint-ui
+#         run: pnpm lint
+
+#       - name: Build
+#         working-directory: ./mint-ui
+#         run: pnpm build
+
+#       - name: Build Storybook
+#         working-directory: ./mint-ui
+#         run: pnpm build-storybook
+
+#   # Test and build my-service (NestJS backend)
+#   my-service:
+#     needs: changes
+#     if: needs.changes.outputs.my-service == 'true'
+#     runs-on: ubuntu-latest
+
+#     services:
+#       postgres:
+#         image: postgres:15
+#         env:
+#           POSTGRES_DB: test
+#           POSTGRES_USER: test
+#           POSTGRES_PASSWORD: test
+#         options: >-
+#           --health-cmd pg_isready
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+#         ports:
+#           - 5432:5432
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: latest
+
+#       - name: Install dependencies
+#         working-directory: ./my-service
+#         run: pnpm install --frozen-lockfile
+
+#       - name: Generate Prisma client
+#         working-directory: ./my-service
+#         run: pnpm gen:prisma
+#         env:
+#           DATABASE_URL: postgresql://test:test@localhost:5432/test
+
+#       - name: Run database migrations
+#         working-directory: ./my-service
+#         run: pnpm prisma migrate deploy
+#         env:
+#           DATABASE_URL: postgresql://test:test@localhost:5432/test
+
+#       - name: Lint
+#         working-directory: ./my-service
+#         run: pnpm lint
+
+#       - name: Run tests
+#         working-directory: ./my-service
+#         run: pnpm test
+#         env:
+#           DATABASE_URL: postgresql://test:test@localhost:5432/test
+
+#       - name: Build
+#         working-directory: ./my-service
+#         run: pnpm build
+
+#   # Test and build my-web (Next.js frontend)
+#   my-web:
+#     needs: [changes, mint-ui]
+#     if: always() && needs.changes.outputs.my-web == 'true' && (needs.mint-ui.result == 'success' || needs.mint-ui.result == 'skipped')
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: latest
+
+#       - name: Install dependencies
+#         working-directory: ./my-web
+#         run: pnpm install --frozen-lockfile
+
+#       - name: Generate GraphQL types
+#         working-directory: ./my-web
+#         run: pnpm gen:graphql
+
+#       - name: Lint
+#         working-directory: ./my-web
+#         run: pnpm lint
+
+#       - name: Build
+#         working-directory: ./my-web
+#         run: pnpm build
+#         env:
+#           # Disable telemetry for CI
+#           NEXT_TELEMETRY_DISABLED: 1
+
+#   # Test and build my-functions (AWS Lambda)
+#   my-functions:
+#     needs: changes
+#     if: needs.changes.outputs.my-functions == 'true'
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Setup Python (for SAM CLI)
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.11'
+
+#       - name: Setup SAM CLI
+#         uses: aws-actions/setup-sam@v2
+#         with:
+#           use-installer: true
+
+#       - name: Validate SAM template
+#         working-directory: ./my-functions
+#         run: sam validate
+
+#       - name: Build with SAM
+#         working-directory: ./my-functions
+#         run: sam build
+
+#       # Test individual Lambda functions
+#       - name: Test Lambda functions
+#         working-directory: ./my-functions
+#         run: |
+#           for func_dir in functions/*/; do
+#             if [ -f "$func_dir/package.json" ]; then
+#               echo "Testing function in $func_dir"
+#               cd "$func_dir"
+#               npm install
+#               npm run lint || echo "No lint script found"
+#               npm test || echo "No test script found"
+#               npm run compile || echo "No compile script found"
+#               cd - > /dev/null
+#             fi
+#           done
+
+#   # Security and quality checks
+#   security:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Run Trivy vulnerability scanner
+#         uses: aquasecurity/trivy-action@master
+#         with:
+#           scan-type: 'fs'
+#           scan-ref: '.'
+#           format: 'sarif'
+#           output: 'trivy-results.sarif'
+
+#       - name: Upload Trivy scan results to GitHub Security tab
+#         uses: github/codeql-action/upload-sarif@v3
+#         if: always()
+#         with:
+#           sarif_file: 'trivy-results.sarif'
+
+#   # CodeQL analysis for security
+#   codeql:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       actions: read
+#       contents: read
+#       security-events: write
+
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         language: ['javascript', 'typescript']
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Initialize CodeQL
+#         uses: github/codeql-action/init@v3
+#         with:
+#           languages: ${{ matrix.language }}
+
+#       - name: Autobuild
+#         uses: github/codeql-action/autobuild@v3
+
+#       - name: Perform CodeQL Analysis
+#         uses: github/codeql-action/analyze@v3
+#         with:
+#           category: '/language:${{matrix.language}}'
+
+#   # Deployment preparation (runs only on main branch)
+#   deploy-prep:
+#     needs: [my-service, my-web, mint-ui, my-functions, security]
+#     if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push'
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Deployment readiness check
+#         run: |
+#           echo "All services built successfully!"
+#           echo "Ready for deployment to production environments"
+
+#       # Future deployment steps would go here
+#       # - Deploy to staging
+#       # - Run integration tests
+#       # - Deploy to production

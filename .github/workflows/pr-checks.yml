@@ -1,0 +1,230 @@
+# name: PR Checks
+
+# on:
+#   pull_request:
+#     branches: [main, develop]
+
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+#   cancel-in-progress: true
+
+# jobs:
+#   # Quick validation and formatting checks
+#   quick-checks:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: latest
+
+#       # Check formatting for all projects
+#       - name: Check formatting (my-service)
+#         if: contains(github.event.pull_request.changed_files, 'my-service/')
+#         working-directory: ./my-service
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm format:check || (echo "Code formatting issues found in my-service. Run 'pnpm format' to fix." && exit 1)
+
+#       - name: Check formatting (my-web)
+#         if: contains(github.event.pull_request.changed_files, 'my-web/')
+#         working-directory: ./my-web
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm format:check || (echo "Code formatting issues found in my-web. Run 'pnpm format' to fix." && exit 1)
+
+#       - name: Check formatting (mint-ui)
+#         if: contains(github.event.pull_request.changed_files, 'mint-ui/')
+#         working-directory: ./mint-ui
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm format:check || (echo "Code formatting issues found in mint-ui. Run 'pnpm format' to fix." && exit 1)
+
+#   # Type checking
+#   type-check:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: latest
+
+#       - name: Type check (my-service)
+#         if: contains(github.event.pull_request.changed_files, 'my-service/')
+#         working-directory: ./my-service
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm gen:prisma
+#           pnpm type-check
+
+#       - name: Type check (my-web)
+#         if: contains(github.event.pull_request.changed_files, 'my-web/')
+#         working-directory: ./my-web
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm gen:graphql
+#           pnpm type-check
+
+#       - name: Type check (mint-ui)
+#         if: contains(github.event.pull_request.changed_files, 'mint-ui/')
+#         working-directory: ./mint-ui
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm type-check
+
+#   # PR title and description validation
+#   pr-validation:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Validate PR title
+#         uses: amannn/action-semantic-pull-request@v5
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+#           # Require conventional commit format
+#           types: |
+#             feat
+#             fix
+#             docs
+#             style
+#             refactor
+#             perf
+#             test
+#             build
+#             ci
+#             chore
+#           scopes: |
+#             bonus
+#             my-service
+#             my-web
+#             mint-ui
+#             my-functions
+#             ci
+#             docs
+#           requireScope: false
+#           disallowScopes: |
+#             release
+#           subjectPattern: ^(?![A-Z]).+$
+#           subjectPatternError: |
+#             The subject "{subject}" found in the pull request title "{title}"
+#             didn't match the configured pattern. Please ensure that the subject
+#             doesn't start with an uppercase character.
+
+#       - name: Check PR description
+#         uses: actions/github-script@v7
+#         with:
+#           script: |
+#             const pr = context.payload.pull_request;
+#             if (!pr.body || pr.body.trim().length < 20) {
+#               core.setFailed('PR description is too short. Please provide a meaningful description of your changes.');
+#             }
+
+#   # Dependency security check
+#   security-check:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
+
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v4
+#         with:
+#           version: latest
+
+#       - name: Audit dependencies (my-service)
+#         if: contains(github.event.pull_request.changed_files, 'my-service/')
+#         working-directory: ./my-service
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm audit --audit-level moderate
+
+#       - name: Audit dependencies (my-web)
+#         if: contains(github.event.pull_request.changed_files, 'my-web/')
+#         working-directory: ./my-web
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm audit --audit-level moderate
+
+#       - name: Audit dependencies (mint-ui)
+#         if: contains(github.event.pull_request.changed_files, 'mint-ui/')
+#         working-directory: ./mint-ui
+#         run: |
+#           pnpm install --frozen-lockfile
+#           pnpm audit --audit-level moderate
+
+#   # Comment with build/test results
+#   comment-results:
+#     needs: [quick-checks, type-check, pr-validation, security-check]
+#     if: always()
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Comment PR
+#         uses: actions/github-script@v7
+#         with:
+#           script: |
+#             const { data: comments } = await github.rest.issues.listComments({
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               issue_number: context.issue.number,
+#             });
+
+#             const botComment = comments.find(comment =>
+#               comment.user.login === 'github-actions[bot]' &&
+#               comment.body.includes('## PR Checks Results')
+#             );
+
+#             const results = {
+#               'Quick Checks': '${{ needs.quick-checks.result }}',
+#               'Type Check': '${{ needs.type-check.result }}',
+#               'PR Validation': '${{ needs.pr-validation.result }}',
+#               'Security Check': '${{ needs.security-check.result }}'
+#             };
+
+#             const statusEmoji = {
+#               'success': '✅',
+#               'failure': '❌',
+#               'cancelled': '⚠️',
+#               'skipped': '⏭️'
+#             };
+
+#             let body = '## PR Checks Results\n\n';
+#             for (const [check, result] of Object.entries(results)) {
+#               body += `${statusEmoji[result] || '❓'} **${check}**: ${result}\n`;
+#             }
+
+#             body += '\n---\n';
+#             body += '*This comment is automatically updated by the CI system.*';
+
+#             if (botComment) {
+#               await github.rest.issues.updateComment({
+#                 owner: context.repo.owner,
+#                 repo: context.repo.repo,
+#                 comment_id: botComment.id,
+#                 body: body
+#               });
+#             } else {
+#               await github.rest.issues.createComment({
+#                 owner: context.repo.owner,
+#                 repo: context.repo.repo,
+#                 issue_number: context.issue.number,
+#                 body: body
+#               });
+#             }
