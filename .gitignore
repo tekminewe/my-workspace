@@ -29,6 +29,8 @@ node_modules/
 # But allow example files to be committed
 !.vscode/mcp.json.example
 
+.vscode
+
 # Task files
 # tasks.json
 # tasks/ 

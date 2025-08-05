@@ -1,0 +1,288 @@
+{
+  "formatVersion": "1.0",
+  "projectName": "My Workspace - Welcome Bonus System",
+  "description": "Implementation of the Welcome Bonus System feature",
+  "tags": {
+    "master": {
+      "name": "master",
+      "description": "Main development tasks for Welcome Bonus System",
+      "createdAt": "2025-08-05T00:00:00.000Z",
+      "tasks": []
+    }
+  },
+  "currentTag": "master",
+  "metadata": {
+    "lastGenerated": "2025-08-05T00:00:00.000Z",
+    "version": "1.0"
+  },
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Setup Project Repository",
+        "description": "Initialize the project repository and configure the development environment.",
+        "details": "Create a new GitHub repository for the Welcome Bonus System. Set up the project structure with separate directories for frontend and backend. Initialize package managers (npm/yarn) and install necessary dependencies. Configure ESLint, Prettier, and TypeScript for code quality and consistency.",
+        "testStrategy": "Verify that the repository is accessible and all initial configurations are correctly set up. Ensure that the project builds without errors.",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Implement Welcome Bonus Backend Logic",
+        "description": "Develop the backend logic for managing welcome bonuses, including creation, eligibility, and claiming processes.",
+        "details": "Create a new service in the backend to handle welcome bonus logic. Implement functions for creating bonuses, checking eligibility, and processing claims. Use Prisma for database interactions and ensure data integrity. Implement fraud prevention measures such as device fingerprinting and email validation.",
+        "testStrategy": "Write unit tests for each function in the welcome bonus service. Use mock data to simulate different scenarios and validate the logic.",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Bonus Logic",
+            "description": "Develop the logic for creating welcome bonuses in the backend.",
+            "dependencies": [],
+            "details": "Implement functions to define and create new welcome bonuses. Ensure the logic is flexible to accommodate different bonus structures.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Eligibility Checks",
+            "description": "Implement eligibility checks for users to qualify for welcome bonuses.",
+            "dependencies": [
+              "2.1"
+            ],
+            "details": "Develop functions to verify user eligibility based on predefined criteria. Ensure checks are efficient and secure.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Claim Processing",
+            "description": "Handle the process of users claiming their welcome bonuses.",
+            "dependencies": [
+              "2.2"
+            ],
+            "details": "Create functions to manage the claiming process, ensuring bonuses are awarded correctly and logged in the system.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Database Integration",
+            "description": "Integrate the welcome bonus logic with the database using Prisma.",
+            "dependencies": [
+              "2.1",
+              "2.2",
+              "2.3"
+            ],
+            "details": "Use Prisma to interact with the database, ensuring data integrity and consistency across all operations.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Fraud Prevention",
+            "description": "Implement fraud prevention measures for the welcome bonus system.",
+            "dependencies": [
+              "2.1",
+              "2.2",
+              "2.3",
+              "2.4"
+            ],
+            "details": "Incorporate device fingerprinting and email validation to prevent fraudulent activities. Ensure robust security protocols are in place.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Design GraphQL API for Welcome Bonus",
+        "description": "Create GraphQL API endpoints for managing welcome bonuses, including queries and mutations.",
+        "details": "Define GraphQL schema for welcome bonuses, including types, queries, and mutations. Implement resolvers for each operation, ensuring proper authentication and authorization. Integrate with the existing backend services to fetch and update data.",
+        "testStrategy": "Test each GraphQL endpoint using a tool like Postman or GraphQL Playground. Validate that the API returns correct data and handles errors gracefully.",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Define GraphQL Schema",
+            "description": "Create the GraphQL schema for welcome bonuses, including types, queries, and mutations.",
+            "dependencies": [],
+            "details": "Design the schema to include all necessary fields for managing welcome bonuses. Define types for bonus details, queries for retrieving bonuses, and mutations for creating and updating bonuses.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Implement Resolvers",
+            "description": "Develop resolvers for the GraphQL operations defined in the schema.",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Implement resolver functions for each query and mutation in the schema. Ensure they interact correctly with the backend logic to fetch and update data.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Implement Authentication and Authorization",
+            "description": "Ensure proper authentication and authorization for accessing GraphQL endpoints.",
+            "dependencies": [
+              "3.2"
+            ],
+            "details": "Integrate authentication mechanisms to verify user identity. Implement authorization checks to ensure users have the correct permissions to perform operations.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Integrate with Backend Services",
+            "description": "Connect the GraphQL API with existing backend services to manage welcome bonuses.",
+            "dependencies": [
+              "3.2"
+            ],
+            "details": "Ensure the resolvers correctly call backend services to fetch and update bonus data. Handle any necessary data transformations between the API and backend services.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Develop Frontend Components for Bonus Display",
+        "description": "Build React components to display welcome bonus information and progress to users.",
+        "details": "Create components such as WelcomeBonusAchievement, BonusProgressBar, and BonusClaimModal. Use the Mint UI library for consistent styling. Ensure components are responsive and accessible. Integrate with the GraphQL API to fetch and display real-time data.",
+        "testStrategy": "Perform manual testing on different devices and screen sizes. Ensure components render correctly and update in real-time based on API data.",
+        "priority": "medium",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Implement Notification System",
+        "description": "Develop an in-app notification system to inform users about bonus-related updates.",
+        "details": "Create a notification center component accessible from the main navigation. Implement logic to fetch and display notifications using the GraphQL API. Ensure notifications are marked as read when clicked and persist across sessions.",
+        "testStrategy": "Test the notification system by simulating different notification scenarios. Verify that notifications appear correctly and are marked as read when interacted with.",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Integrate Email Notification System",
+        "description": "Set up email notifications for welcome bonus events using Mailgun.",
+        "details": "Configure Mailgun for sending emails. Develop email templates for different bonus events (granted, eligible, claimed). Integrate with the backend to trigger emails based on user actions and bonus status changes.",
+        "testStrategy": "Send test emails for each event type and verify that they are received with correct content and formatting. Check for any delivery issues or errors.",
+        "priority": "medium",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Setup Admin Configuration Interface",
+        "description": "Create an admin interface to configure welcome bonus parameters and monitor usage.",
+        "details": "Develop a web interface for administrators to set bonus amounts, enable/disable the program, and adjust fraud prevention settings. Use React for the frontend and integrate with the backend API for data management.",
+        "testStrategy": "Test the admin interface by changing configuration settings and verifying that they are applied correctly. Ensure that only authorized users can access the admin panel.",
+        "priority": "medium",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Conduct Comprehensive Testing and Optimization",
+        "description": "Perform thorough testing and optimization of the entire Welcome Bonus System before launch.",
+        "details": "Conduct unit, integration, and end-to-end testing across all components. Optimize performance and ensure security measures are in place. Prepare documentation and training materials for the support team.",
+        "testStrategy": "Use automated testing tools to cover all test cases. Perform load testing to ensure the system can handle expected traffic. Conduct a security audit to identify and fix vulnerabilities.",
+        "priority": "high",
+        "dependencies": [
+          5,
+          6,
+          7
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Unit Testing",
+            "description": "Conduct unit testing for individual components of the Welcome Bonus System.",
+            "dependencies": [],
+            "details": "Develop unit tests for each function and component in the system using a testing framework like Jest or Mocha. Ensure all edge cases are covered.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 2,
+            "title": "Integration Testing",
+            "description": "Perform integration testing to ensure components work together as expected.",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Test the interaction between different modules and services, including the backend logic, GraphQL API, and notification system. Use tools like Postman for API testing.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 3,
+            "title": "Performance Optimization",
+            "description": "Optimize the performance of the Welcome Bonus System to handle expected traffic.",
+            "dependencies": [
+              "8.2"
+            ],
+            "details": "Conduct load testing using tools like JMeter. Identify bottlenecks and optimize database queries, API responses, and frontend performance.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 4,
+            "title": "Security Audit",
+            "description": "Conduct a security audit to identify and fix vulnerabilities in the system.",
+            "dependencies": [
+              "8.2"
+            ],
+            "details": "Perform a comprehensive security review, including penetration testing and code analysis. Ensure compliance with security best practices and fix any identified issues.",
+            "status": "pending",
+            "testStrategy": ""
+          },
+          {
+            "id": 5,
+            "title": "Documentation Preparation",
+            "description": "Prepare documentation and training materials for the Welcome Bonus System.",
+            "dependencies": [
+              "8.3",
+              "8.4"
+            ],
+            "details": "Create detailed documentation covering system architecture, API usage, and user guides. Develop training materials for the support team to handle common issues.",
+            "status": "pending",
+            "testStrategy": ""
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-05T08:41:48.713Z",
+      "updated": "2025-08-05T08:45:56.502Z",
+      "description": "Tasks for master context"
+    }
+  }
+}

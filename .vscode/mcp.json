@@ -29,7 +29,9 @@
         "task-master-ai"
       ],
       "env": {
-        "OPENAI_API_KEY": "${input:openai-key}"
+        "OPENAI_API_KEY": "${input:openai-key}",
+        "ANTHROPIC_API_KEY": "${input:anthropic-key}",
+        "PERPLEXITY_API_KEY": "${input:perplexity-key}"
       }
     },
     "github": {
