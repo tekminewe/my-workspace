@@ -38,7 +38,7 @@
         "dependencies": [
           1
         ],
-        "status": "pending",
+        "status": "in-progress",
         "subtasks": [
           {
             "id": 1,
@@ -46,7 +46,7 @@
             "description": "Develop the logic for creating welcome bonuses in the backend.",
             "dependencies": [],
             "details": "Implement functions to define and create new welcome bonuses. Ensure the logic is flexible to accommodate different bonus structures.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -56,8 +56,8 @@
             "dependencies": [
               "2.1"
             ],
-            "details": "Develop functions to verify user eligibility based on predefined criteria. Ensure checks are efficient and secure.",
-            "status": "pending",
+            "details": "Develop functions to verify user eligibility based on predefined criteria. Ensure checks are efficient and secure.\n<info added on 2025-08-05T09:21:56.123Z>\nSuccessfully implemented comprehensive eligibility checks for the welcome bonus system. Created WelcomeBonusEligibilityService with 7 distinct rules:\n\n1. No Existing Bonus - Ensures user doesn't already have a welcome bonus\n2. Welcome Bonus Enabled - Checks if feature is enabled for the site\n3. Daily Grant Limit - Prevents exceeding daily bonus grants\n4. User Account Age - Prevents immediate bonus farming (1-minute minimum age)\n5. IP Address Fraud Check - Limits bonuses per IP (max 3 per 24h)\n6. Device Fraud Check - Limits bonuses per device fingerprint (max 2 per 24h)\n7. User Status Check - Validates user account status and optional email verification\n\nFeatures implemented:\n- Detailed eligibility checking with rule-by-rule results\n- Simple eligibility checking for backward compatibility\n- Comprehensive fraud prevention measures\n- Configurable settings per site\n- Full test coverage (8 passing tests)\n- Clean separation of concerns with dedicated eligibility service\n- Integration with main WelcomeBonusService\n\nAll tests pass and the service is production-ready with robust fraud detection.\n</info added on 2025-08-05T09:21:56.123Z>",
+            "status": "done",
             "testStrategy": ""
           },
           {
@@ -281,7 +281,7 @@
     ],
     "metadata": {
       "created": "2025-08-05T08:41:48.713Z",
-      "updated": "2025-08-05T08:45:56.502Z",
+      "updated": "2025-08-05T09:21:14.540Z",
       "description": "Tasks for master context"
     }
   }
