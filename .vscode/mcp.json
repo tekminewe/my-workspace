@@ -34,10 +34,6 @@
         "PERPLEXITY_API_KEY": "${input:perplexity-key}"
       }
     },
-    "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/"
-    },
     "perplexity": {
       "type": "stdio",
       "command": "npx",
