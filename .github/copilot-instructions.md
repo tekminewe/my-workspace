@@ -1,84 +1,39 @@
-# Copilot Instructions for My Workspace
+# Project Overview
 
-This is a monorepo containing multiple projects. Please follow the project-specific guidelines based on the context of the request.
+This is a monorepo project for a white label single tenant configurable web application that can deploy as cashback website and potentially ecommerce website in the future in the same codebase.
 
-**For new feature development, refer to the comprehensive workflow in `.github/prompts/new-feature.prompt.md`**
+## Features
 
-## Rule Management and Conflict Resolution
+### Cashback Website
 
-### When to Ask for Rule Updates
-
-If you ask me to do something that could be beneficial as a general rule but isn't currently documented in these instructions, I will:
-
-1. **Suggest the new rule**: Explain what the new rule would be and why it would be beneficial
-2. **Ask for permission**: Request confirmation before adding it to the instructions
-3. **Provide context**: Explain how this rule would improve consistency, quality, or efficiency across the workspace
-
-**Example**: "I notice you're asking me to always add error boundaries to React components. This seems like a good practice that could be added as a rule. Should I update the instructions to include 'Always wrap components with error boundaries for better error handling'?"
-
-### When to Challenge Conflicting Requests
-
-If you ask me to do something that conflicts with or doesn't comply with the existing rules, I will:
-
-1. **Point out the conflict**: Clearly explain which rule(s) would be violated
-2. **Suggest alternatives**: Offer compliant approaches that achieve your goal
-3. **Ask for clarification**: Determine if you want to proceed anyway or update the rules
-
-**Example**: "You're asking me to use default exports, but our TypeScript rules specify 'Always use named exports instead of default exports'. Would you like me to use named exports instead, or should we update this rule?"
-
-### Rule Override Protocol
-
-- **Temporary override**: If you need to break a rule for a specific case, explicitly say "override the rule" and I'll comply while noting the exception
-- **Permanent change**: If you want to change a rule permanently, ask me to update the instructions document
-
----
+- User can register and login.
+- User can search advertiser (sometimes known as Store for end user).
+- User can view the details of a selected advertiser.
+- User can click on the link in the advertiser details to visit the advertiser's website. Then, user can earn cashback by making purchases through the advertiser's website.
+- When a user makes a purchase, the advertiser system will track the transaction and calculate the cashback amount.
+- Advertiser system will callback to our application when a user's cashback is recorded in their system.
+- Advertiser system will callback to our application when a user's cashback is confirmed or rejected.
+- Once the cashback is confirmed, our application will credit the user's wallet with the cashback amount.
+- User can view their cashback balance and cashback history in their account.
+- User can withdraw their cashback balance to their bank account if they meet the minimum withdrawal amount.
+- User can view their wallet transaction history including deposits, withdrawals, and cashback transactions.
 
 ## Workspace Structure
 
 This workspace contains the following projects:
 
-- **mint-ui**: React UI library with Storybook
-- **my-service**: NestJS GraphQL API service (deploys to AWS ECS)
-- **my-web**: Next.js 15 web application (deploys to Vercel)
-- **my-functions**: AWS SAM serverless functions
-- **docs/**: Workspace documentation and guides
-- **tasks/**: Task management and tracking files
+### mint-ui
 
-## Project Management
+Generic OpenSource UI library with Storybook 9. Hosted on Github repository [mint-ui](https://github.com/tekminewe/mint-ui). Deployed to npm registry as `@tekmine/mint-ui`.
 
-### GitHub Projects
+#### Technology Stacks
 
-This workspace uses GitHub Projects for comprehensive project management and feature tracking. **Active project board is fully set up and operational.**
+- Use pnpm for package management.
+- Built with React 19 and TypeScript 5.5.3.
+- Tailwind CSS v3 for styling.
+- Visual tests with Chromatic.
 
-**🎯 Active Project Board:** [Acquisition Strategy & Feature Development](https://github.com/users/tekminewe/projects/1)
-
-**Key Features:**
-
-- **Acquisition Strategy Tracking**: 10 issues created and added to project board
-- **Phase-based Development**: Organized implementation roadmap with 4 development phases
-- **Cross-platform Coordination**: Links features across my-web, my-service, mint-ui, and my-functions
-- **Social Media Integration**: Specialized tracking for Facebook, Instagram, TikTok, and general social features
-- **Automated Setup**: Created via GitHub CLI with all issues pre-populated
-
-**Quick Reference:**
-
-- **Project Board**: https://github.com/users/tekminewe/projects/1
-- **Setup Complete**: [`docs/project-board-setup-complete.md`](../docs/project-board-setup-complete.md)
-- **Backlog Details**: [`docs/acquisition-strategy-backlog.md`](../docs/acquisition-strategy-backlog.md)
-- **Setup Automation**: [`scripts/setup-project-board.sh`](../scripts/setup-project-board.sh)
-- **Label System**: Priority, type, platform, and phase-based categorization
-- **Issue Templates**: Standardized feature requests with technical requirements
-
-## Development Commands by Project
-
-- **mint-ui**: `pnpm dev` (development), `pnpm storybook` (Storybook), `pnpm build` (build)
-- **my-service**: `pnpm dev` (development), `pnpm gen:prisma` (generate Prisma), `pnpm build` (build)
-- **my-web**: `pnpm dev` (development), `pnpm gen:graphql` (generate GraphQL types), `pnpm build` (build)
-- **my-functions**: `sam build` (build SAM functions), `sam local start-api` (local testing), individual function commands: `npm run compile`, `npm run test`, `npm run lint`
-
-## Available Mint-UI Components
-
-All components are available via `@tekminewe/mint-ui/<component>` imports. Key components include:
+#### Available Mint-UI Components
 
 **Core UI:** Avatar, Badge, Button, Card, Callout, Separator, Skeleton, Spinner  
 **Forms:** TextInput, Textarea, Select, MultiSelect, Checkbox, Switch, DateInput, SearchInput, RichTextEditor, FormLabel  
@@ -90,83 +45,501 @@ All components are available via `@tekminewe/mint-ui/<component>` imports. Key c
 **Business:** PostItem, ProductItem, ProductList  
 **Utilities:** IconButton, ThemeProvider, TailwindPlugin
 
-For complete component APIs and usage examples, refer to the Storybook documentation or component source files.
+### my-service
 
-## General Rules (All Projects)
+NestJS GraphQL API service for user end and admin end. Hosted on Github repository [my-service](https://github.com/tekminewe/my-service).For development, is is running on http://localhost:3020/graphql.
 
-### Package Management
+#### Technology Stacks
 
-- Always use `pnpm` as the package manager
-- Check `package.json` for dependencies before suggesting solutions
-- Always give answers based on the actual dependencies in package.json
-- Clean up code and files when finished
+- Use pnpm for package management.
+- Built with NestJS 9 and TypeScript 5.5.3.
+- GraphQL API using NestJS Apollo Server.
+- Apollo GraphQL Client for frontend data fetching.
+- Prisma ORM 5.20 for database access. Enhanced with Zenstack for Role Based Access Control (RBAC).
+- PostgreSQL as the database.
+- Deployed on AWS ECS.
+- Use AWS X-Ray for tracing and monitoring.
+- Use Algolia for search functionality.
+- Use mailgun.js for email sending.
+- Use AWS Cognito for authentication.
 
-### Code Quality
+### my-web
 
-- Fix TypeScript errors immediately after each iteration
-- Fix ESLint errors immediately after each iteration
-- Fix Prettier errors immediately after each iteration
-- Never use `any` type - always use specific types or interfaces
-- Always use object destructuring for function parameters
-- Do not break existing functionality
+Next.js 15 web application with App Router. Contains both user end and admin end. Hosted on Github repository [my-web](https://github.com/tekminewe/my-web).
 
-**TypeScript Error Prevention and Resolution:**
+#### Technology Stacks
 
-- **Meta Object Configuration**: When creating Storybook stories with individual stories (not AllVariants), remove `component` property from meta to avoid TypeScript conflicts
-- **Story Type Safety**: Use `satisfies Meta` instead of `satisfies Meta<typeof ComponentName>` for individual stories
-- **File Validation**: Always use `get_errors` tool after significant file changes to catch TypeScript issues early
-- **Incremental Testing**: Test TypeScript compilation after each major change rather than waiting until the end
-- **Component Import Consistency**: Ensure all imported components in stories match actual component exports and interfaces
+- Use pnpm for package management.
+- Built with Next.js 15 and TypeScript 5.5.3.
+- Tailwind CSS v3 for styling.
+- Use mint-ui as the UI library.
+- Use Apollo Client for GraphQL data fetching.
+- Use React Hook Form for form handling.
+- Use next-auth and AWS Cognito Managed Login for authentication. AWS Cognito Managed Login takes care of user management, including sign-up, sign-in, and password recovery.
+
+### my-functions
+
+AWS SAM serverless functions for cashback callbacks, email callbacks, etc. Hosted on Github repository [my-functions](https://github.com/tekminewe/my-functions).
+
+#### Technology Stacks
+
+- Built with AWS SAM and TypeScript 5.5.3.
+- Deployed on AWS Lambda.
+- Use NodeJS 20 runtime with TypeScript 5 support.
+
+## Coding Standards
+
+### mint-ui
+
+- MUST build the component that support light mode and dark mode.
+- MUST only have generic components in the library.
+- MUST NOT include business logic or components.
+
+### my-web
+
+- MUST build the business components in this project.
+- MUST use `RichTextEditor` from `mint-ui` for rich text editing and `RichTextPreview` from `mint-ui` for displaying rich text.
 
 ### Naming Conventions
 
-- Use kebab-case for folders and files
-- Use camelCase for variables and functions
-- Use PascalCase for classes, interfaces, types and enums
-- Use React/Next.js/NestJS recommended coding styles and conventions
+- MUST use camelCase for variable and function names.
+- MUST use PascalCase for React component and class names, interfaces, types and enums.
+- MUST use kebab-case for file and folder names.
 
-### TypeScript Rules
+### TypeScript
 
-- Always use named exports instead of default exports
-- Maintain consistent typing throughout the codebase
+- MUST use strict typing and avoid using `any`.
+- MUST use named exports instead of default exports.
+- MUST use single quotes for strings. Except for React prop values, which should use double quotes.
+- MUST use object destructuring for function parameters
+- MUST use interfaces for object types and avoid using type assertions.
+- MUST use `enum` for fixed sets of values.
 
-### Code Formatting & Linting Configuration
+### React and NextJS
 
-- **Prettier**: Uses workspace-level `.prettierrc` with `singleQuote: true` and `trailingComma: "all"`
-- **ESLint**: Should use shared workspace-level configuration for consistency across all projects
-- **TypeScript**: Each project has its own `tsconfig.json` but should extend shared base configuration
+- MUST use App Router for routing.
+- MUST use functional components.
+- MUST create one file per component.
+- MUST add `Props` suffix to component props interfaces.
+- MUST follow the WCAG 2.1 guidelines for accessibility belows:
+  - Use semantic HTML elements (`button`, `nav`, `main`, `section`, etc.)
+  - Maintain 4.5:1 contrast ratio for normal text, 3:1 for large text
+  - Add proper ARIA labels and states
+  - Ensure keyboard navigation (Tab, Enter, Space, Arrow keys)
+  - Implement focus management and visible focus indicators
+  - Associate form inputs with labels using `htmlFor`
+  - Use `aria-live` regions for dynamic content.
+  - Test with screen readers and keyboard-only navigation.
+- MUST use `ControlledForm` and `Controlled*` components for all forms and inputs.
 
-### Current Configuration Status:
+```tsx
+'use client';
 
-**Workspace Level:**
+import { ControlledForm, useFormContext } from '@tekminewe/mint-ui/form';
+import { ControlledTextInput } from '@tekminewe/mint-ui/text-input';
+import { ControlledSelect } from '@tekminewe/mint-ui/select';
+import { ControlledSwitch } from '@tekminewe/mint-ui/switch';
+import { Card } from '@tekminewe/mint-ui/card';
+import { toast } from '@tekminewe/mint-ui/toast';
+import { useMutation, gql } from '@apollo/client';
+import { useSession } from 'next-auth/react';
+import { useMemo, useCallback } from 'react';
+import { object, string, boolean, coerce } from 'zod';
 
-- ✅ `.prettierrc` - Shared Prettier configuration
-- ✅ `.eslintrc.js` - Shared ESLint configuration
-- ✅ `.env` and `.env.example` - Environment variables
-- ✅ `docs/` and `tasks/` - Documentation and task management
+const CREATE_MUTATION = gql(/* GraphQL */ `
+  mutation CreateItem($data: CreateItemInput!) {
+    createItem(data: $data) {
+      id
+      title
+      status
+    }
+  }
+`);
 
-**Project Level:**
+interface ItemFormState {
+  title: string;
+  description: string;
+  category: string;
+  status: boolean;
+  sortOrder: number;
+}
 
-- ✅ Each project has individual `tsconfig.json` and build configurations
-- ✅ Each my-functions Lambda has individual `.eslintrc.js` and `tsconfig.json`
+const getDefaultValues = (defaultFormValues?: Partial<ItemFormState>) => ({
+  title: defaultFormValues?.title ?? '',
+  description: defaultFormValues?.description ?? '',
+  category: defaultFormValues?.category ?? '',
+  status: defaultFormValues?.status ?? false,
+  sortOrder: defaultFormValues?.sortOrder ?? 0,
+});
 
----
+const mapCategoriesToOptions = (categories: { id: string; name: string }[]) =>
+  categories.map((category) => ({
+    label: category.name,
+    value: category.id,
+  }));
 
-## Project-Specific Guidelines
+export const ItemForm = ({
+  language,
+  defaultFormValues,
+  categories,
+  dictionary,
+}: {
+  language: string;
+  defaultFormValues?: Partial<ItemFormState>;
+  categories: { id: string; name: string }[];
+  dictionary: {
+    titleLabel: string;
+    titlePlaceholder: string;
+    titleEmptyError: string;
+    descriptionLabel: string;
+    categoryLabel: string;
+    statusLabel: string;
+    sortOrderLabel: string;
+    createSuccessMessage: string;
+  };
+}) => {
+  const session = useSession();
+  const [create] = useMutation(CREATE_MUTATION);
 
-### 1. Mint-UI (React UI Library)
+  // MUST validate form schema
+  const schema = useMemo(() => {
+    return object({
+      title: string().min(1, dictionary.titleEmptyError),
+      description: string().min(1, 'Description is required'),
+      category: string().min(1, 'Category is required'),
+      status: boolean(),
+      sortOrder: coerce.number().min(0, 'Sort order must be positive'),
+    });
+  }, [dictionary.titleEmptyError]);
 
-**Technology Stack:**
+  const defaultValues = useMemo(
+    () => getDefaultValues(defaultFormValues),
+    [defaultFormValues],
+  );
 
-- React 19 + TypeScript + Storybook
-- Tailwind CSS v3 for styling
-- Development and Storybook servers running
+  const categoryOptions = useMemo(
+    () => mapCategoriesToOptions(categories),
+    [categories],
+  );
 
-**Component Development:**
+  const handleSubmit = useCallback(
+    async (values: ItemFormState) => {
+      const createData = {
+        title: values.title,
+        description: values.description,
+        category: values.category,
+        status: values.status ? 'Active' : 'Inactive',
+        sortOrder: values.sortOrder,
+      };
 
-- Always use functional components
-- Create one file per component
-- Document props with JSDoc comments and examples:
+      const requestContext = {
+        headers: {
+          Authorization: `Bearer ${session?.data?.accessToken}`,
+          'Accept-Language': language,
+        },
+      };
+
+      const successToastConfig = {
+        type: 'success' as const,
+      };
+
+      const errorToastConfig = {
+        type: 'error' as const,
+      };
+
+      try {
+        await create({
+          variables: {
+            data: createData,
+          },
+          context: requestContext,
+        });
+
+        toast(dictionary.createSuccessMessage, successToastConfig);
+      } catch (error) {
+        toast((error as ApolloError).message, errorToastConfig);
+      }
+    },
+    [
+      create,
+      session?.data?.accessToken,
+      language,
+      dictionary.createSuccessMessage,
+    ],
+  );
+
+  return (
+    <Card>
+      <ControlledForm<ItemFormState>
+        schema={schema}
+        defaultValues={defaultValues}
+        onSubmit={handleSubmit}
+      >
+        <ControlledTextInput
+          required
+          name="title"
+          label={dictionary.titleLabel}
+          placeholder={dictionary.titlePlaceholder}
+        />
+        <ControlledTextInput
+          required
+          name="description"
+          label={dictionary.descriptionLabel}
+        />
+        <ControlledSelect
+          required
+          clearable={false}
+          name="category"
+          label={dictionary.categoryLabel}
+          options={categoryOptions}
+        />
+        <ControlledSwitch label={dictionary.statusLabel} name="status" />
+        <ControlledTextInput
+          type="number"
+          name="sortOrder"
+          label={dictionary.sortOrderLabel}
+        />
+      </ControlledForm>
+    </Card>
+  );
+};
+```
+
+- MUST include translation for all the text. Get the translation in the server components and pass it down to the client components.
+
+```tsx
+export default async function ProtectedLayout(
+  props: ServerComponentProps<{
+    children: React.ReactNode;
+  }>,
+) {
+  const params = await props.params;
+
+  const { children } = props;
+
+  // Get the translation dictionary in the server component
+  const dictionary = await getDictionary(params.lang);
+
+  return (
+    <div className="container mx-auto flex my-6">
+      {/** Pass the translation dictionary to
+      the Sidebar */}
+      <Sidebar dictionary={dictionary} />
+      {children}
+    </div>
+  );
+}
+```
+
+- MUST add type when using `DataTable` component.
+
+```tsx
+'use client';
+
+import { Badge } from '@tekminewe/mint-ui/badge';
+import { DataTable } from '@tekminewe/mint-ui/data-table';
+import { IconButton } from '@tekminewe/mint-ui/icon-button';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState, useCallback, useMemo } from 'react';
+import { LuPen } from 'react-icons/lu';
+
+interface AdvertiserRow {
+  id: string;
+  name: string;
+  logo?: {
+    url: string;
+  };
+  statusId: 'Active' | 'Inactive';
+  commission?: {
+    commission: number;
+  };
+  categories: {
+    id: string;
+    name: string;
+  }[];
+  createdAt: string;
+}
+
+const DUMMY_DATA: AdvertiserRow[] = [
+  {
+    id: '1',
+    name: 'Amazon',
+    logo: { url: '/images/amazon-logo.png' },
+    statusId: 'Active',
+    commission: { commission: 5.5 },
+    categories: [
+      { id: '1', name: 'E-commerce' },
+      { id: '2', name: 'Electronics' },
+    ],
+    createdAt: '2024-01-15T10:30:00Z',
+  },
+  {
+    id: '2',
+    name: 'Nike',
+    logo: { url: '/images/nike-logo.png' },
+    statusId: 'Active',
+    commission: { commission: 7.0 },
+    categories: [{ id: '3', name: 'Sports' }],
+    createdAt: '2024-02-20T14:45:00Z',
+  },
+];
+
+const renderCategoriesCell = ({ value }: { value: AdvertiserRow }) => {
+  return value.categories && value.categories.length > 0 ? (
+    <div className="flex flex-wrap gap-1">
+      {value.categories.map((category) => (
+        <Badge key={category.id} variant="soft">
+          {category.name}
+        </Badge>
+      ))}
+    </div>
+  ) : (
+    <span className="text-neutral-500">-</span>
+  );
+};
+
+const renderLogoCell = ({ value }: { value: AdvertiserRow }) => {
+  return value.logo?.url ? (
+    <Image
+      src={value.logo.url}
+      alt={value.name}
+      width={50}
+      height={50}
+      className="object-contain"
+    />
+  ) : (
+    <span className="text-neutral-500">-</span>
+  );
+};
+
+const renderCommissionCell = ({ value }: { value: AdvertiserRow }) => {
+  return value.commission?.commission
+    ? `${value.commission.commission}%`
+    : 'N/A';
+};
+
+const renderDateCell = ({ value }: { value: AdvertiserRow }) => {
+  return new Date(value.createdAt).toLocaleDateString();
+};
+
+const renderStatusCell = ({
+  value,
+  dictionary,
+}: {
+  value: AdvertiserRow;
+  dictionary: {
+    active: string;
+    inactive: string;
+  };
+}) => {
+  return (
+    <Badge>
+      {value.statusId === 'Active' ? dictionary.active : dictionary.inactive}
+    </Badge>
+  );
+};
+
+const renderActionCell = ({
+  value,
+  lang,
+}: {
+  value: AdvertiserRow;
+  lang: string;
+}) => {
+  return (
+    <Link href={`/${lang}/admin/advertiser/${value.id}/edit`}>
+      <IconButton aria-label="Edit advertiser">
+        <LuPen />
+      </IconButton>
+    </Link>
+  );
+};
+
+export const AdminAdvertiserTable = ({
+  lang,
+  dictionary,
+}: {
+  lang: string;
+  dictionary: {
+    nameLabel: string;
+    categoriesLabel: string;
+    logoLabel: string;
+    commissionLabel: string;
+    createdAtLabel: string;
+    statusLabel: string;
+    actionLabel: string;
+    active: string;
+    inactive: string;
+  };
+}) => {
+  const [page, setPage] = useState(1);
+  const [isLoading] = useState(false);
+
+  const handlePaginationChange = useCallback(({ page }: { page: number }) => {
+    setPage(page);
+  }, []);
+
+  const columns = useMemo(
+    () => [
+      {
+        label: dictionary.nameLabel,
+        dataKey: 'name' as keyof AdvertiserRow,
+      },
+      {
+        label: dictionary.categoriesLabel,
+        dataKey: undefined,
+        renderCell: renderCategoriesCell,
+      },
+      {
+        label: dictionary.logoLabel,
+        dataKey: undefined,
+        renderCell: renderLogoCell,
+      },
+      {
+        label: dictionary.commissionLabel,
+        dataKey: undefined,
+        renderCell: renderCommissionCell,
+      },
+      {
+        label: dictionary.createdAtLabel,
+        dataKey: undefined,
+        renderCell: renderDateCell,
+      },
+      {
+        label: dictionary.statusLabel,
+        dataKey: undefined,
+        renderCell: (props: { value: AdvertiserRow }) =>
+          renderStatusCell({ ...props, dictionary }),
+      },
+      {
+        label: dictionary.actionLabel,
+        dataKey: undefined,
+        renderCell: (props: { value: AdvertiserRow }) =>
+          renderActionCell({ ...props, lang }),
+      },
+    ],
+    [dictionary, lang],
+  );
+
+  return (
+    <DataTable<AdvertiserRow, keyof AdvertiserRow>
+      data={DUMMY_DATA}
+      isLoading={isLoading}
+      totalCount={DUMMY_DATA.length}
+      pageSize={10}
+      page={page}
+      onPaginationChange={handlePaginationChange}
+      columns={columns}
+    />
+  );
+};
+```
+
+- SHOULD use `dayjs(date).format("lll")` for date formatting.
+- SHOULD use `server` components for data fetching and rendering.
+- SHOULD use `client` components for interactive UI elements.
+- SHOULD document props with JSDoc comments and examples:
 
 ```typescript
 interface MyComponentProps {
@@ -179,99 +552,21 @@ interface MyComponentProps {
 }
 ```
 
-**Storybook Requirements:**
+- SHOULD create skeleton loaders for loading states.
 
-- Create only ONE story per component: the `AllVariants` story
-- The `AllVariants` story must combine all component states, variants, sizes, and use cases into a single comprehensive showcase
-- DO NOT include both light and dark mode variants in the story - Storybook provides built-in theme switching capabilities
-- Use single theme (light mode by default) and let Storybook's theme addon handle dark mode testing
-- Optimize for Chromatic snapshot cost by having a single story instead of multiple individual stories
-- The story should be well-organized with clear sections and headings for different variants
+### Storybook
 
-**Storybook Story Pattern Exceptions:**
+- MUST create a story for each component.
+- MUST use the `AllVariants` story pattern to showcase all states and variations. Unless the components have complex interactions that require individual stories like Dialog and Drawer.
+- SHOULD document the component's props and usage examples within the story.
+- SHOULD be well-organized with clear sections and headings for different variants.
 
-- **Complex Interactive Components**: Components with complex state management (Dialog, Drawer) may benefit from individual stories
-- **User Request Override**: When explicitly requested, individual stories can be created for specific demonstration needs
-- **Story Conversion Protocol**: When converting from `AllVariants` to individual stories or vice versa:
-  1. **Always ask first** before making the conversion
-  2. **Preserve all functionality** - ensure no demonstration cases are lost
-  3. **Use descriptive names** for individual stories (Basic, WithForm, Interactive, etc.)
-  4. **Remove `component` property** from meta object when creating individual stories to avoid TypeScript errors
-  5. **Test thoroughly** after conversion to ensure all stories render correctly
+### CSS Styling
 
-**Storybook Meta Configuration Rules:**
-
-- **Default Pattern**: Include `component: ComponentName` in meta for `AllVariants` stories
-- **Individual Stories Pattern**: Remove `component` property from meta to avoid TypeScript conflicts
-- **Consistent Structure**: Always include `title`, `tags: ['autodocs']`, and `parameters: { layout: 'centered' }`
-
-**Example Meta Patterns:**
-
-```typescript
-// ✅ GOOD: AllVariants story meta
-const meta = {
-  title: 'Common / ComponentName',
-  component: ComponentName,
-  tags: ['autodocs'],
-  parameters: { layout: 'centered' },
-} satisfies Meta<typeof ComponentName>;
-
-// ✅ GOOD: Individual stories meta
-const meta = {
-  title: 'Common / ComponentName',
-  tags: ['autodocs'],
-  parameters: { layout: 'centered' },
-} satisfies Meta;
-```
-
-**Story Recovery and Version Control:**
-
-- **Always verify current state** before making changes to any file using `read_file`
-- **Handle file reverts gracefully** - when files are accidentally reverted, quickly restore with original patterns
-- **Use descriptive commit messages** that explain what was changed and why
-- **Test after recovery** - always run build and error checks after restoring files
-- **Preserve existing patterns** - when recreating files, maintain consistent naming and structure from previous implementations
-
-**Accessibility (WCAG 2.1 AA Compliance):**
-
-- Use semantic HTML elements (`button`, `nav`, `main`, `section`, etc.)
-- Maintain 4.5:1 contrast ratio for normal text, 3:1 for large text
-- Add proper ARIA labels and states
-- Ensure keyboard navigation (Tab, Enter, Space, Arrow keys)
-- Implement focus management and visible focus indicators
-- Associate form inputs with labels using `htmlFor`
-- Use `aria-live` regions for dynamic content
-- Test with screen readers and keyboard-only navigation
-
-**Theme System:**
-
-- Custom theme implementation (no external dependencies)
-- Supports light/dark modes with system preference detection
-- Theme persistence via localStorage (`mint-ui-theme`)
-- CSS variables for theming located in `src/globals.css`
-- ThemeProvider automatically detects user system preferences
-- Built-in ThemeToggle component for switching themes
-
-**Color Standards & Consistency:**
-
-### Required Files for React Component Development
-
-When building React components in mint-ui, you **MUST** reference these files:
-
-1. **`mint-ui/src/components/utils/component-colors.ts`** - Centralized color system (USE THESE)
-2. **`mint-ui/docs/component-standardization-status.md`** - Implementation patterns and examples
-3. **`mint-ui/docs/color-quick-reference.md`** - Copy/paste ready color combinations
-4. **`mint-ui/src/components/tailwind-plugin/index.ts`** - Tailwind config with detailed color usage comments
-
-### Component Color System (CRITICAL)
-
-- **MANDATORY**: Use standardized color utilities from `mint-ui/src/components/utils/component-colors.ts`
-- **NEVER**: Write hardcoded color combinations like `bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800`
-- **ALWAYS**: Import and use appropriate color constants and helper functions
-- **CHECK FIRST**: Review existing utilities before creating new color patterns
-- **EXTEND SYSTEM**: Add new patterns to `component-colors.ts` when needed (don't create one-off solutions)
-
-### Standard Color Imports
+- MUST use Tailwind CSS for styling.
+- MUST use responsive design principles and utility classes.
+- MUST use the `@apply` directive for complex styles in `src/styles/globals.css`.
+- MUST use the centralized color system in `src/components/utils/component-colors.ts`.
 
 ```typescript
 import {
@@ -285,19 +580,12 @@ import {
   TEXT_COLORS,
   BORDER_COLORS,
   INTERACTION_COLORS,
+  SKELETON_COLORS,
+  NAVIGATION_COLORS,
+  CARD_COLORS,
+  BUTTON_COLORS
 } from '../utils/component-colors';
-```
 
-### Component Update Process:
-
-1. **Before editing ANY component**: Read `component-colors.ts` and `color-quick-reference.md`
-2. **During development**: Use standardized utilities, never hardcode colors
-3. **After implementation**: Update `component-standardization-status.md` with status
-4. **Testing**: Verify both light and dark modes work correctly
-
-### Color Utility Usage Examples
-
-```typescript
 // ✅ GOOD: Using standardized utilities
 className={getCardColors()}
 className={SURFACE_COLORS.elevated}
@@ -307,243 +595,398 @@ className={`${TEXT_COLORS.primary} ${BORDER_COLORS.default}`}
 className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700"
 ```
 
-### UI/UX Enhancement Guidelines
-
-**Design System Implementation:**
-
-- Follow consistent spacing using Tailwind spacing scale
-- Use semantic color tokens for all color decisions
-- Maintain component variants (size, state, interaction patterns)
-- Implement proper loading states and transitions
-- Follow established component composition patterns
-
-**User Experience Standards:**
-
-- Provide clear visual feedback for all interactive elements
-- Implement proper error states and validation messaging
-- Use consistent animation timing and easing
-- Ensure responsive behavior across all screen sizes
-- Maintain consistent component behavior patterns
-
-**Component Enhancement Protocol:**
-
-1. **Analyze existing pattern** - check similar components for consistency
-2. **Identify improvement opportunities** - UX, performance, accessibility
-3. **Propose systematic changes** - don't create one-off solutions
-4. **Implement with proper testing** - verify all variants and states
-5. **Update documentation** - reflect changes in Storybook and docs
-
----
-
-## Project-Specific Guidelines
-
-### 2. My-Service (NestJS GraphQL API)
-
-**Technology Stack:**
-
-- NestJS + GraphQL + Prisma
-- TypeScript with strict configuration
-- Zenstack for enhanced Prisma capabilities
-
-**API Development:**
-
-- Follow GraphQL-first design approach
-- Use Prisma schema as single source of truth
-- Implement proper error handling and validation
-- Use dependency injection patterns
-- Follow NestJS module structure
-
-**Language and Localization Standards:**
-
-- **Always use HTTP headers for language detection**: API endpoints should get language from `Accept-Language` header via `AuthService.getAcceptLanguage()`
-- **No language parameters in GraphQL queries**: Language should not be passed as GraphQL variables
-- **Consistent header handling**: Use `setContext` in Apollo Client to set `Accept-Language` header
-- **Backend-driven localization**: Content (like category names) should be localized in the backend using database metadata, not frontend dictionaries
-- **Fallback handling**: Always provide fallback to `EN_US` when requested language is unavailable
-
-**GraphQL Best Practices:**
-
-- Remove language parameters from queries when implementing header-based localization
-- Use `@Public()` decorator for endpoints that don't require authentication
-- Implement proper error handling with meaningful error messages
-- Follow consistent naming conventions for resolvers and services
-
-**Common Tasks:**
-
-- Generate Prisma client: `pnpm gen:prisma`
-- Database migrations: `pnpm prisma migrate dev`
-- Reset database: `pnpm prisma migrate reset`
-- Seed database: `pnpm seed`
-
----
-
-### 3. My-Web (Next.js 15 Application)
-
-**Technology Stack:**
-
-- Next.js 15 with App Router
-- TypeScript + Tailwind CSS
-- GraphQL Code Generator
-- NextAuth.js for authentication
-
-**Development Patterns:**
-
-- Use App Router for all new routes
-- Implement proper loading and error states
-- Use Server Components where possible
-- Follow Next.js performance best practices
-- Implement proper SEO optimization
-
-**Admin Console Standard Rules:**
-
-**Layout & Structure:**
-
-- **Full-Width Forms**: Admin forms should use `w-full` instead of constrained widths (e.g., `max-w-4xl`) for better space utilization and modern admin UI aesthetics
-- **Consistent Grid Layouts**: Use responsive grid patterns - `lg:grid-cols-2 xl:grid-cols-3` for medium complexity, `lg:grid-cols-3` for simpler layouts
-- **Proper Spacing**: Use `space-y-6` between major sections, `space-y-4` between related form groups
-- **Card-Based Organization**: Wrap logical sections in cards using mint-ui `Card` component for clear visual separation
-
-**Component Usage Standards:**
-
-- **Page Structure**: Use dedicated page components (e.g., `AdminSitePage`, `AdminAdvertiserListPage`) that wrap specific admin functionality
-- **Tab Navigation**: Implement tabs using `AdminSiteTabs` or similar tab components for multi-section admin pages
-- **Form Components**: Create dedicated form components (e.g., `SiteForm`, `AdvertiserForm`) for complex forms rather than inline form logic
-- **Table Components**: Use dedicated table components (e.g., `AdminAdvertiserTable`) with built-in pagination, sorting, and filtering capabilities
-
-**Form Design Patterns:**
-
-- **Input Sizing**: Use appropriate input widths - `max-w-lg` for medium inputs (domains, URLs), `max-w-md` for shorter inputs
-- **Field Grouping**: Group related fields in grid layouts with proper responsive breakpoints
-- **Label Association**: Always associate labels with form controls using proper `htmlFor` attributes
-- **Validation Display**: Show validation errors consistently using mint-ui form validation patterns
-- **Submit Actions**: Place primary actions (Save, Update) in the bottom-right, secondary actions (Cancel, Reset) to the left
-
-**Data Display Standards:**
-
-- **Table Behavior**: Implement consistent table patterns with sorting, pagination, and row selection
-- **Status Indicators**: Use badge components for status fields (Active, Inactive, Pending, etc.)
-- **Action Buttons**: Use icon buttons for table row actions (Edit, Delete, View) with tooltips
-- **Loading States**: Implement skeleton loading for tables and forms during data fetching
-- **Empty States**: Show meaningful empty state messages with call-to-action buttons
-
-**Navigation & User Experience:**
-
-- **Breadcrumbs**: Implement breadcrumb navigation for deep admin sections
-- **Page Titles**: Use descriptive page titles that indicate current location and action
-- **Success Feedback**: Show toast notifications for successful actions (save, delete, update)
-- **Error Handling**: Display user-friendly error messages with actionable solutions
-- **Confirmation Dialogs**: Use dialog components for destructive actions (delete, archive)
-
-**Responsive Design:**
-
-- **Mobile-First**: Design admin interfaces to work on tablets and smaller screens
-- **Collapsible Sidebars**: Use collapsible navigation for admin layouts on smaller screens
-- **Adaptive Tables**: Implement responsive table patterns (horizontal scroll, column stacking)
-- **Touch-Friendly**: Ensure buttons and interactive elements are appropriately sized for touch
-
-**Performance & Accessibility:**
-
-- **Server Components**: Use React Server Components for admin list pages and static content
-- **Client Components**: Use client components only for interactive elements (forms, modals, dynamic tables)
-- **Keyboard Navigation**: Ensure all admin interfaces are fully keyboard accessible
-- **Screen Reader Support**: Include proper ARIA labels and descriptions for complex interfaces
-- **Focus Management**: Implement proper focus management in modals and dynamic content
-
-**Security & Data Handling:**
-
-- **Input Sanitization**: Sanitize all form inputs before displaying or processing
-- **Permission Checks**: Implement proper role-based access control for admin features
-- **Audit Logging**: Log admin actions for security and compliance requirements
-- **Data Validation**: Validate all data on both client and server sides
-- **Secure Defaults**: Use secure defaults for all admin configuration options
-
-**Development Best Practices:**
-
-- **Component Reusability**: Create reusable admin components that can be shared across different admin sections
-- **Type Safety**: Use TypeScript interfaces for all admin data structures and API responses
-- **Testing Strategy**: Write unit tests for complex admin form logic and data transformations
-- **Code Organization**: Keep admin-specific components in dedicated directories (`/src/page/admin-*`, `/src/components/admin-*`)
-- **Documentation**: Document complex admin workflows and business logic with inline comments
-
-**GraphQL and API Integration:**
-
-- **Header-based language detection**: Use `Accept-Language` header for API language, not query parameters
-- **Apollo Client configuration**: Set up `setContext` link to handle dynamic headers for language switching
-- **Backend localization**: Leverage backend-driven content localization instead of frontend dictionaries
-- **Cache management**: Use `cache-and-network` fetchPolicy for queries that depend on language headers
-- **Type generation**: Regenerate GraphQL types after API changes using `pnpm gen:graphql`
-
-**Common Tasks:**
-
-- Generate GraphQL types: `pnpm gen:graphql`
-- Development server: `pnpm dev`
-- Build production: `pnpm build`
-
----
-
-### 4. My-Functions (AWS SAM Serverless)
-
-**Technology Stack:**
-
-- AWS Lambda + TypeScript
-- AWS SAM for deployment
-- Serverless architecture patterns
-
-**Project Structure:**
-
-The my-functions project contains individual Lambda functions in the `functions/` directory:
-
-- `functions/advertisers-pull/` - Advertiser data processing
-- `functions/auth/` - Authentication functions
-- `functions/email-feedback/` - Email feedback processing
-- `functions/post-generator/` - Post generation functionality
-
-Each function has its own:
-
-- `package.json` with individual dependencies
-- `tsconfig.json` for TypeScript configuration
-- `.eslintrc.js` for ESLint configuration
-- Individual source files and tests
-
-**Development Patterns:**
-
-- Keep functions focused and lightweight
-- Use proper error handling
-- Implement logging and monitoring
-- Follow AWS best practices
-- Use environment variables for configuration
-- Each function manages its own dependencies and build process
-
-**Common Tasks:**
-
-- Build functions: `sam build`
-- Local testing: `sam local start-api`
-- Deploy: `sam deploy --guided`
-- Individual function tasks: `npm run compile`, `npm run test`, `npm run lint` (within each function directory)
-
----
-
-## Mobile-First Development Guidelines
-
-### Essential Mobile-First Principles:
-
-- **Start with mobile constraints** when designing new UI components
-- **Use responsive utility classes** (`hidden lg:block`, `lg:hidden`) for conditional rendering
-- **Design touch-friendly interfaces** with minimum 44px touch targets
-- **Create dedicated mobile components** for different interaction patterns (drawers vs sidebars)
-- **Test on actual mobile devices** during development
-
-### Component Architecture:
-
-```typescript
-// Mobile/Desktop component separation
-<FilterSidebar className="hidden lg:block" {...sharedProps} />        // Desktop
-<MobileFilterButton className="lg:hidden" {...mobileProps} />         // Mobile
+- MUST use available colours only as shown below.
+
+```markdown
+- **Primary Colors** (Blue-based brand colors):
+
+  - `primary-50` to `primary-900` - Use for buttons, links, focus states, selections
+  - Main brand color: `primary-500` (`bg-primary-500`, `text-primary-500`)
+
+- **Neutral Colors** (Gray scale for UI framework):
+
+  **Light Mode Values (RGB):**
+
+  - `neutral-50` (252, 252, 252) - Page backgrounds, subtle off-white surfaces (`bg-neutral-50`)
+  - `neutral-100` (245, 245, 245) - Elevated surfaces, very light dividers (`bg-neutral-100`)
+  - `neutral-200` (229, 229, 229) - Default borders, dividers, disabled states (`border-neutral-200`)
+  - `neutral-300` (212, 212, 212) - Strong borders, emphasized borders (`border-neutral-300`)
+  - `neutral-400` (163, 163, 163) - Disabled text, placeholders, very low contrast (`text-neutral-400`)
+  - `neutral-500` (115, 115, 115) - Muted text, secondary text, icons (`text-neutral-500`)
+  - `neutral-600` (82, 82, 82) - Medium emphasis text, subheadings (`text-neutral-600`)
+  - `neutral-700` (64, 64, 64) - Secondary text, descriptions (`text-neutral-700`)
+  - `neutral-800` (38, 38, 38) - High contrast text, heavy emphasis (`text-neutral-800`)
+  - `neutral-900` (23, 23, 23) - Primary text, highest contrast, headings (`text-neutral-900`)
+
+  **Dark Mode Values (RGB) - Smart Inversion:**
+
+  - `neutral-50` (23, 23, 23) - Darkest background for page backgrounds (`bg-neutral-50`)
+  - `neutral-100` (38, 38, 38) - Main card/panel backgrounds in dark mode (`bg-neutral-100`)
+  - `neutral-200` (64, 64, 64) - Elevated backgrounds, subtle borders (`bg-neutral-200`)
+  - `neutral-300` (82, 82, 82) - Default borders visible on dark backgrounds (`border-neutral-300`)
+  - `neutral-400` (115, 115, 115) - Disabled text, low contrast in dark mode (`text-neutral-400`)
+  - `neutral-500` (163, 163, 163) - Muted text, readable secondary text (`text-neutral-500`)
+  - `neutral-600` (212, 212, 212) - Medium emphasis text in dark mode (`text-neutral-600`)
+  - `neutral-700` (229, 229, 229) - Important secondary text in dark mode (`text-neutral-700`)
+  - `neutral-800` (245, 245, 245) - High contrast text in dark mode (`text-neutral-800`)
+  - `neutral-900` (250, 250, 250) - Primary text, highest contrast in dark mode (`text-neutral-900`)
+
+  **Usage Guidelines:**
+
+  - Same Tailwind class produces different colors in light vs dark mode (smart inversion)
+  - Always test components in both themes using centralized color utilities
+  - Use `SURFACE_COLORS`, `TEXT_COLORS`, `BORDER_COLORS` from `component-colors.ts` for consistency
+
+- **Status Colors**:
+
+  - **Success**: `success-100` (backgrounds), `success-500` (buttons/text), `success-600` (borders)
+  - **Error**: `error-100` (backgrounds), `error-500` (destructive actions), `error-600` (borders)
+  - **Warning**: `warning-100` (backgrounds), `warning-500` (indicators), `warning-600` (borders)
+  - **Info**: `info-100` (backgrounds), `info-500` (informational), `info-600` (borders)
+
+- **White**: `white` - Pure white for elevated surfaces and backgrounds
 ```
 
-### Translation:
+- SHOULD avoid introducing new arbitrary colors unless first added to the centralized color system.
+- SHOULD avoid using custom CSS unless absolutely necessary.
 
-- **Header-based language switching**: Use `Accept-Language` headers, not query parameters
-- **Test text length variations** across supported languages on mobile screens
+### Dark Mode Third-Party Component Styling
 
----
+When styling third-party components (like react-day-picker) that have their own dark mode classes, avoid mixing `dark:` variants with component-specific dark mode selectors.
+
+**❌ WRONG - Mixed dark mode contexts:**
+
+```css
+.rdp-dark-mode .rdp-day {
+  @apply text-neutral-900 dark:text-neutral-200; /* Conflict: already in dark mode */
+}
+```
+
+**✅ CORRECT - Direct colors for component dark mode:**
+
+```css
+.rdp-dark-mode .rdp-day {
+  @apply text-neutral-200; /* Direct color, no dark: variant needed */
+}
+
+.rdp-dark-mode .rdp-day:hover:not(.rdp-disabled):not(.rdp-selected) {
+  @apply bg-neutral-700 text-white;
+}
+```
+
+**Key Principles:**
+
+- Third-party dark mode classes (`.rdp-dark-mode`, `.dark-theme`, etc.) are already dark contexts
+- Use direct colors (e.g., `text-neutral-200`) instead of `dark:text-neutral-200`
+- Test thoroughly in both light and dark modes
+- Reference the neutral color values above to ensure proper contrast
+
+### GraphQL
+
+- MUST add `Resolver` suffix for all resolver classes.
+- MUST add `Input` suffix for all input types.
+- MUST add `Args` suffix for all argument types.
+- MUST use `@Permission` decorator for all admin routes to enforce access control.
+
+```typescript
+import { PermissionEnum } from '@prisma/client';
+import { Permission } from 'src/role/role.decorator';
+import { UpdateAdvertiserInput } from './advertiser.input';
+import { Advertiser } from './advertiser.model';
+
+@Resolver(() => Advertiser)
+class AdvertiserResolver {
+  @Mutation(() => Advertiser)
+  @Permission(PermissionEnum.ManageAdvertiser) // MUST include permission check
+  async updateAdvertiser(
+    @Args('input') updateAdvertiserInput: UpdateAdvertiserInput,
+  ): Promise<Advertiser> {
+    // Implementation
+    return {} as Advertiser;
+  }
+}
+```
+
+- MUST use `PrismaClient` for all database interactions.
+- MUST not use `PrismaService` in resolvers.
+- MUST use `AuthService.getAcceptLanguage()` to get the user's preferred language.
+- MUST use `AuthService.getCurrentUser()` to get the current user that is making the request. The user has type of `ISessionUser`.
+
+```typescript
+// ✅ GOOD: Complete resolver implementation
+@Resolver(() => UserReferral)
+export class ReferralResolver {
+  constructor(
+    private readonly referralService: ReferralService,
+    private readonly authService: AuthService,
+  ) {}
+
+  @Mutation(() => UserReferral)
+  async generateReferralCode(): Promise<UserReferral> {
+    const user = this.authService.getCurrentUser(); // ✅ GOOD: Getting current user of type ISessionUser
+    const language = this.authService.getAcceptLanguage(); // ✅ GOOD: Getting user's preferred language
+    return this.referralService.generateReferralCode(user.id, language);
+  }
+}
+```
+
+```typescript
+import { Permission, PermissionEnum, Role } from '@prisma/client';
+
+export interface ISessionUser {
+  id: string;
+  email: string;
+  ipAddress: string;
+  userAgent: string;
+  referrer: string;
+  company?: {
+    id: string;
+  };
+  roles: (Role & { permissions: Permission[] })[];
+  permissions: PermissionEnum[];
+}
+```
+
+- MUST write unit tests for the service layer using Jest.
+- SHOULD use `@ResolveField` decorator for all field resolvers.
+- SHOULD use `@Public()` decorator for endpoints that don't require authentication
+
+### Prisma (Zenstack)
+
+- MUST design all models with localization in mind.
+- MUST use `LanguageEnum` for all language fields.
+- MUST use `CurrencyEnum` for all currency fields.
+- MUST use `cuid()` for all ID fields.
+- MUST use RBAC (Role-Based Access Control) for all data access.
+
+```
+model MyModel {
+  id                     String          @id @default(cuid())
+  userId                 String
+  user                   User            @relation("UserMultiplierLogs", fields: [userId], references: [id])
+  userEligibilityId      String
+  userEligibility        UserEligibility @relation(fields: [userEligibilityId], references: [id])
+  purchaseId             String           // References UserCashback.id
+  purchase               UserCashback    @relation("CashbackMultiplierLogs", fields: [purchaseId], references: [id])
+  multiplierRuleId       String
+  multiplierRule         MultiplierRule  @relation(fields: [multiplierRuleId], references: [id])
+  originalCashbackAmount Float
+  multipliedAmount       Float
+  multiplierValue        Float            // Store actual multiplier used (for historical accuracy)
+  merchantCallbackId     String?          // For callback correlation
+  appliedAt              DateTime        @default(now())
+  metadata               Json?            // Store additional context/debugging info
+
+  @@unique([userId, purchaseId]) // Prevent duplicate multiplier applications per user per purchase
+  @@index([userId])
+  @@index([purchaseId])
+  @@index([multiplierRuleId])
+  @@index([appliedAt])
+  @@index([appliedAt, userId])        // For date-based user reporting
+  @@index([userId, appliedAt])        // For user activity timeline queries
+  @@index([multiplierRuleId, appliedAt]) // For rule usage analytics
+
+  // Permission rules: Users can only access their own multiplier logs unless they have admin permissions
+  @@allow('read',
+  // Users can read their own logs
+    auth() != null && auth().id == userId
+    ||
+  // Users with ViewUserEligibility permission can read any log
+    auth() != null && auth().roles?[permissions?[name == ViewUserEligibility]]
+  )
+
+  @@allow('create,update',
+  // Only users with ManageUserEligibility permission can create/update logs
+    auth() != null && auth().roles?[permissions?[name == ManageUserEligibility]]
+  )
+}
+```
+
+- MUST create `<Model>Metadata` for storing multilingual fields.
+
+```
+model UserWalletStatus {
+  id          UserWalletStatusEnum       @id
+  description String?
+  metadatas   UserWalletStatusMetadata[]
+  userWallets UserWallet[]
+
+  @@allow('read', auth() != null)
+}
+
+model UserWalletStatusMetadata {
+  statusId   UserWalletStatusEnum
+  status     UserWalletStatus     @relation(fields: [statusId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+```
+
+### Search Engine Optimization
+
+- MUST include meta tags for title, description, and keywords, including language-specific variations.
+- MUST use semantic HTML elements
+- MUST implement structured data (e.g., JSON-LD)
+
+### Apollo Client
+
+- MUST use Apollo Client for all GraphQL data fetching.
+- MUST use `query` to fetch data in server components.
+
+```tsx
+// MUST use query for data fetching in server components
+import { query } from '@/services/apollo-client-server';
+import { GET_EXAMPLE_DATA } from '@/graphql/queries/example-query';
+
+export const ExamplePage = async ({ params }: ServerComponentProps<any>) => {
+  const { lang, bonusTypeId } = await params;
+  const dictionary = await getDictionary(lang);
+
+  // Fetch supported languages from the backend
+  const { data } = await query<ExampleQuery>({
+    query: GET_EXAMPLE_DATA,
+  });
+
+  return (
+    <ExampleClientComponent
+      dictionary={dictionary}
+      lang={lang}
+      data={data.languages}
+    />
+  );
+};
+```
+
+- MUST implement proper error handling and loading states.
+- MUST use hooks (e.g., `useQuery`, `useMutation`) for data fetching in functional components.
+- MUST add `Accept-Language` header to all requests.
+- MUST add `Authorization` header with Bearer token for authenticated requests.
+- MUST include type definitions for all GraphQL queries and mutations.
+
+```typescript
+'use client';
+
+import { gql, useQuery } from '@apollo/client';
+import {
+  AdminAdvertiserLogoQuery,
+  AdminAdvertiserLogoQueryVariables,
+} from '@/services/graphql';
+import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+
+// Define the GraphQL query
+const ADVERTISER_QUERY = gql(/* GraphQL */ `
+  query AdminAdvertiserLogo($advertiserId: String!) {
+    advertiser(advertiserId: $advertiserId) {
+      id
+      name
+      logo {
+        url
+      }
+    }
+  }
+`);
+
+export const AdminAdvertiserLogo = ({
+  advertiserId,
+  lang,
+}: {
+  advertiserId: string;
+  lang: string;
+}) => {
+  const [isError, setIsError] = useState(false);
+  const session = useSession();
+
+  const { data, loading } = useQuery<
+    AdminAdvertiserLogoQuery, // MUST include Query result type
+    AdminAdvertiserLogoQueryVariables // SHOULD include Query variables type
+  >(ADVERTISER_QUERY, {
+    variables: {
+      advertiserId,
+    },
+    context: {
+      headers: {
+        'Accept-Language': lang, // MUST add Accept-Language header
+        Authorization: `Bearer ${session?.data?.accessToken}`, // MUST add Authorization header
+      },
+    },
+    onError: () => setIsError(true), // MUST implement error handling
+  });
+
+  if (loading)
+    return <div className="w-6 h-6 bg-neutral-200 rounded animate-pulse" />; // MUST implement loading state
+  if (isError || !data?.advertiser?.logo?.url)
+    return <div className="w-6 h-6 bg-neutral-100 rounded" />; // MUST implement error state
+
+  return (
+    <div className="flex items-center justify-center">
+      <Image
+        src={data.advertiser.logo.url}
+        alt={data.advertiser.name}
+        width={24}
+        height={24}
+        className="object-contain"
+      />
+    </div>
+  );
+};
+```
+
+### Environment Variables
+
+- MUST update the `.env.template` in `/my-service` if any new environment variables are introduced.
+- MUST update the `.env.example` file in `/my-web` if any new environment variables are introduced.
+
+### Localisation
+
+- MUST get supported languages from the database from the server component.
+- MUST get default language from the database from the server component.
+
+## Commonly Used CLI Commands
+
+### my-web
+
+```bash
+pnpm dev              # Next.js development
+pnpm gen:graphql      # Generate GraphQL types after done GraphQL changes
+pnpm build            # Production build
+```
+
+### my-service
+
+```bash
+pnpm dev              # Start development server
+pnpm gen:prisma       # Generate Prisma client after made any changes in *.zmodel files
+pnpm build            # Production build
+```
+
+### mint-ui
+
+```bash
+pnpm dev              # Start Storybook development server
+pnpm build            # Build library
+```
+
+## Development Workflow
+
+You are a principal software engineer experienced in building scalable web applications using modern technologies. You follow best practices and design patterns to ensure code quality and maintainability. The development server all projects will be run manually, you do not need to run the development server for each project.
+
+When working on a new feature or bug fix, follow these steps:
+
+1. Identify the problem or feature request. Clarify the requirements and gather any necessary information. Use research tool like `perplexity` to assist with gathering information. When planning for frontend, you must consider the user interface and user experience for both desktop and mobile.
+2. Create a new branch from `main` using `feature/<feature-name>` format.
+3. Update the database schema (if any changes are needed) in `/my-service/zenstack/*.zmodel`.
+4. Run `pnpm gen:prisma` inside `/my-service` to generate Prisma client.
+5. Develop the backend GraphQL API to support the new feature or changes.
+6. After implementing the backend, run `pnpm test` inside `/my-service` to ensure all tests pass. All tests must be passing before proceeding.
+7. After implementing the backend, run `pnpm typecheck` inside `/my-service` to ensure all types are correct.
+8. (If necessary) Make the changes in `my-functions`.
+9. (If necessary) Create a new generic UI component in `mint-ui` to support the new feature or changes.
+10. Run `pnpm build` inside `/mint-ui` to build the library.
+11. Run `pnpm install` inside `/my-web` to install the updated `mint-ui` package.
+12. Make changes to the `my-web` for the new feature or changes.
+13. When updating any GraphQL queries or mutations, run `pnpm gen:graphql` inside `/my-web` to generate GraphQL types. Make sure the `my-service` development server is running before running the command.

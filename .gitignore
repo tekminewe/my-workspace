@@ -58,10 +58,6 @@ coverage/
 
 .vscode
 
-# Task files
-# tasks.json
-# tasks/ 
-
 # TypeScript build info
 *.tsbuildinfo
 
@@ -73,3 +69,7 @@ coverage/
 
 # Docker
 .dockerignore 
+
+# Task files
+# tasks.json
+# tasks/ 
