@@ -1,0 +1,37 @@
+{
+  "name": "my-private-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Private monorepo for white label configurable web application",
+  "scripts": {
+    "dev:mint-ui": "pnpm --filter @tekminewe/mint-ui dev",
+    "dev:service": "pnpm --filter my-service dev",
+    "dev:web": "pnpm --filter my-web dev",
+    "dev:functions": "pnpm --filter my-functions dev",
+    "dev:all": "concurrently \"pnpm dev:service\" \"pnpm dev:web\"",
+    "build:mint-ui": "pnpm --filter @tekminewe/mint-ui build",
+    "build:service": "pnpm --filter my-service build",
+    "build:web": "pnpm --filter my-web build",
+    "build:functions": "pnpm --filter my-functions build",
+    "build:all": "pnpm -r build",
+    "test:mint-ui": "pnpm --filter @tekminewe/mint-ui test",
+    "test:service": "pnpm --filter my-service test",
+    "test:web": "pnpm --filter my-web test",
+    "test:all": "pnpm -r test",
+    "lint:all": "pnpm -r lint",
+    "typecheck:all": "pnpm -r typecheck",
+    "gen:graphql": "pnpm --filter my-web gen:graphql",
+    "gen:prisma": "pnpm --filter my-service gen:prisma",
+    "clean": "pnpm -r clean",
+    "fresh-install": "pnpm clean && rm -rf node_modules packages/*/node_modules && pnpm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "turbo": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0"
+}

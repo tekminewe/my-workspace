@@ -1,95 +1,213 @@
-# Generic Bonus Engine
+# My Private Workspace
 
-A comprehensive bonus management system designed to handle various types of bonuses including welcome bonuses, referral rewards, deposit bonuses, and more. Built with NestJS, Next.js, and PostgreSQL.
+A private monorepo for white label single tenant configurable web application that can deploy as cashback website and potentially ecommerce website.
 
-## 🏗️ Architecture
+## Architecture
 
-This is a monorepo containing multiple applications and packages:
+This monorepo contains the following packages:
 
-- **`my-service/`** - NestJS backend API with GraphQL
-- **`my-web/`** - Next.js frontend application
-- **`mint-ui/`** - Shared React component library
-- **`my-functions/`** - AWS Lambda functions
-- **`docs/`** - Project documentation
-- **`scripts/`** - Utility scripts
+### 📱 `packages/mint-ui`
+Generic private UI library built with React 19 and TypeScript. Contains reusable components for the entire application ecosystem.
 
-## ✨ Features
+- **Technology**: React 19, TypeScript, Tailwind CSS, Storybook
+- **Development**: `pnpm dev:mint-ui`
+- **Build**: `pnpm build:mint-ui`
 
-### Bonus Engine Features
+### 🚀 `packages/my-service`
+NestJS GraphQL API service providing backend functionality for both user and admin interfaces.
 
-- **Multi-type Bonus Support**: Welcome, referral, deposit, spending, loyalty, seasonal, and custom bonuses
-- **Flexible Template System**: Create and manage bonus templates with complex rules
-- **Progress Tracking**: Real-time tracking of bonus progress and milestones
-- **Fraud Prevention**: Built-in fraud detection and prevention mechanisms
-- **Audit Trail**: Complete audit logging for all bonus-related activities
-- **User Targeting**: Advanced targeting rules for bonus eligibility
-- **Integration Ready**: Seamless integration with wallet and payment systems
+- **Technology**: NestJS 9, GraphQL, Prisma, PostgreSQL, AWS Cognito
+- **Development**: `pnpm dev:service` (runs on http://localhost:3020/graphql)
+- **Build**: `pnpm build:service`
 
-### Technical Features
+### 🌐 `packages/my-web`
+Next.js 15 web application with App Router containing both user and admin interfaces.
 
-- **GraphQL API**: Type-safe API with subscriptions for real-time updates
-- **Database**: PostgreSQL with Prisma ORM and ZenStack for access control
-- **Authentication**: NextAuth.js with multiple providers
-- **UI Components**: Consistent design system with Tailwind CSS
-- **Type Safety**: Full TypeScript coverage across all applications
-- **Deployment**: AWS Lambda, containerized services
+- **Technology**: Next.js 15, TypeScript, Tailwind CSS, Apollo Client
+- **Development**: `pnpm dev:web`
+- **Build**: `pnpm build:web`
 
-## 🚀 Quick Start
+### ⚡ `packages/my-functions`
+AWS SAM serverless functions for cashback callbacks, email callbacks, and other integrations.
+
+- **Technology**: AWS SAM, TypeScript, AWS Lambda
+- **Development**: `pnpm dev:functions`
+- **Build**: `pnpm build:functions`
+
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- pnpm (recommended) or npm
-- PostgreSQL 14+
-- Docker (optional)
+- Node.js 20+
+- pnpm 8+
+- PostgreSQL (for my-service)
+- AWS CLI (for my-functions deployment)
 
 ### Installation
 
-1. **Clone the repository**
+```bash
+# Clone the repository
+git clone <your-private-repo-url>
+cd my-private-workspace
 
-   ```bash
-   git clone <repository-url>
-   cd my-workspace
-   ```
+# Install all dependencies
+pnpm install
 
-2. **Install dependencies**
+# Build mint-ui first (required for other packages)
+pnpm build:mint-ui
+### Development
 
-   ```bash
-   pnpm install
-   ```
+```bash
+# Start all services
+pnpm dev:all
 
-3. **Environment setup**
+# Or start services individually
+pnpm dev:mint-ui    # Storybook on http://localhost:6006
+pnpm dev:service    # GraphQL API on http://localhost:3020
+pnpm dev:web        # Next.js app on http://localhost:3000
+pnpm dev:functions  # AWS SAM local API
+```
 
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+### Building
 
-4. **Database setup**
+```bash
+# Build all packages
+pnpm build:all
 
-   ```bash
-   cd my-service
-   pnpm prisma migrate dev
-   pnpm seed
-   ```
+# Or build packages individually
+pnpm build:mint-ui
+pnpm build:service
+pnpm build:web
+pnpm build:functions
+```
 
-5. **Start services**
+### Testing
 
-   ```bash
-   # Terminal 1 - Backend
-   cd my-service
-   pnpm dev
+```bash
+# Test all packages
+pnpm test:all
 
-   # Terminal 2 - Frontend
-   cd my-web
-   pnpm dev
+# Run specific tests
+pnpm test:service
+pnpm test:web
+```
 
-   # Terminal 3 - Component Library (optional)
-   cd mint-ui
-   pnpm storybook
-   ```
+## Development Workflow
 
-## 📁 Project Structure
+### Making Changes to mint-ui
+
+When you make changes to `packages/mint-ui`, they will be automatically reflected in `packages/my-web` thanks to the workspace dependency setup. No need to rebuild and reinstall!
+
+1. Make your changes in `packages/mint-ui`
+2. The changes will be hot-reloaded in `packages/my-web`
+3. Build mint-ui when ready: `pnpm build:mint-ui`
+
+### Database Changes
+
+1. Update schema in `packages/my-service/zenstack/*.zmodel`
+2. Generate Prisma client: `pnpm gen:prisma`
+3. Create and run migrations as needed
+
+### GraphQL Changes
+
+1. Make changes to GraphQL schema in `packages/my-service`
+2. Generate types for frontend: `pnpm gen:graphql`
+
+## Scripts Reference
+
+### Root Level Scripts
+
+```bash
+# Development
+pnpm dev:mint-ui    # Start Storybook
+pnpm dev:service    # Start GraphQL API
+pnpm dev:web        # Start Next.js app
+pnpm dev:functions  # Start AWS SAM local
+pnpm dev:all        # Start service + web concurrently
+
+# Building
+pnpm build:mint-ui
+pnpm build:service
+pnpm build:web
+pnpm build:functions
+pnpm build:all      # Build all packages
+
+# Testing & Quality
+pnpm test:all       # Run all tests
+pnpm lint:all       # Lint all packages
+pnpm typecheck:all  # Type check all packages
+
+# Code Generation
+pnpm gen:graphql    # Generate GraphQL types
+pnpm gen:prisma     # Generate Prisma client
+
+# Maintenance
+pnpm clean          # Clean all build artifacts
+pnpm fresh-install  # Clean install from scratch
+```
+
+## Project Structure
+
+```
+my-private-workspace/
+├── packages/
+│   ├── mint-ui/           # Private UI component library
+│   ├── my-service/        # NestJS GraphQL API
+│   ├── my-web/           # Next.js web application
+│   └── my-functions/     # AWS SAM serverless functions
+├── .github/
+│   └── workflows/        # GitHub Actions CI/CD
+├── package.json          # Root package with workspace scripts
+├── pnpm-workspace.yaml   # pnpm workspace configuration
+├── turbo.json           # Turbo build configuration
+└── README.md            # This file
+```
+
+## Features
+
+### Cashback Website Features
+
+- User registration and authentication (AWS Cognito)
+- Advertiser search and browsing
+- Cashback tracking and management  
+- Wallet and transaction history
+- Withdrawal processing
+- Admin dashboard for management
+
+### Technical Features
+
+- **Hot Reloading**: Changes in mint-ui instantly reflect in my-web
+- **Type Safety**: End-to-end TypeScript with GraphQL code generation
+- **Monorepo Benefits**: Shared tooling, atomic commits, simplified CI/CD
+- **Modern Stack**: React 19, Next.js 15, NestJS 9, pnpm workspaces
+
+## Deployment
+
+The GitHub Actions workflow automatically deploys:
+
+- **my-service** → AWS ECS
+- **my-web** → Your hosting platform  
+- **my-functions** → AWS Lambda
+
+See `.github/workflows/ci.yml` for deployment configuration.
+
+## Contributing
+
+1. Create a feature branch from `main`
+2. Make your changes
+3. Ensure all tests pass: `pnpm test:all`
+4. Ensure no type errors: `pnpm typecheck:all`
+5. Create a pull request
+
+## Environment Variables
+
+Update environment variables in:
+- `packages/my-service/.env` (see `.env.template`)
+- `packages/my-web/.env.local` (see `.env.example`)
+
+## Support
+
+For questions or issues, please create an issue in this repository.
 
 ```
 my-workspace/
