@@ -1,0 +1,18 @@
+query GetAdvertiser($advertiserId: String) {
+  advertiser(advertiserId: $advertiserId) {
+    id
+    name
+    description
+    logo {
+      url
+    }
+    statusId
+    commission {
+      id
+      commission
+      dayToValidate
+      dayToPayout
+      url
+    }
+  }
+}

@@ -1,0 +1,18 @@
+query GetInitialData {
+  site {
+    id
+    name
+    logo {
+      id
+      url
+    }
+  }
+  languages(isSupported: true) {
+    id
+  }
+  advertiserProviderReferences {
+    advertiserId
+    providerId
+    providerReferenceId
+  }
+}

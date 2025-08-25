@@ -1,0 +1,536 @@
+import "./company.zmodel"
+import "./media.zmodel"
+import "./language.zmodel"
+import "./auth.zmodel"
+import "./currency.zmodel"
+import "./role.zmodel"
+import "./bonus.zmodel"
+
+enum AffiliateProviderEnum {
+  InvolveAsia
+}
+
+enum AdvertiserCommissionStatusEnum {
+  Inactive
+  Active
+}
+
+enum AdvertiserCommissionRowStatusEnum {
+  Inactive
+  Active
+}
+
+enum AdvertiserStatusEnum {
+  Inactive
+  Active
+}
+
+enum AffiliateProviderStatusEnum {
+  Inactive
+  Active
+}
+
+enum CompanyAdvertiserStatusEnum {
+  Inactive
+  Active
+}
+
+enum AdvertiserCommissionTypeEnum {
+  Percentage
+  Fixed
+}
+
+enum AdvertiserCommissionShareTypeEnum {
+  Percentage
+  Fixed
+}
+
+enum AdvertiserCampaignStatusEnum {
+  Inactive
+  Active
+}
+
+enum AdvertiserCategoryEnum {
+  DigitalServices
+  Electronics
+  Fashion
+  Finance
+  Food_Grocery
+  Health_Beauty
+  Home_Living
+  Marketplace
+  Others
+  Travel
+}
+
+enum UserCashbackStatusEnum {
+  Pending
+  Approved
+  Rejected
+}
+
+model AffiliateProviderStatus {
+  id          AffiliateProviderStatusEnum       @id
+  description String?
+  metadatas   AffiliateProviderStatusMetadata[]
+  providers   AffiliateProvider[]
+
+  @@allow('read', auth() != null)
+}
+
+model AffiliateProviderStatusMetadata {
+  statusId   AffiliateProviderStatusEnum
+  status     AffiliateProviderStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model AffiliateProvider {
+  id                    AffiliateProviderEnum         @id
+  name                  String
+  statusId              AffiliateProviderStatusEnum   @default(Active)
+  status                AffiliateProviderStatus       @relation(fields: [statusId], references: [id])
+  advertisers           Advertiser[]
+  advertiserCampaigns   AdvertiserCampaign[]
+  advertiserCommissions AdvertiserCommission[]
+  createdAt             DateTime                      @default(now())
+  updatedAt             DateTime                      @updatedAt
+  advertiserReferences  AdvertiserProviderReference[]
+
+  @@index([statusId])
+  @@allow('read', true)
+  @@allow('update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserStatus {
+  id          AdvertiserStatusEnum       @id
+  description String?
+  metadatas   AdvertiserStatusMetadata[]
+  advertisers Advertiser[]
+
+  @@allow('read', true)
+  @@allow('update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserStatusMetadata {
+  statusId   AdvertiserStatusEnum
+  status     AdvertiserStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', true)
+}
+
+model Advertiser {
+  id                 String                        @id @default(cuid())
+  companyAdvertisers CompanyAdvertiser[]
+  campaigns          AdvertiserCampaign[]
+  providers          AffiliateProvider[]
+  commissions        AdvertiserCommission[]
+  metadatas          AdvertiserMetadata[]
+  createdAt          DateTime                      @default(now())
+  updatedAt          DateTime                      @updatedAt
+  slug               String
+  logoId             String?
+  logo               Media?                        @relation(fields: [logoId], references: [id])
+  statusId           AdvertiserStatusEnum          @default(Inactive)
+  status             AdvertiserStatus              @relation(fields: [statusId], references: [id])
+  popularity         Int                           @default(10)
+  userClicks         UserAdvertiserClick[]
+  userCashbacks      UserCashback[]
+  notes              String?
+  categories         AdvertiserCategory[]
+  providerReferences AdvertiserProviderReference[]
+
+  @@index([slug])
+  @@index([statusId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserMetadata {
+  advertiserId String
+  advertiser   Advertiser   @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+  languageId   LanguageEnum
+  name         String
+  description  String
+
+  @@id([advertiserId, languageId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserProviderReference {
+  advertiserId        String
+  advertiser          Advertiser            @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+  providerId          AffiliateProviderEnum
+  provider            AffiliateProvider     @relation(fields: [providerId], references: [id])
+  providerReferenceId String
+
+  @@id([advertiserId, providerId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCommissionShareType {
+  id          AdvertiserCommissionShareTypeEnum       @id
+  description String?
+  metadatas   AdvertiserCommissionShareTypeMetadata[]
+  commissions AdvertiserCommission[]
+
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCommissionShareTypeMetadata {
+  typeId     AdvertiserCommissionShareTypeEnum
+  type       AdvertiserCommissionShareType     @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([typeId, languageId])
+  @@allow('read', true)
+}
+
+model AdvertiserCommissionStatus {
+  id          AdvertiserCommissionStatusEnum       @id
+  description String?
+  metadatas   AdvertiserCommissionStatusMetadata[]
+  commissions AdvertiserCommission[]
+
+  @@allow('read', true)
+  @@allow('update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCommissionStatusMetadata {
+  statusId   AdvertiserCommissionStatusEnum
+  status     AdvertiserCommissionStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', true)
+}
+
+model AdvertiserCommission {
+  id                           String                            @id @default(cuid())
+  advertiserId                 String
+  advertiser                   Advertiser                        @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+  providerReferenceId          String
+  providerId                   AffiliateProviderEnum
+  provider                     AffiliateProvider                 @relation(fields: [providerId], references: [id])
+  commissionShare              Float                             @default(10)
+  commissionShareTypeId        AdvertiserCommissionShareTypeEnum
+  commissionShareType          AdvertiserCommissionShareType     @relation(fields: [commissionShareTypeId], references: [id])
+  commissionRows               AdvertiserCommissionRow[]
+  companyAdvertiserCommissions CompanyAdvertiserCommission[]
+  dayToValidate                Int
+  dayToPayout                  Int
+  url                          String
+  statusId                     AdvertiserCommissionStatusEnum    @default(Inactive)
+  status                       AdvertiserCommissionStatus        @relation(fields: [statusId], references: [id])
+
+  @@unique([advertiserId, providerId, providerReferenceId])
+  @@index([statusId])
+  @@index([providerId, providerReferenceId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCommissionType {
+  id                              AdvertiserCommissionTypeEnum       @id
+  description                     String?
+  metadatas                       AdvertiserCommissionTypeMetadata[]
+  commissionRows                  AdvertiserCommissionRow[]
+  companyAdvertiserCommissions    CompanyAdvertiserCommission[]
+  companyAdvertiserCommissionRows CompanyAdvertiserCommissionRow[]
+
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCommissionTypeMetadata {
+  typeId     AdvertiserCommissionTypeEnum
+  type       AdvertiserCommissionType     @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([typeId, languageId])
+  @@allow('read', true)
+}
+
+model AdvertiserCommissionRow {
+  id                              String                            @id @default(cuid())
+  providerReferenceId             String
+  advertiserCommissionId          String
+  advertiserCommission            AdvertiserCommission              @relation(fields: [advertiserCommissionId], references: [id], onDelete: Cascade)
+  commission                      Float
+  typeId                          AdvertiserCommissionTypeEnum
+  type                            AdvertiserCommissionType          @relation(fields: [typeId], references: [id])
+  companyAdvertiserCommissionRows CompanyAdvertiserCommissionRow[]
+  metadatas                       AdvertiserCommissionRowMetadata[]
+  createdAt                       DateTime                          @default(now())
+  updatedAt                       DateTime                          @updatedAt
+  statusId                        AdvertiserCommissionRowStatusEnum @default(Inactive)
+  status                          AdvertiserCommissionRowStatus     @relation(fields: [statusId], references: [id])
+
+  @@index([advertiserCommissionId])
+  @@index([providerReferenceId])
+  @@unique([advertiserCommissionId, providerReferenceId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCommissionRowStatus {
+  id             AdvertiserCommissionRowStatusEnum       @id
+  description    String?
+  metadatas      AdvertiserCommissionRowStatusMetadata[]
+  commissionRows AdvertiserCommissionRow[]
+
+  @@allow('read, update', true)
+}
+
+model AdvertiserCommissionRowStatusMetadata {
+  statusId   AdvertiserCommissionRowStatusEnum
+  status     AdvertiserCommissionRowStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', true)
+}
+
+
+model AdvertiserCommissionRowMetadata {
+  commissionRowId String
+  commissionRow   AdvertiserCommissionRow @relation(fields: [commissionRowId], references: [id], onDelete: Cascade)
+  languageId      LanguageEnum
+  name            String
+
+  @@id([commissionRowId, languageId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+
+model AdvertiserCategory {
+  id          AdvertiserCategoryEnum       @id
+  description String?
+  metadatas   AdvertiserCategoryMetadata[]
+  advertisers Advertiser[]
+
+  @@allow('read', true)
+  @@allow('update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCategoryMetadata {
+  categoryId AdvertiserCategoryEnum
+  category   AdvertiserCategory     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([categoryId, languageId])
+  @@allow('read', true)
+}
+
+model AdvertiserCampaignStatus {
+  id          AdvertiserCampaignStatusEnum       @id
+  description String?
+  metadatas   AdvertiserCampaignStatusMetadata[]
+  campaigns   AdvertiserCampaign[]
+
+  @@allow('read', true)
+  @@allow('update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCampaignStatusMetadata {
+  statusId   AdvertiserCampaignStatusEnum
+  status     AdvertiserCampaignStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', true)
+}
+
+model AdvertiserCampaign {
+  id                  String                       @id @default(cuid())
+  advertiserId        String
+  advertiser          Advertiser                   @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+  providerReferenceId String
+  providerId          AffiliateProviderEnum
+  provider            AffiliateProvider            @relation(fields: [providerId], references: [id])
+  createdAt           DateTime                     @default(now())
+  updatedAt           DateTime                     @updatedAt
+  metadatas           AdvertiserCampaignMetadata[]
+  voucherCodes        String[]
+  startDate           DateTime
+  endDate             DateTime?
+  statusId            AdvertiserCampaignStatusEnum @default(Inactive)
+  status              AdvertiserCampaignStatus     @relation(fields: [statusId], references: [id])
+  url                 String
+  slug                String                       @unique
+
+  @@unique([advertiserId, providerId, providerReferenceId])
+  @@unique([providerId, providerReferenceId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model AdvertiserCampaignMetadata {
+  advertiserCampaignId String
+  advertiserCampaign   AdvertiserCampaign @relation(fields: [advertiserCampaignId], references: [id], onDelete: Cascade)
+  languageId           LanguageEnum
+  name                 String
+  description          String
+  bannerId             String?
+  banner               Media?             @relation(fields: [bannerId], references: [id])
+
+  @@id([advertiserCampaignId, languageId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model CompanyAdvertiserStatus {
+  id                 CompanyAdvertiserStatusEnum       @id
+  description        String?
+  metadatas          CompanyAdvertiserStatusMetadata[]
+  companyAdvertisers CompanyAdvertiser[]
+
+  @@allow('read', true)
+  @@allow('update', auth().roles?[permissions?[name == ManageAdvertiser]])
+}
+
+model CompanyAdvertiserStatusMetadata {
+  statusId   CompanyAdvertiserStatusEnum
+  status     CompanyAdvertiserStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', true)
+}
+
+model CompanyAdvertiser {
+  id             String                           @id @default(cuid())
+  companyId      String
+  company        Company                          @relation(fields: [companyId], references: [id])
+  advertiserId   String
+  advertiser     Advertiser                       @relation(fields: [advertiserId], references: [id])
+  commissions    CompanyAdvertiserCommission[]
+  commissionRows CompanyAdvertiserCommissionRow[]
+  statusId       CompanyAdvertiserStatusEnum
+  status         CompanyAdvertiserStatus          @relation(fields: [statusId], references: [id])
+  createdAt      DateTime                         @default(now())
+  updatedAt      DateTime                         @updatedAt
+
+  @@unique([companyId, advertiserId])
+  @@index([statusId])
+  @@allow('read', true)
+  @@allow('create,update', auth() != null)
+}
+
+model CompanyAdvertiserCommission {
+  id                     String                       @id @default(cuid())
+  companyAdvertiserId    String
+  companyAdvertiser      CompanyAdvertiser            @relation(fields: [companyAdvertiserId], references: [id])
+  advertiserCommissionId String
+  advertiserCommission   AdvertiserCommission         @relation(fields: [advertiserCommissionId], references: [id])
+  commission             Float
+  typeId                 AdvertiserCommissionTypeEnum
+  type                   AdvertiserCommissionType     @relation(fields: [typeId], references: [id])
+  createdAt              DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
+
+  @@unique([companyAdvertiserId, advertiserCommissionId])
+  @@allow('read', true)
+  @@allow('create,update', auth() != null)
+}
+
+model CompanyAdvertiserCommissionRow {
+  id                        String                       @id @default(cuid())
+  companyAdvertiserId       String
+  companyAdvertiser         CompanyAdvertiser            @relation(fields: [companyAdvertiserId], references: [id])
+  advertiserCommissionRowId String
+  advertiserCommissionRow   AdvertiserCommissionRow      @relation(fields: [advertiserCommissionRowId], references: [id])
+  commission                Float
+  typeId                    AdvertiserCommissionTypeEnum
+  type                      AdvertiserCommissionType     @relation(fields: [typeId], references: [id])
+  createdAt                 DateTime                     @default(now())
+  updatedAt                 DateTime                     @updatedAt
+
+  @@unique([companyAdvertiserId, advertiserCommissionRowId])
+  @@allow('read', true)
+  @@allow('create,update', auth() != null)
+}
+
+model UserAdvertiserClick {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  advertiserId String
+  advertiser   Advertiser @relation(fields: [advertiserId], references: [id])
+  ipAddress    String
+  referrer     String
+  userAgent    String
+  clickedAt    DateTime   @default(now())
+
+  @@index([userId])
+  @@index([advertiserId])
+  @@allow('read', true)
+  @@allow('create,update', auth() != null)
+}
+
+model UserCashbackStatus {
+  id            UserCashbackStatusEnum       @id
+  description   String?
+  metadatas     UserCashbackStatusMetadata[]
+  userCashbacks UserCashback[]
+
+  @@allow('read', auth() != null)
+}
+
+model UserCashbackStatusMetadata {
+  statusId   UserCashbackStatusEnum
+  status     UserCashbackStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model UserCashback {
+  id                  String                 @id @default(cuid())
+  userId              String
+  user                User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  advertiserId        String
+  advertiser          Advertiser             @relation(fields: [advertiserId], references: [id])
+  providerReferenceId String
+  advertiserOrderId   String
+  amount              Float
+  netAmount           Float
+  share               Float
+  currencyId          CurrencyEnum
+  currency            Currency               @relation(fields: [currencyId], references: [id])
+  statusId            UserCashbackStatusEnum @default(Pending)
+  status              UserCashbackStatus     @relation(fields: [statusId], references: [id])
+  
+  // Bonus relations
+  bonusTransactions   BonusTransaction[]     @relation("BonusSourceCashback")
+
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  @@index([userId])
+  @@index([advertiserId])
+  @@index([statusId])
+  @@unique([advertiserOrderId])
+  @@unique([providerReferenceId])
+  @@allow('read', true)
+  @@allow('create,update', auth() != null)
+}

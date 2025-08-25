@@ -1,0 +1,135 @@
+import "./media.zmodel"
+import "./auth.zmodel"
+import "./company.zmodel"
+import "./language.zmodel"
+import "./role.zmodel"
+
+enum PostStatusEnum {
+  Draft
+  Published
+}
+
+enum PostTypeEnum {
+  Page
+  Blog
+}
+
+model PostType {
+  id           PostTypeEnum       @id
+  metadatas    PostTypeMetadata[]
+  posts        Post[]
+  postVersions PostVersion[]
+
+  @@allow('read,update', true)
+}
+
+model PostTypeMetadata {
+  postTypeId PostTypeEnum
+  postType   PostType     @relation(fields: [postTypeId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([postTypeId, languageId])
+  @@allow('read', true)
+}
+
+model PostStatus {
+  id           PostStatusEnum       @id
+  metadatas    PostStatusMetadata[]
+  posts        Post[]
+  postVersions PostVersion[]
+
+  @@allow('read,update', true)
+}
+
+model PostStatusMetadata {
+  postStatusId PostStatusEnum
+  postStatus   PostStatus     @relation(fields: [postStatusId], references: [id])
+  languageId   LanguageEnum
+  name         String
+
+  @@id([postStatusId, languageId])
+  @@allow('read', true)
+}
+
+model Post {
+  id              String          @id @default(cuid())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  postDate        DateTime        @default(now())
+  slug            String          @unique
+  title           String          @length(1, 256)
+  content         String
+  featuredImageId String?
+  featuredImage   Media?          @relation(name: "featureImages", fields: [featuredImageId], references: [id], onDelete: SetNull)
+  statusId        PostStatusEnum?
+  status          PostStatus?     @relation(fields: [statusId], references: [id])
+  editorVersion   Int             @default(0)
+  description     String?         @length(0, 512)
+  ogTitle         String?         @length(0, 256)
+  ogDescription   String?         @length(0, 512)
+  ogImageId       String?
+  ogImage         Media?          @relation(name: "ogImages", fields: [ogImageId], references: [id], onDelete: SetNull)
+  versionHistory  PostVersion[]
+  tags            Tag[]
+  companyId       String?
+  company         Company?        @relation(fields: [companyId], references: [id])
+  authorId        String
+  author          User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postTypeId      PostTypeEnum    @default(Page)
+  postType        PostType        @relation(fields: [postTypeId], references: [id])
+
+  @@allow('create', auth().roles?[permissions?[name == ManagePost]])
+  @@allow('read', true)
+  @@allow('update,delete', auth().id == authorId && auth().roles?[permissions?[name == ManagePost]] && (companyId == null || company.users?[id == auth().id]))
+}
+
+model PostVersion {
+  id              String          @id @default(cuid())
+  version         Int             @default(1)
+  slug            String
+  postId          String
+  post            Post            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  title           String          @length(1, 256)
+  content         String
+  featuredImageId String?
+  featuredImage   Media?          @relation(name: "featureImages", fields: [featuredImageId], references: [id], onDelete: SetNull)
+  statusId        PostStatusEnum?
+  status          PostStatus?     @relation(fields: [statusId], references: [id])
+  editorVersion   Int             @default(0)
+  description     String?         @length(0, 512)
+  ogTitle         String?         @length(0, 256)
+  ogDescription   String?         @length(0, 512)
+  ogImageId       String?
+  ogImage         Media?          @relation(name: "ogImages", fields: [ogImageId], references: [id], onDelete: SetNull)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  postDate        DateTime        @default(now())
+  tags            Tag[]
+  companyId       String?
+  company         Company?        @relation(fields: [companyId], references: [id])
+  authorId        String
+  author          User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postTypeId      PostTypeEnum    @default(Page)
+  postType        PostType        @relation(fields: [postTypeId], references: [id])
+
+  @@index([postId, version])
+  @@allow('create', auth().roles?[permissions?[name == ManagePost]])
+  @@allow('read', true)
+  @@allow('update,delete', auth().id == authorId && auth().roles?[permissions?[name == ManagePost]] && (companyId == null || company.users?[id == auth().id]))
+}
+
+model Tag {
+  id           String        @id @default(cuid())
+  name         String        @unique
+  companyId    String
+  company      Company       @relation(fields: [companyId], references: [id])
+  posts        Post[]
+  postVersions PostVersion[]
+
+  @@index([companyId, name])
+  @@index([companyId])
+  @@allow('create,update', auth() != null && auth().roles?[permissions?[name == ManagePost]])
+  @@allow('delete', auth() != null && auth().roles?[permissions?[name == ManagePost]] && company.users?[id == auth().id])
+  @@allow('read', true)
+}

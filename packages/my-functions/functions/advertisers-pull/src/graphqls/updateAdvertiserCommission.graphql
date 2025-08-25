@@ -1,0 +1,15 @@
+mutation UpdateAdvertiserCommission($data: UpdateAdvertiserCommissionInput!) {
+  updateAdvertiserCommission(data: $data) {
+    id
+    commission
+    dayToValidate
+    dayToPayout
+    url
+    commissionRows {
+      id
+      name
+      commission
+      typeId
+    }
+  }
+}

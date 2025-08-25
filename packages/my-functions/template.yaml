@@ -1,0 +1,973 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  adam-affiliate-connector
+Globals:
+  Function:
+    Timeout: 30
+    Tracing: Active
+    LoggingConfig:
+      LogFormat: JSON
+  Api:
+    TracingEnabled: true
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - production
+  DomainName:
+    Type: String
+    Description: Domain name for the API (e.g., api.example.com)
+  EmailFeedbackDomainName:
+    Type: String
+    Description: Domain name for the API (e.g., api.example.com)
+  HostedZoneId:
+    Type: String
+    Description: Route53 Hosted Zone ID
+
+Resources:
+  FetchAdvertisersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "fetch-advertisers-v2-${Environment}"
+      CodeUri: ./functions/advertisers-pull/
+      Handler: src/fetch-advertisers.handler
+      Runtime: nodejs20.x
+      Timeout: 300
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          INVOLVEASIA_KEY: !Sub "{{resolve:ssm:/${Environment}/involveasia/key}}"
+          INVOLVEASIA_SECRET: !Sub "{{resolve:ssm:/${Environment}/involveasia/secret}}"
+          MEDIA_S3_BUCKET: !Sub "{{resolve:ssm:/${Environment}/media/bucket}}"
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+      Events:
+        DailySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 19 * * ? *) # Run daily at 6PM GMT
+            Description: Daily schedule to fetch advertiser
+            Enabled: !Equals [!Ref Environment, "production"]
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+                - ssm:GetParameters
+              Resource:
+                - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${Environment}/*"
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:PutObjectAcl
+              Resource:
+                - !Sub "arn:aws:s3:::{{resolve:ssm:/${Environment}/media/bucket}}/*"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        Loader:
+          - .prisma=file
+          - .so.node=file
+        AssetNames: "[name]"
+        EntryPoints:
+          - ./src/fetch-advertisers.ts
+
+  # New Lambda function to fetch advertiser campaigns with daily cronjob
+  FetchAdvertiserCampaignsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "fetch-advertiser-campaigns-${Environment}"
+      CodeUri: ./functions/advertisers-pull/
+      Handler: src/fetch-advertiser-campaigns.handler
+      Runtime: nodejs20.x
+      Timeout: 300
+      MemorySize: 512
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          INVOLVEASIA_KEY: !Sub "{{resolve:ssm:/${Environment}/involveasia/key}}"
+          INVOLVEASIA_SECRET: !Sub "{{resolve:ssm:/${Environment}/involveasia/secret}}"
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+          ALERT_SNS_TOPIC_ARN: !Sub "{{resolve:ssm:/${Environment}/alert/sns_topic_arn}}"
+          DEEPL_API_KEY: !Sub "{{resolve:ssm:/${Environment}/deepl/api_key}}"
+          GENERATE_POST_LAMBDA_NAME: !Ref PostGeneratorFunction
+      Events:
+        DailySchedule:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 18 * * ? *) # Run daily at 6PM GMT
+            Description: Daily schedule to fetch advertiser campaigns
+            Enabled: !Equals [!Ref Environment, "production"]
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !Sub "{{resolve:ssm:/${Environment}/alert/sns_topic_name}}"
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+                - ssm:GetParameters
+              Resource:
+                - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${Environment}/*"
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - !GetAtt PostGeneratorFunction.Arn
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        Loader:
+          - .prisma=file
+          - .so.node=file
+        AssetNames: "[name]"
+        EntryPoints:
+          - ./src/fetch-advertiser-campaigns.ts
+  # InvolveAsia Post Back Resources
+  PostbackBucket:
+    Type: "AWS::S3::Bucket"
+    DependsOn: PostbackNotificationTopic
+    Properties:
+      BucketName: !Sub "cashback-callback-log-${Environment}-${AWS::Region}"
+      VersioningConfiguration:
+        Status: Enabled
+      NotificationConfiguration:
+        TopicConfigurations:
+          - Topic: !Ref PostbackNotificationTopic
+            Event: s3:ObjectCreated:*
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: suffix
+                    Value: .json
+  PostbackDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "cashback-callback-log-dlq-${Environment}"
+      MessageRetentionPeriod: 1209600 # 14 days
+      VisibilityTimeout: 30
+  PostbackFunction:
+    Type: AWS::Serverless::Function
+    DependsOn:
+      - PostbackNotificationTopic
+    Properties:
+      FunctionName: !Sub "cashback-callback-${Environment}"
+      CodeUri: ./functions/advertisers-pull/
+      Handler: src/callback.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+      DeadLetterQueue:
+        Type: SQS
+        TargetArn: !GetAtt PostbackDLQ.Arn
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:GetObjectVersion
+              Resource: !Sub "arn:aws:s3:::${PostbackBucket}/*"
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage
+              Resource: !GetAtt PostbackDLQ.Arn
+            - Effect: Allow
+              Action:
+                - sns:Subscribe
+                - sns:Receive
+              Resource: !Ref PostbackNotificationTopic
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        Loader:
+          - .prisma=file
+          - .so.node=file
+        AssetNames: "[name]"
+        EntryPoints:
+          - ./src/callback.ts
+  PostbackFunctionPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - PostbackFunction
+      - PostbackBucket
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref PostbackFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !GetAtt PostbackBucket.Arn
+  PostbackApi:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Name: !Sub "cashback-callback-${Environment}"
+      Description: "API for handling affiliate provider callback data"
+  PostbackResource:
+    Type: "AWS::ApiGateway::Resource"
+    DependsOn:
+      - PostbackApi
+    Properties:
+      RestApiId: !Ref PostbackApi
+      ParentId: !GetAtt PostbackApi.RootResourceId
+      PathPart: "callback"
+  PostbackMethod:
+    Type: "AWS::ApiGateway::Method"
+    DependsOn:
+      - PostbackApiRole
+      - PostbackResource
+    Properties:
+      RestApiId: !Ref PostbackApi
+      ResourceId: !Ref PostbackResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      RequestParameters:
+        method.request.querystring.conversionId: false
+      Integration:
+        Type: AWS
+        Credentials: !GetAtt PostbackApiRole.Arn
+        IntegrationHttpMethod: PUT
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:s3:path/${PostbackBucket}/{filename}.json"
+        RequestParameters:
+          integration.request.path.filename: "method.request.querystring.conversionId"
+        RequestTemplates:
+          application/json: |
+            {
+              "body": {
+                "advSub": "$input.params('advSub')",
+                "advSub2": "$input.params('advSub2')",
+                "advSub3": "$input.params('advSub3')",
+                "advSub4": "$input.params('advSub4')",
+                "advSub5": "$input.params('advSub5')",
+                "affSub": "$input.params('affSub')",
+                "affSub2": "$input.params('affSub2')",
+                "affSub3": "$input.params('affSub3')",
+                "affSub4": "$input.params('affSub4')",
+                "conversionCurrency": "$input.params('conversionCurrency')",
+                "conversionId": "$input.params('conversionId')",
+                "datetimeConversion": "$input.params('datetimeConversion')",
+                "myrPayout": "$input.params('myrPayout')",
+                "myrSaleAmount": "$input.params('myrSaleAmount')",
+                "offerId": "$input.params('offerId')",
+                "offerName": "$input.params('offerName')",
+                "orderId": "$input.params('orderId')",
+                "payoutLocal": "$input.params('payoutLocal')",
+                "saleAmountLocal": "$input.params('saleAmountLocal')",
+                "usdPayout": "$input.params('usdPayout')",
+                "usdSaleAmount": "$input.params('usdSaleAmount')",
+                "status": "$input.params('status')",
+                "offerStatus": "$input.params('offerStatus')"
+              }
+            }
+        IntegrationResponses:
+          - StatusCode: "200"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "success",
+                  "message": "Data stored successfully"
+                }
+          - StatusCode: "400"
+            SelectionPattern: "4\\d{2}"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "error",
+                  "message": "Bad request"
+                }
+          - StatusCode: "500"
+            SelectionPattern: "5\\d{2}"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "error",
+                  "message": "Internal server error"
+                }
+      MethodResponses:
+        - StatusCode: "200"
+          ResponseModels:
+            application/json: "Empty"
+        - StatusCode: "400"
+          ResponseModels:
+            application/json: "Error"
+        - StatusCode: "500"
+          ResponseModels:
+            application/json: "Error"
+  PostbackMethodGet:
+    Type: "AWS::ApiGateway::Method"
+    DependsOn:
+      - PostbackApiRole
+      - PostbackResource
+    Properties:
+      RestApiId: !Ref PostbackApi
+      ResourceId: !Ref PostbackResource
+      HttpMethod: GET
+      AuthorizationType: NONE
+      RequestParameters:
+        method.request.querystring.conversionId: false
+      Integration:
+        Type: AWS
+        Credentials: !GetAtt PostbackApiRole.Arn
+        IntegrationHttpMethod: PUT
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:s3:path/${PostbackBucket}/{filename}.json"
+        RequestParameters:
+          integration.request.path.filename: "method.request.querystring.conversionId"
+        RequestTemplates:
+          application/json: |
+            {
+              "body": {
+                "advSub": "$input.params('advSub')",
+                "advSub2": "$input.params('advSub2')",
+                "advSub3": "$input.params('advSub3')",
+                "advSub4": "$input.params('advSub4')",
+                "advSub5": "$input.params('advSub5')",
+                "affSub": "$input.params('affSub')",
+                "affSub2": "$input.params('affSub2')",
+                "affSub3": "$input.params('affSub3')",
+                "affSub4": "$input.params('affSub4')",
+                "conversionCurrency": "$input.params('conversionCurrency')",
+                "conversionId": "$input.params('conversionId')",
+                "datetimeConversion": "$input.params('datetimeConversion')",
+                "myrPayout": "$input.params('myrPayout')",
+                "myrSaleAmount": "$input.params('myrSaleAmount')",
+                "offerId": "$input.params('offerId')",
+                "offerName": "$input.params('offerName')",
+                "orderId": "$input.params('orderId')",
+                "payoutLocal": "$input.params('payoutLocal')",
+                "saleAmountLocal": "$input.params('saleAmountLocal')",
+                "usdPayout": "$input.params('usdPayout')",
+                "usdSaleAmount": "$input.params('usdSaleAmount')",
+                "status": "$input.params('status')",
+                "offerStatus": "$input.params('offerStatus')"
+              }
+            }
+        IntegrationResponses:
+          - StatusCode: "200"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "success",
+                  "message": "Data stored successfully"
+                }
+          - StatusCode: "400"
+            SelectionPattern: "4\\d{2}"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "error",
+                  "message": "Bad request"
+                }
+          - StatusCode: "500"
+            SelectionPattern: "5\\d{2}"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "error",
+                  "message": "Internal server error"
+                }
+      MethodResponses:
+        - StatusCode: "200"
+          ResponseModels:
+            application/json: "Empty"
+        - StatusCode: "400"
+          ResponseModels:
+            application/json: "Error"
+        - StatusCode: "500"
+          ResponseModels:
+            application/json: "Error"
+  PostbackApiRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub "cashback-callback-api-role-${Environment}-${AWS::Region}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: S3PutAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "s3:PutObject"
+                Resource: !Sub "${PostbackBucket.Arn}/*"
+              - Effect: Allow
+                Action: "lambda:InvokeFunction"
+                Resource: !GetAtt PostbackFunction.Arn
+  PostbackApiDeployment:
+    Type: "AWS::ApiGateway::Deployment"
+    DependsOn:
+      - PostbackMethod
+      - PostbackMethodGet
+    Properties:
+      RestApiId: !Ref PostbackApi
+  PostbackApiStage:
+    Type: "AWS::ApiGateway::Stage"
+    DependsOn:
+      - PostbackApiDeployment
+    Properties:
+      StageName: "prod"
+      DeploymentId: !Ref PostbackApiDeployment
+      RestApiId: !Ref PostbackApi
+  PostbackApiCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZoneId
+      Tags:
+        - Key: Name
+          Value: !Sub "cashback-callback-api-certificate-${Environment}"
+        - Key: Environment
+          Value: !Ref Environment
+  PostbackApiDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref DomainName
+      RegionalCertificateArn: !Ref PostbackApiCertificate
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      SecurityPolicy: TLS_1_2
+  PostbackApiMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    DependsOn:
+      - PostbackApi
+      - PostbackApiStage
+      - PostbackApiDomainName
+    Properties:
+      DomainName: !Ref DomainName
+      RestApiId: !Ref PostbackApi
+      Stage: !Ref PostbackApiStage
+  PostbackApiDnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt PostbackApiDomainName.RegionalDomainName
+        HostedZoneId: !GetAtt PostbackApiDomainName.RegionalHostedZoneId
+  PostbackNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "cashback-callback-notifications-${Environment}"
+  PostbackBucketToSNSPermission:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref PostbackNotificationTopic
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowS3ToPublishToSNS
+            Effect: Allow
+            Principal:
+              Service: s3.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref PostbackNotificationTopic
+            Condition:
+              StringEquals:
+                "AWS:SourceAccount": !Ref "AWS::AccountId"
+              ArnLike:
+                "AWS:SourceArn": !Sub "arn:aws:s3:::cashback-callback-log-${Environment}"
+  PostbackBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn:
+      - PostbackBucket
+      - PostbackNotificationTopic
+      - PostbackTopicPolicy
+    Properties:
+      Bucket: !Ref PostbackBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPublishToSNS
+            Effect: Allow
+            Principal:
+              Service: s3.amazonaws.com
+            Action:
+              - s3:PutObject
+              - s3:PutObjectAcl
+            Resource: !Sub "${PostbackBucket.Arn}/*"
+  PostbackEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref PostbackNotificationTopic
+      Protocol: email
+      Endpoint: !Sub "{{resolve:ssm:/${Environment}/developer/email}}"
+  PostbackLambdaSubscription:
+    Type: AWS::SNS::Subscription
+    DependsOn:
+      - PostbackFunction
+      - PostbackFunctionSNSPermission
+    Properties:
+      Protocol: lambda
+      Endpoint: !GetAtt PostbackFunction.Arn
+      TopicArn: !Ref PostbackNotificationTopic
+  PostbackTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    DependsOn:
+      - PostbackNotificationTopic
+      - PostbackBucket
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowS3Notifications
+            Effect: Allow
+            Principal:
+              Service: s3.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref PostbackNotificationTopic
+            Condition:
+              StringEquals:
+                "AWS:SourceAccount": !Ref "AWS::AccountId"
+              ArnLike:
+                "AWS:SourceArn": !Sub "arn:aws:s3:::${PostbackBucket}"
+      Topics:
+        - !Ref PostbackNotificationTopic
+  PostbackFunctionSNSPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - PostbackFunction
+      - PostbackNotificationTopic
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref PostbackFunction
+      Principal: sns.amazonaws.com
+      SourceArn: !Ref PostbackNotificationTopic
+  # Email Feedback Resources
+  EmailFeedbackQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "email-feedback-${Environment}"
+      VisibilityTimeout: 30
+      MessageRetentionPeriod: 345600
+  EmailFeedbackDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "email-feedback-dlq-${Environment}"
+      MessageRetentionPeriod: 1209600
+  EmailFeedbackFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "email-feedback-${Environment}"
+      CodeUri: ./functions/email-feedback/
+      Handler: src/email-feedback.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt EmailFeedbackQueue.Arn
+            BatchSize: 10
+            MaximumBatchingWindowInSeconds: 30
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt EmailFeedbackQueue.QueueName
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - ./src/email-feedback.ts
+  EmailFeedbackApi:
+    Type: "AWS::ApiGateway::RestApi"
+    Properties:
+      Name: !Sub "email-feedback-${Environment}"
+      Description: "API for handling email feedback"
+  EmailFeedbackApiRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: !Sub "email-feedback-api-role-${Environment}-${AWS::Region}"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+      Policies:
+        - PolicyName: SQSPutAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - sqs:SendMessage
+                  - sqs:GetQueueUrl
+                Resource: !GetAtt EmailFeedbackQueue.Arn
+  EmailFeedbackApiResource:
+    Type: "AWS::ApiGateway::Resource"
+    Properties:
+      RestApiId: !Ref EmailFeedbackApi
+      ParentId: !GetAtt EmailFeedbackApi.RootResourceId
+      PathPart: "callback"
+  EmailFeedbackApiMethod:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      RestApiId: !Ref EmailFeedbackApi
+      ResourceId: !Ref EmailFeedbackApiResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      RequestParameters:
+        method.request.querystring.provider: false
+      Integration:
+        Type: AWS
+        Credentials: !GetAtt EmailFeedbackApiRole.Arn
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:sqs:path/${AWS::AccountId}/${EmailFeedbackQueue.QueueName}"
+        RequestParameters:
+          integration.request.header.Content-Type: "'application/x-www-form-urlencoded'"
+        RequestTemplates:
+          application/json: |
+            #set($inputRoot = $input.path('$'))
+            #set($provider = $input.params('provider'))
+            #if($provider == "")
+              #set($provider = "DEFAULT")
+            #end
+            Action=SendMessage&MessageBody={
+              "provider": "$provider",
+              "body": $input.json('$')
+            }
+        IntegrationResponses:
+          - StatusCode: "200"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "success",
+                  "message": "Data stored successfully"
+                }
+          - StatusCode: "400"
+            SelectionPattern: "4\\d{2}"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "error",
+                  "message": "Bad request"
+                }
+          - StatusCode: "500"
+            SelectionPattern: "5\\d{2}"
+            ResponseTemplates:
+              application/json: |
+                {
+                  "status": "error",
+                  "message": "Internal server error"
+                }
+      MethodResponses:
+        - StatusCode: "200"
+          ResponseModels:
+            application/json: "Empty"
+        - StatusCode: "400"
+          ResponseModels:
+            application/json: "Error"
+        - StatusCode: "500"
+          ResponseModels:
+            application/json: "Error"
+  EmailFeedbackApiDeployment:
+    Type: "AWS::ApiGateway::Deployment"
+    DependsOn:
+      - EmailFeedbackApiMethod
+    Properties:
+      RestApiId: !Ref EmailFeedbackApi
+  EmailFeedbackApiStage:
+    Type: "AWS::ApiGateway::Stage"
+    Properties:
+      StageName: "prod"
+      DeploymentId: !Ref EmailFeedbackApiDeployment
+      RestApiId: !Ref EmailFeedbackApi
+  EmailFeedbackApiCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref EmailFeedbackDomainName
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref EmailFeedbackDomainName
+          HostedZoneId: !Ref HostedZoneId
+      Tags:
+        - Key: Name
+          Value: !Sub "email-feedback-api-certificate-${Environment}"
+        - Key: Environment
+          Value: !Ref Environment
+  EmailFeedbackApiDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Ref EmailFeedbackDomainName
+      RegionalCertificateArn: !Ref EmailFeedbackApiCertificate
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      SecurityPolicy: TLS_1_2
+  EmailFeedbackApiMapping:
+    Type: AWS::ApiGateway::BasePathMapping
+    DependsOn:
+      - EmailFeedbackApi
+      - EmailFeedbackApiDomainName
+      - EmailFeedbackApiStage
+    Properties:
+      DomainName: !Ref EmailFeedbackDomainName
+      RestApiId: !Ref EmailFeedbackApi
+      Stage: !Ref EmailFeedbackApiStage
+  EmailFeedbackApiDnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref EmailFeedbackDomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt EmailFeedbackApiDomainName.RegionalDomainName
+        HostedZoneId: !GetAtt EmailFeedbackApiDomainName.RegionalHostedZoneId
+  SendEmailFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "main-send-email-${Environment}"
+      CodeUri: ./functions/email-feedback/
+      Handler: src/send-email.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !Sub "{{resolve:ssm:/${Environment}/email/send_email_queue/arn}}"
+            BatchSize: 10
+            MaximumBatchingWindowInSeconds: 30
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !Sub "{{resolve:ssm:/${Environment}/email/send_email_queue/name}}"
+        - SESCrudPolicy:
+            IdentityName: "*"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - ./src/send-email.ts
+  SendEmailDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 1209600
+  SendEmailQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Sub "{{resolve:ssm:/${Environment}/email/send_email_queue/url}}"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - sqs:SendMessage
+              - sqs:ReceiveMessage
+              - sqs:DeleteMessage
+              - sqs:GetQueueAttributes
+            Resource: !Sub "{{resolve:ssm:/${Environment}/email/send_email_queue/arn}}"
+  # Cognito Resources
+  PresignupTriggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "pre-signup-trigger-${Environment}"
+      CodeUri: ./functions/auth/
+      Handler: src/pre-signup-trigger.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - ./src/pre-signup-trigger.ts
+  PresignupTriggerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref PresignupTriggerFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !Sub "{{resolve:ssm:/${Environment}/cognito/user_pool/arn}}"
+  PostConfirmationTriggerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "post-confirmation-trigger-${Environment}"
+      CodeUri: ./functions/auth/
+      Handler: src/post-confirmation-trigger.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - ./src/post-confirmation-trigger.ts
+  PostConfirmationTriggerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref PostConfirmationTriggerFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !Sub "{{resolve:ssm:/${Environment}/cognito/user_pool/arn}}"
+  CustomEmailSendFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "custom-email-send-${Environment}"
+      CodeUri: ./functions/auth/
+      Handler: src/custom-email-send.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - cognito-idp:ForgotPassword
+                - cognito-idp:SignUp
+                - cognito-idp:ResendConfirmationCode
+                - cognito-idp:AdminRespondToAuthChallenge
+                - cognito-idp:RespondToAuthChallenge
+              Resource: !Sub "{{resolve:ssm:/${Environment}/cognito/user_pool/arn}}"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - ./src/custom-email-send.ts
+  CustomEmailSendTriggerPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CustomEmailSendFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !Sub "{{resolve:ssm:/${Environment}/cognito/user_pool/arn}}"
+  # Post Generator
+  PostGeneratorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "post-generator-${Environment}"
+      CodeUri: ./functions/post-generator/
+      Handler: src/generate-post.handler
+      Runtime: nodejs20.x
+      Timeout: 300
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          OPENAI_API_KEY: !Sub "{{resolve:ssm:/${Environment}/openai/post_generation_api_key}}"
+          MEDIA_S3_BUCKET: !Sub "{{resolve:ssm:/${Environment}/media/bucket}}"
+          API_BASE_URL: !Sub "{{resolve:ssm:/${Environment}/api/base_url}}"
+          ALERT_SNS_TOPIC_ARN: !Sub "{{resolve:ssm:/${Environment}/alert/sns_topic_arn}}"
+          AWS_REGION: !Ref "AWS::Region"
+      EventInvokeConfig:
+        DestinationConfig:
+          OnFailure:
+            Type: SNS
+            Destination: !Sub "{{resolve:ssm:/${Environment}/alert/sns_topic_arn}}"
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !Sub "{{resolve:ssm:/${Environment}/alert/sns_topic_name}}"
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+                - ssm:GetParameters
+              Resource:
+                - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${Environment}/*"
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:PutObjectAcl
+              Resource:
+                - !Sub "arn:aws:s3:::{{resolve:ssm:/${Environment}/media/bucket}}/*"
+            - Effect: Allow
+              Action:
+                - execute-api:Invoke
+              Resource:
+                - !Sub "*"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        Loader:
+          - .prisma=file
+          - .so.node=file
+        AssetNames: "[name]"
+        EntryPoints:
+          - ./src/generate-post.ts
+
+  # ApplicationResourceGroup:
+  #   Type: AWS::ResourceGroups::Group
+  #   Properties:
+  #     Name: !Sub "${AWS::StackName}-ApplicationResourceGroup"
+  #     ResourceQuery:
+  #       Type: CLOUDFORMATION_STACK_1_0
+  # ApplicationInsightsMonitoring:
+  #   Type: AWS::ApplicationInsights::Application
+  #   Properties:
+  #     ResourceGroupName: !Ref ApplicationResourceGroup
+  #     AutoConfigurationEnabled: false
+
+Outputs:
+  FetchAdvertisersFunctionArn:
+    Description: "Fetch advertisers function ARN"
+    Value: !GetAtt FetchAdvertisersFunction.Arn
+  PostbackFunctionArn:
+    Description: "Postback callback function ARN"
+    Value: !GetAtt PostbackFunction.Arn
+  PostbackDLQArn:
+    Description: "Postback DLQ ARN"
+    Value: !GetAtt PostbackDLQ.Arn
+  PostbackNotificationTopicArn:
+    Description: "Postback notification topic ARN"
+    Value: !Ref PostbackNotificationTopic

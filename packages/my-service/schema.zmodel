@@ -1,0 +1,26 @@
+import "./zenstack/affiliate.zmodel"
+import "./zenstack/auth.zmodel"
+import "./zenstack/bonus.zmodel"
+import "./zenstack/carousel.zmodel"
+import "./zenstack/company.zmodel"
+import "./zenstack/currency.zmodel"
+import "./zenstack/email.zmodel"
+import "./zenstack/form.zmodel"
+import "./zenstack/language.zmodel"
+import "./zenstack/media.zmodel"
+import "./zenstack/page.zmodel"
+import "./zenstack/post.zmodel"
+import "./zenstack/profile.zmodel"
+import "./zenstack/role.zmodel"
+import "./zenstack/site.zmodel"
+import "./zenstack/wallet.zmodel"
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "darwin", "rhel-openssl-3.0.x"]
+}

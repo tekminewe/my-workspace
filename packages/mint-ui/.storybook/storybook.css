@@ -1,0 +1,41 @@
+/* Storybook theme-specific styles */
+
+/* Global background handling for Storybook */
+body {
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Ensure the main content area follows the theme */
+.sb-show-main {
+  background-color: inherit !important;
+}
+
+/* Docs mode styling */
+#storybook-docs {
+  background-color: inherit !important;
+}
+
+/* Canvas background */
+.sb-main-padded {
+  background-color: inherit !important;
+}
+
+/* Make sure toolbar backgrounds are consistent */
+.sb-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Dark mode specific overrides */
+.dark .sb-bar {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.dark .sb-main-padded {
+  background-color: #0c0a09 !important;
+}
+
+/* Light mode specific overrides */
+.light .sb-main-padded {
+  background-color: #ffffff !important;
+}

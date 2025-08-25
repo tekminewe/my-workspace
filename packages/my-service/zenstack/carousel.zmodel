@@ -1,0 +1,39 @@
+import "./role.zmodel"
+import "./language.zmodel"
+import "./media.zmodel"
+
+enum CarouselStatusEnum {
+  Active
+  Inactive
+}
+
+model Carousel {
+  id        String             @id @default(cuid())
+  title     String
+  startDate DateTime
+  endDate   DateTime
+  status    CarouselStatusEnum @default(Active)
+  sortOrder Int                @default(0)
+  cta       Json
+  metadatas CarouselMetadata[]
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([startDate])
+  @@index([endDate])
+  @@index([status])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageCarousel]])
+}
+
+model CarouselMetadata {
+  carouselId String
+  carousel   Carousel     @relation(fields: [carouselId], references: [id])
+  languageId LanguageEnum
+  imageId    String
+  image      Media        @relation(fields: [imageId], references: [id])
+
+  @@id([carouselId, languageId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageCarousel]])
+}

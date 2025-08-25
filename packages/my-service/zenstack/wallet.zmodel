@@ -1,0 +1,421 @@
+import "./currency.zmodel"
+import "./auth.zmodel"
+import "./media.zmodel"
+import "./language.zmodel"
+
+enum UserWalletStatusEnum {
+  Active
+  Frozen
+  Inactive
+}
+
+enum UserWalletTransactionTypeEnum {
+  AffiliateCashback
+  Withdrawal
+  FirstCashbackBonus
+}
+
+enum UserWalletTransactionStatusEnum {
+  Pending
+  Completed
+  Failed
+  Canceled
+}
+
+enum UserWithdrawalStatusEnum {
+  Pending
+  Completed
+  Rejected
+  Canceled
+}
+
+enum UserDepositStatusEnum {
+  Pending
+  Completed
+  Rejected
+  Canceled
+}
+
+enum PaymentChannelTypeEnum {
+  BankTransfer
+}
+
+enum PaymentDirectionEnum {
+  Deposit
+  Withdrawal
+  Both
+}
+
+enum PaymentChannelStatusEnum {
+  Active
+  Inactive
+}
+
+enum PaymentChannelFeeTypeEnum {
+  Percentage
+  Fixed
+}
+
+enum UserPaymentMethodStatusEnum {
+  Active
+  Inactive
+}
+
+model UserWalletStatus {
+  id          UserWalletStatusEnum       @id
+  description String?
+  metadatas   UserWalletStatusMetadata[]
+  userWallets UserWallet[]
+
+  @@allow('read', auth() != null)
+}
+
+model UserWalletStatusMetadata {
+  statusId   UserWalletStatusEnum
+  status     UserWalletStatus     @relation(fields: [statusId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model UserWallet {
+  id          String                     @id @default(cuid())
+  userId      String
+  user        User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currencyId  CurrencyEnum
+  currency    Currency                   @relation(fields: [currencyId], references: [id])
+  statusId    UserWalletStatusEnum       @default(Active)
+  status      UserWalletStatus           @relation(fields: [statusId], references: [id])
+  balance     Float
+  logs        UserWalletTransactionLog[]
+  withdrawals UserWithdrawal[]
+  deposits    UserDeposit[]
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+
+  @@unique([userId, currencyId])
+  @@index([statusId])
+  @@allow('create', auth() != null)
+  @@allow('read,update', auth().id == userId)
+}
+
+model UserWalletTransactionType {
+  id          UserWalletTransactionTypeEnum       @id
+  description String?
+  metadatas   UserWalletTransactionTypeMetadata[]
+  logs        UserWalletTransactionLog[]
+
+  @@allow('read', auth() != null)
+}
+
+model UserWalletTransactionTypeMetadata {
+  typeId     UserWalletTransactionTypeEnum
+  type       UserWalletTransactionType     @relation(fields: [typeId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([typeId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model UserWalletTransactionStatus {
+  id          UserWalletTransactionStatusEnum       @id
+  description String?
+  metadatas   UserWalletTransactionStatusMetadata[]
+  logs        UserWalletTransactionLog[]
+
+  @@allow('read', auth() != null)
+}
+
+model UserWalletTransactionStatusMetadata {
+  statusId   UserWalletTransactionStatusEnum
+  status     UserWalletTransactionStatus     @relation(fields: [statusId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model UserWalletTransactionLog {
+  id            String                          @id @default(cuid())
+  walletId      String
+  wallet        UserWallet                      @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  currencyId    CurrencyEnum
+  currency      Currency                        @relation(fields: [currencyId], references: [id])
+  balanceBefore Float
+  balanceAfter  Float
+  amount        Float
+  typeId        UserWalletTransactionTypeEnum
+  type          UserWalletTransactionType       @relation(fields: [typeId], references: [id])
+  statusId      UserWalletTransactionStatusEnum @default(Pending)
+  status        UserWalletTransactionStatus     @relation(fields: [statusId], references: [id])
+  /// If the transaction is a AffiliateCashback, this will be the UserCashback.id
+  /// If the transaction is a Withdrawal, this will be the UserWithdrawal.id
+  reference     String?
+  extra         Json?
+  description   String?
+  createdAt     DateTime                        @default(now())
+  updatedAt     DateTime                        @updatedAt
+
+  @@allow('create', auth() != null)
+  @@allow('read,update', auth().id == wallet.userId)
+}
+
+model UserDepositStatus {
+  id          UserDepositStatusEnum       @id
+  description String?
+  metadatas   UserDepositStatusMetadata[]
+  deposits    UserDeposit[]
+
+  @@allow('read', auth() != null)
+}
+
+model UserDepositStatusMetadata {
+  statusId   UserDepositStatusEnum
+  status     UserDepositStatus     @relation(fields: [statusId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@unique([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model UserDeposit {
+  id              String                @id @default(cuid())
+  walletId        String
+  wallet          UserWallet            @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  currencyId      CurrencyEnum
+  currency        Currency              @relation(fields: [currencyId], references: [id])
+  amount          Float
+  paymentMethodId String?
+  paymentMethod   UserPaymentMethod?    @relation(fields: [paymentMethodId], references: [id])
+  statusId        UserDepositStatusEnum @default(Pending)
+  status          UserDepositStatus     @relation(fields: [statusId], references: [id])
+  processedAt     DateTime?
+  processedById   String?
+  processedBy     User?                 @relation(fields: [processedById], references: [id])
+  notes           String?
+  reference       String?
+  processingFee   Float
+  netAmount       Float
+  extra           Json?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@index([statusId])
+  @@allow('read,update', auth().id == wallet.userId)
+  @@allow('create', auth() != null)
+  // @@allow('update', auth().roles.includes('ADMIN'))
+}
+
+model UserWithdrawalStatus {
+  id          UserWithdrawalStatusEnum       @id
+  description String?
+  metadatas   UserWithdrawalStatusMetadata[]
+  withdrawals UserWithdrawal[]
+
+  @@allow('read', auth() != null)
+}
+
+model UserWithdrawalStatusMetadata {
+  statusId   UserWithdrawalStatusEnum
+  status     UserWithdrawalStatus     @relation(fields: [statusId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model UserWithdrawal {
+  id              String                   @id @default(cuid())
+  walletId        String
+  wallet          UserWallet               @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  currencyId      CurrencyEnum
+  currency        Currency                 @relation(fields: [currencyId], references: [id])
+  amount          Float
+  statusId        UserWithdrawalStatusEnum @default(Pending)
+  status          UserWithdrawalStatus     @relation(fields: [statusId], references: [id])
+  processedAt     DateTime?
+  processedById   String?
+  processedBy     User?                    @relation(fields: [processedById], references: [id])
+  notes           String?
+  /// If the paymentMethod.paymentChannel is a BankTransfer, this will be the bank transaction id
+  reference       String?
+  processingFee   Float
+  netAmount       Float
+  extra           Json?
+  paymentMethod   UserPaymentMethod        @relation(fields: [paymentMethodId], references: [id])
+  paymentMethodId String
+  createdAt       DateTime                 @default(now())
+  updatedAt       DateTime                 @updatedAt
+
+  @@index([statusId])
+  @@allow('update,read', auth().id == wallet.userId)
+  @@allow('create', auth() != null)
+  // @@allow('update', auth().roles.includes('ADMIN'))
+}
+
+model PaymentChannelType {
+  id              PaymentChannelTypeEnum       @id
+  description     String?
+  metadatas       PaymentChannelTypeMetadata[]
+  paymentChannels PaymentChannel[]
+
+  @@allow('read', auth() != null)
+}
+
+model PaymentChannelTypeMetadata {
+  typeId     PaymentChannelTypeEnum
+  type       PaymentChannelType     @relation(fields: [typeId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([typeId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model PaymentChannelStatus {
+  id              PaymentChannelStatusEnum       @id
+  description     String?
+  metadatas       PaymentChannelStatusMetadata[]
+  paymentChannels PaymentChannel[]
+
+  @@allow('read', auth() != null)
+}
+
+model PaymentChannelStatusMetadata {
+  statusId   PaymentChannelStatusEnum
+  status     PaymentChannelStatus     @relation(fields: [statusId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model PaymentDirection {
+  id                 PaymentDirectionEnum       @id
+  description        String?
+  metadatas          PaymentDirectionMetadata[]
+  paymentChannels    PaymentChannel[]
+  userPaymentMethods UserPaymentMethod[]
+
+  @@allow('read', auth() != null)
+}
+
+model PaymentDirectionMetadata {
+  directionId PaymentDirectionEnum
+  direction   PaymentDirection     @relation(fields: [directionId], references: [id])
+  languageId  LanguageEnum
+  name        String
+
+  @@id([directionId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model PaymentChannelFeeType {
+  id              PaymentChannelFeeTypeEnum       @id
+  description     String?
+  metadatas       PaymentChannelFeeTypeMetadata[]
+  paymentChannels PaymentChannel[]
+
+  @@allow('read', auth() != null)
+}
+
+model PaymentChannelFeeTypeMetadata {
+  typeId     PaymentChannelFeeTypeEnum
+  type       PaymentChannelFeeType     @relation(fields: [typeId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([typeId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model PaymentChannel {
+  id                 String                    @id @default(cuid())
+  metadatas          PaymentChannelMetadata[]
+  typeId             PaymentChannelTypeEnum
+  type               PaymentChannelType        @relation(fields: [typeId], references: [id])
+  directionId        PaymentDirectionEnum
+  direction          PaymentDirection          @relation(fields: [directionId], references: [id])
+  statusId           PaymentChannelStatusEnum  @default(Active)
+  status             PaymentChannelStatus      @relation(fields: [statusId], references: [id])
+  description        String?
+  extra              Json?
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+  minAmount          Float
+  maxAmount          Float
+  processingFee      Float                     @default(0)
+  feeTypeId          PaymentChannelFeeTypeEnum
+  feeType            PaymentChannelFeeType     @relation(fields: [feeTypeId], references: [id])
+  currencies         Currency[]
+  userPaymentMethods UserPaymentMethod[]
+  sortOrder          Int                       @default(0)
+  logoId             String?
+  logo               Media?                    @relation(fields: [logoId], references: [id])
+
+  @@allow('read', true)
+  @@allow('create,update,delete', auth() != null)
+  // @@allow('create,update,delete', auth().roles.includes('ADMIN'))
+}
+
+model PaymentChannelMetadata {
+  channelId  String
+  channel    PaymentChannel @relation(fields: [channelId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([channelId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model UserPaymentMethodStatus {
+  id                 UserPaymentMethodStatusEnum       @id
+  description        String?
+  metadatas          UserPaymentMethodStatusMetadata[]
+  userPaymentMethods UserPaymentMethod[]
+
+  @@allow('read', auth() != null)
+}
+
+model UserPaymentMethodStatusMetadata {
+  statusId   UserPaymentMethodStatusEnum
+  status     UserPaymentMethodStatus     @relation(fields: [statusId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+model UserPaymentMethod {
+  id               String                      @id @default(cuid())
+  userId           String
+  user             User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  paymentChannelId String
+  paymentChannel   PaymentChannel              @relation(fields: [paymentChannelId], references: [id])
+  directionId      PaymentDirectionEnum
+  direction        PaymentDirection            @relation(fields: [directionId], references: [id])
+  accountName      String
+  accountNumber    String?
+  bankName         String?
+  swiftCode        String?
+  paypalEmail      String?
+  isDefault        Boolean                     @default(false)
+  extra            Json?
+  statusId         UserPaymentMethodStatusEnum @default(Active)
+  status           UserPaymentMethodStatus     @relation(fields: [statusId], references: [id])
+  createdAt        DateTime                    @default(now())
+  updatedAt        DateTime                    @updatedAt
+  withdrawals      UserWithdrawal[]
+  deposits         UserDeposit[]
+
+  @@unique([userId, accountNumber, paymentChannelId])
+  @@allow('create,read,delete', auth().id == userId)
+}

@@ -1,0 +1,10 @@
+query GetSupportedLanguages {
+  languages(isSupported: true) {
+    id
+    name
+    code
+    shortName
+    isSupported
+    isDefault
+  }
+}

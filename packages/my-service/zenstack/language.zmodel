@@ -1,0 +1,23 @@
+import "./bonus.zmodel"
+
+enum LanguageEnum {
+  EN_MY @map("en-MY")
+  EN_US @map("en-US")
+  EN_GB @map("en-GB")
+  ZH_CN @map("zh-CN")
+  ZH_MY @map("zh-MY")
+}
+
+model Language {
+  id                 LanguageEnum        @id
+  name               String
+  code               String
+  shortName          String
+  isSupported        Boolean             @default(false)
+  isDefault          Boolean             @default(false)
+  bonusTypeMetadatas BonusTypeMetadata[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@allow('read', true)
+}

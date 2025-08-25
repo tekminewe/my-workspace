@@ -1,0 +1,36 @@
+import "./language.zmodel"
+import "./media.zmodel"
+import "./currency.zmodel"
+import "./carousel.zmodel"
+import "./role.zmodel"
+import "./site-settings.zmodel"
+
+model Site {
+  id         String         @id @default(cuid())
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  metadatas  SiteMetadata[]
+  settings   SiteSettings?
+  currencyId CurrencyEnum   @default(MYR)
+  domain     String         @default("example.com")
+
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageSite]])
+}
+
+model SiteMetadata {
+  name        String
+  logoId      String?
+  logo        Media?       @relation(name: "SiteMetadataLogo", fields: [logoId], references: [id])
+  darkLogoId  String?
+  darkLogo    Media?       @relation(name: "SiteMetadataDarkLogo", fields: [darkLogoId], references: [id])
+  description String?
+  siteId      String
+  languageId  LanguageEnum
+  site        Site         @relation(fields: [siteId], references: [id])
+
+  @@id([siteId, languageId])
+  @@unique([languageId])
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageSite]])
+}

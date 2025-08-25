@@ -1,0 +1,35 @@
+import "./language.zmodel"
+import "./wallet.zmodel"
+import "./affiliate.zmodel"
+import "./bonus.zmodel"
+
+enum CurrencyEnum {
+  MYR
+  SGD
+  USD
+}
+
+model Currency {
+  id                        CurrencyEnum               @id
+  description               String?
+  metadatas                 CurrencyMetadata[]
+  paymentChannels           PaymentChannel[]
+  userWallets               UserWallet[]
+  userWalletTransactionLogs UserWalletTransactionLog[]
+  userDeposits              UserDeposit[]
+  userWithdrawals           UserWithdrawal[]
+  userCashbacks             UserCashback[]
+  bonusTransactions         BonusTransaction[]
+
+  @@allow('read', auth() != null)
+}
+
+model CurrencyMetadata {
+  currencyId CurrencyEnum
+  currency   Currency     @relation(fields: [currencyId], references: [id])
+  languageId LanguageEnum
+  name       String
+
+  @@unique([currencyId, languageId])
+  @@allow('read', auth() != null)
+}

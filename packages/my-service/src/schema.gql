@@ -1,0 +1,1537 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Language {
+  id: LanguageEnum!
+  name: String!
+  code: String!
+  shortName: String!
+  isSupported: Boolean!
+  isDefault: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum LanguageEnum {
+  EN_MY
+  EN_US
+  EN_GB
+  ZH_CN
+  ZH_MY
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Media {
+  """Unique identifier for the media"""
+  id: String!
+
+  """Publicly accessible URL to the media"""
+  url: String!
+
+  """Optional caption for the media"""
+  caption: String
+
+  """File mime type"""
+  mimeType: String
+
+  """When the media was created"""
+  createdAt: DateTime
+}
+
+type BonusTypeMetadata {
+  bonusTypeId: String!
+  languageId: LanguageEnum!
+  title: String!
+  description: String!
+  termsAndConditions: String!
+  featuredImageId: String
+  logoId: String
+  featuredImage: Media
+  logo: Media
+}
+
+type BonusType {
+  id: String!
+  codeId: BonusTypeCodeEnum!
+  version: Float!
+  priority: Float!
+  expiryDays: Float
+  maxUsagePerUser: Float!
+  ruleConfig: String!
+  statusId: BonusTypeStatusEnum!
+  effectiveFrom: DateTime!
+  effectiveTo: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  createdBy: String
+  updatedBy: String
+  metadatas: [BonusTypeMetadata!]
+  metadata: BonusTypeMetadata
+}
+
+"""Bonus type codes"""
+enum BonusTypeCodeEnum {
+  FirstCashbackMultiplier
+  SpendingThreshold
+  ReferralBonus
+  SeasonalBonus
+}
+
+"""Bonus type status"""
+enum BonusTypeStatusEnum {
+  Draft
+  Active
+  Archived
+}
+
+type BonusEligibility {
+  id: String!
+  userId: String!
+  bonusTypeId: String!
+  bonusVersion: Float!
+  statusId: BonusEligibilityStatusEnum!
+  availableAt: DateTime!
+  expiresAt: DateTime
+  usedAt: DateTime
+  eligibilityMetadata: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  bonusType: BonusType
+}
+
+"""Bonus eligibility status"""
+enum BonusEligibilityStatusEnum {
+  Available
+  Used
+  Expired
+  Ineligible
+}
+
+type BonusTransaction {
+  id: String!
+  userId: String!
+  bonusEligibilityId: String!
+  bonusEligibility: BonusEligibility
+  bonusTypeId: String!
+  bonusVersion: Float!
+  amount: Float!
+  currencyId: CurrencyEnum!
+  sourceTransactionId: String
+  merchantCallbackId: String
+  processedAt: DateTime!
+  walletTransactionId: String
+  processingMetadata: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Currency types"""
+enum CurrencyEnum {
+  MYR
+  SGD
+  USD
+}
+
+type BonusTransactionConnection {
+  items: [BonusTransaction!]!
+  totalCount: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type PostStatus {
+  id: ID!
+  name: String!
+}
+
+type PostTag {
+  id: ID!
+  name: String!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  slug: String!
+  featuredImageId: String
+  featuredImage: Media
+  statusId: PostStatusEnum
+  postDate: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  editorVersion: Int!
+  description: String
+  tags: [PostTag!]
+  ogTitle: String
+  ogDescription: String
+  ogImageId: String
+  ogImage: Media
+  status: PostStatus!
+}
+
+enum PostStatusEnum {
+  Draft
+  Published
+}
+
+type PostsPagination {
+  nextPage: Int
+  previousPage: Int
+  totalPages: Int!
+  totalItems: Int!
+  currentPage: Int!
+  pageSize: Int!
+}
+
+"""Metadata for an advertiser commission row in different languages"""
+type AdvertiserCommissionRowMetadata {
+  """ID of the commission row this metadata belongs to"""
+  commissionRowId: String!
+
+  """Language of this metadata"""
+  languageId: LanguageEnum!
+
+  """Name of the commission row in the specified language"""
+  name: String!
+}
+
+"""A commission row for an advertiser commission"""
+type AdvertiserCommissionRow {
+  """Unique identifier for the commission row"""
+  id: String!
+
+  """Name of the commission row"""
+  name: String!
+
+  """Commission value"""
+  commission: Float!
+
+  """Calculated commission value after applying share"""
+  calculatedCommission: Float!
+
+  """Type of the commission (Percentage or Fixed)"""
+  typeId: AdvertiserCommissionTypeEnum!
+
+  """Status of the commission row (Active or Inactive)"""
+  statusId: AdvertiserCommissionRowStatusEnum!
+
+  """ID of the advertiser commission this row belongs to"""
+  advertiserCommissionId: String!
+
+  """Provider reference ID for this commission row"""
+  providerReferenceId: String!
+
+  """Localized metadata for this commission row"""
+  metadatas: [AdvertiserCommissionRowMetadata!]
+}
+
+enum AdvertiserCommissionTypeEnum {
+  Percentage
+  Fixed
+}
+
+enum AdvertiserCommissionRowStatusEnum {
+  Inactive
+  Active
+}
+
+"""Commission information for an advertiser"""
+type AdvertiserCommission {
+  """Unique identifier for the commission"""
+  id: String!
+
+  """Commission value (maximum from commission rows)"""
+  commission: Float!
+
+  """
+  Calculated commission value (maximum from calculated commission of rows)
+  """
+  calculatedCommission: Float!
+
+  """Rows of commission details"""
+  commissionRows: [AdvertiserCommissionRow!]!
+
+  """Number of days until the commission is validated"""
+  dayToValidate: Float!
+
+  """Number of days until the commission is paid out"""
+  dayToPayout: Float!
+
+  """URL for the commission"""
+  url: String!
+
+  """ID of the affiliate provider for this commission"""
+  providerId: AffiliateProviderEnum!
+
+  """Status of the commission (Active or Inactive)"""
+  statusId: AdvertiserCommissionStatusEnum!
+}
+
+enum AffiliateProviderEnum {
+  InvolveAsia
+}
+
+enum AdvertiserCommissionStatusEnum {
+  Inactive
+  Active
+}
+
+"""Affiliate provider entity"""
+type AffiliateProvider {
+  """Unique identifier for the affiliate provider"""
+  id: AffiliateProviderEnum!
+
+  """Name of the affiliate provider"""
+  name: String!
+
+  """Status of the affiliate provider (Active/Inactive)"""
+  statusId: AffiliateProviderStatusEnum!
+
+  """Date when the affiliate provider was created"""
+  createdAt: DateTime!
+
+  """Date when the affiliate provider was last updated"""
+  updatedAt: DateTime!
+}
+
+enum AffiliateProviderStatusEnum {
+  Inactive
+  Active
+}
+
+"""Advertiser provider reference entity"""
+type AdvertiserProviderReference {
+  """The advertiser ID"""
+  advertiserId: String!
+
+  """The affiliate provider ID"""
+  providerId: AffiliateProviderEnum!
+
+  """The reference ID of the advertiser in the provider system"""
+  providerReferenceId: String!
+
+  """The advertiser"""
+  advertiser: Advertiser
+
+  """The affiliate provider"""
+  provider: AffiliateProvider
+}
+
+"""Advertiser metadata in a specific language"""
+type AdvertiserMetadata {
+  """ID of the advertiser this metadata belongs to"""
+  advertiserId: String!
+
+  """Language of this metadata"""
+  languageId: LanguageEnum!
+
+  """Name of the advertiser in this language"""
+  name: String!
+
+  """Description of the advertiser in this language"""
+  description: String!
+}
+
+"""Advertiser category entity"""
+type AdvertiserCategory {
+  """Unique identifier for the category"""
+  id: AdvertiserCategoryEnum!
+
+  """Description of the category"""
+  description: String
+
+  """Localized name of the category"""
+  name: String!
+}
+
+enum AdvertiserCategoryEnum {
+  DigitalServices
+  Electronics
+  Fashion
+  Finance
+  Food_Grocery
+  Health_Beauty
+  Home_Living
+  Marketplace
+  Others
+  Travel
+}
+
+"""Advertiser category with active advertiser count"""
+type AdvertiserCategoryWithCount {
+  """Unique identifier for the category"""
+  id: AdvertiserCategoryEnum!
+
+  """Description of the category"""
+  description: String
+
+  """Localized name of the category"""
+  name: String!
+
+  """Number of active advertisers in this category"""
+  count: Int!
+}
+
+"""Advertiser entity"""
+type Advertiser {
+  """Unique identifier for the advertiser"""
+  id: String!
+
+  """Name of the advertiser"""
+  name: String!
+
+  """URL-friendly slug for the advertiser"""
+  slug: String!
+
+  """ID of the advertiser logo media"""
+  logoId: String!
+
+  """Logo media for the advertiser"""
+  logo: Media!
+
+  """Metadata for the advertiser in different languages"""
+  metadatas: [AdvertiserMetadata!]
+
+  """Description of the advertiser"""
+  description: String!
+
+  """Status of the advertiser (Active/Inactive)"""
+  statusId: AdvertiserStatusEnum!
+
+  """Primary commission information for the advertiser"""
+  commission(
+    """
+    Filter commissions by row status. If not provided, returns active commissions.
+    """
+    rowStatusId: AdvertiserCommissionRowStatusEnum
+
+    """
+    Filter commissions by status. If not provided, returns active commissions.
+    """
+    statusId: AdvertiserCommissionStatusEnum
+  ): AdvertiserCommission
+
+  """List of all commissions for the advertiser"""
+  commissions(
+    """
+    Filter commissions by row status. If not provided, returns active commissions.
+    """
+    rowStatusId: AdvertiserCommissionRowStatusEnum
+
+    """
+    Filter commissions by status. If not provided, returns active commissions.
+    """
+    statusId: AdvertiserCommissionStatusEnum
+  ): [AdvertiserCommission!]
+
+  """List of affiliate providers for the advertiser"""
+  providers: [AffiliateProvider!]
+
+  """List of provider references for the advertiser"""
+  providerReferences: [AdvertiserProviderReference!]
+
+  """Categories the advertiser belongs to"""
+  categories: [AdvertiserCategory!]
+
+  """Date when the advertiser was created"""
+  createdAt: DateTime!
+
+  """Date when the advertiser was last updated"""
+  updatedAt: DateTime!
+}
+
+enum AdvertiserStatusEnum {
+  Inactive
+  Active
+}
+
+"""Search result for advertisers"""
+type SearchResultAdvertiser {
+  """Unique identifier for the advertiser"""
+  id: String!
+
+  """Name of the advertiser"""
+  name: String!
+
+  """URL-friendly slug for the advertiser"""
+  slug: String!
+
+  """Categories the advertiser belongs to"""
+  categories: [String!]!
+
+  """Commission value for the advertiser"""
+  commission: Float!
+
+  """Calculated commission value after applying share"""
+  calculatedCommission: Float!
+
+  """URL for the advertiser logo"""
+  logo: String!
+}
+
+type RefreshAdvertiserSearchIndexOutput {
+  """Indicates whether the operation was successful"""
+  success: Boolean!
+}
+
+type FetchAdvertiserOutput {
+  """Indicates whether the operation was successful"""
+  success: Boolean!
+
+  """The name of the advertiser that was fetched"""
+  advertiserName: String
+
+  """The generated slug for the advertiser"""
+  slug: String
+
+  """Any message returned from the operation"""
+  message: String
+}
+
+type AdvertisersPagination {
+  nextPage: Int
+  previousPage: Int
+  totalPages: Int!
+  totalItems: Int!
+  currentPage: Int!
+  pageSize: Int!
+}
+
+type AdvertiserCampaignMetadata {
+  name: String!
+  description: String!
+  banner: Media
+  languageId: LanguageEnum!
+}
+
+type AdvertiserCampaign {
+  id: String!
+  advertiserId: String!
+  providerId: AffiliateProviderEnum!
+  providerReferenceId: String!
+  name: String!
+  voucherCodes: [String!]!
+  startDate: DateTime!
+
+  """
+  The end date of the campaign, which can be null for open-ended campaigns
+  """
+  endDate: DateTime
+  statusId: AdvertiserCampaignStatusEnum!
+  url: String!
+  slug: String!
+  metadatas: [AdvertiserCampaignMetadata!]!
+
+  """Description from the current language metadata, or null if not found"""
+  description: String!
+
+  """Banner from the current language metadata, or null if not found"""
+  banner: Media
+  advertiser: Advertiser!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Status of advertiser campaigns"""
+enum AdvertiserCampaignStatusEnum {
+  Inactive
+  Active
+}
+
+type AdvertiserCampaignPagination {
+  nextPage: Int
+  previousPage: Int
+  totalPages: Int!
+  totalItems: Int!
+  currentPage: Int!
+  pageSize: Int!
+}
+
+"""Site metadata for a specific language"""
+type SiteMetadata {
+  """The name of the site in the specific language"""
+  name: String!
+
+  """The description of the site in the specific language"""
+  description: String
+
+  """The logo of the site for the specific language"""
+  logo: Media
+
+  """The dark theme logo of the site for the specific language"""
+  darkLogo: Media
+
+  """The language identifier for this metadata"""
+  languageId: LanguageEnum!
+}
+
+"""Site information"""
+type Site {
+  """The unique identifier of the site"""
+  id: String!
+
+  """The name of the site"""
+  name: String!
+
+  """The domain of the site"""
+  domain: String
+
+  """The description of the site"""
+  description: String
+
+  """The logo of the site"""
+  logo: Media
+
+  """The creation date of the site"""
+  createdAt: DateTime!
+
+  """The last update date of the site"""
+  updatedAt: DateTime!
+
+  """The metadata for different languages"""
+  metadatas: [SiteMetadata!]!
+}
+
+"""Site settings for theme-specific and general configurations"""
+type SiteSettings {
+  """The unique identifier of the site settings"""
+  id: String!
+
+  """The creation date of the site settings"""
+  createdAt: DateTime!
+
+  """The last update date of the site settings"""
+  updatedAt: DateTime!
+
+  """The site ID these settings belong to"""
+  siteId: String!
+
+  """Google Analytics tracking ID"""
+  googleAnalyticsId: String
+
+  """Google Tag Manager ID"""
+  googleTagManagerId: String
+
+  """Facebook Pixel ID"""
+  facebookPixelId: String
+
+  """Default meta title for pages"""
+  defaultMetaTitle: String
+
+  """Default meta description for pages"""
+  defaultMetaDescription: String
+
+  """Sitemap URL"""
+  sitemapUrl: String
+
+  """Robots.txt content"""
+  robotsTxt: String
+
+  """Facebook page URL"""
+  facebookUrl: String
+
+  """Twitter/X profile URL"""
+  twitterUrl: String
+
+  """Instagram profile URL"""
+  instagramUrl: String
+
+  """LinkedIn profile URL"""
+  linkedinUrl: String
+
+  """Contact email address"""
+  contactEmail: String
+
+  """Support email address"""
+  supportEmail: String
+
+  """Phone number"""
+  phoneNumber: String
+
+  """Physical address"""
+  address: String
+
+  """Whether the site is in maintenance mode"""
+  maintenanceMode: Boolean!
+
+  """Whether user registration is allowed"""
+  allowUserRegistration: Boolean!
+
+  """Whether comments are enabled"""
+  enableComments: Boolean!
+
+  """Whether newsletter signup is enabled"""
+  enableNewsletter: Boolean!
+}
+
+type CarouselCtaLinkPayload {
+  link: String!
+}
+
+type CarouselCtaCashbackPayload {
+  advertiserId: String!
+  advertiserSlug: String!
+  advertiserRedirectUrl: String!
+  advertiserCashbackRate: Float!
+  advertiserName: String!
+  advertiserLogoUrl: String!
+}
+
+type Carousel {
+  id: String!
+  title: String!
+  image: Media!
+  startDate: DateTime!
+  endDate: DateTime!
+  status: CarouselStatusEnum!
+  sortOrder: String!
+  cta: CarouselCta!
+  metadatas: [CarouselMetada!]!
+}
+
+enum CarouselStatusEnum {
+  Active
+  Inactive
+}
+
+union CarouselCta = CarouselCtaLink | CarouselCtaCashback
+
+type CarouselCtaLink {
+  type: CarouselCtaEnum!
+  payload: CarouselCtaLinkPayload!
+}
+
+enum CarouselCtaEnum {
+  Link
+  Cashback
+}
+
+type CarouselCtaCashback {
+  type: CarouselCtaEnum!
+  payload: CarouselCtaCashbackPayload!
+}
+
+type CarouselMetada {
+  id: String!
+  languageId: LanguageEnum!
+  image: Media!
+}
+
+type CarouselsPagination {
+  nextPage: Int
+  previousPage: Int
+  totalPages: Int!
+  totalItems: Int!
+  currentPage: Int!
+  pageSize: Int!
+}
+
+type ImageGenerationMetadata {
+  model: String
+  size: String
+  seed: Int
+  timings: String
+  hasNsfwConcepts: [Boolean!]
+  generationTimeMs: Int
+  inputTokens: Int
+  outputTokens: Int
+  estimatedCost: Float
+  requestId: String
+  timestamp: String
+}
+
+type ImageGenerationResponse {
+  success: Boolean!
+  imageUrl: String
+  imageBase64: String
+  prompt: String!
+  provider: ImageProviderType!
+  referenceImages: [String!]
+  metadata: ImageGenerationMetadata
+  error: String
+}
+
+"""Available image generation providers"""
+enum ImageProviderType {
+  OPENAI
+  FAL_AI
+}
+
+type ProviderInfoResponse {
+  name: String!
+  type: ImageProviderType!
+  supportedFormats: [String!]!
+  supportedSizes: [String!]!
+  configured: Boolean!
+}
+
+type Query {
+  getImageProviders: [ProviderInfoResponse!]!
+  getDefaultImageProvider: ImageProviderType
+  carousel(id: String!): Carousel!
+  carousels(page: Int! = 1, pageSize: Int! = 10, status: String, startDate: DateTime, endDate: DateTime): [Carousel!]!
+  carouselsPagination(page: Int! = 1, pageSize: Int! = 10, status: String, startDate: DateTime, endDate: DateTime): CarouselsPagination!
+  advertiser(advertiserId: String, slug: String): Advertiser!
+  advertisers(
+    page: Int! = 1
+    pageSize: Int! = 10
+    statusId: String
+
+    """Filter advertisers by categories"""
+    categoryIds: [AdvertiserCategoryEnum!]
+
+    """Field to sort by. Default is CreatedAt."""
+    sortBy: SortByField
+
+    """Direction to sort. Default is Desc."""
+    sortDirection: SortDirection
+  ): [Advertiser!]!
+  searchAdvertisers(query: String): [SearchResultAdvertiser!]!
+  advertisersPagination(
+    page: Int! = 1
+    pageSize: Int! = 10
+    statusId: String
+
+    """Filter advertisers by categories"""
+    categoryIds: [AdvertiserCategoryEnum!]
+
+    """Field to sort by. Default is CreatedAt."""
+    sortBy: SortByField
+
+    """Direction to sort. Default is Desc."""
+    sortDirection: SortDirection
+  ): AdvertisersPagination!
+
+  """Get an advertiser campaign by ID"""
+  advertiserCampaign(
+    """The unique identifier of the advertiser campaign"""
+    id: String!
+  ): AdvertiserCampaign
+
+  """
+  Get advertiser campaigns with optional filtering by status, dates (endDateGt and startDateLte) and sorting by createdAt or startDate
+  """
+  advertiserCampaigns(
+    page: Int! = 1
+    pageSize: Int! = 10
+
+    """Filter advertiser campaigns by advertiser ID"""
+    advertiserId: String
+
+    """Filter advertiser campaigns by advertiser slug"""
+    advertiserSlug: String
+
+    """Filter advertiser campaigns by provider reference ID"""
+    providerReferenceId: String
+
+    """Filter advertiser campaigns by provider ID"""
+    providerId: AffiliateProviderEnum
+
+    """Filter advertiser campaigns by status ID"""
+    statusId: AdvertiserCampaignStatusEnum
+
+    """Filter campaigns where endDate is greater than this date."""
+    endDateGt: DateTime
+
+    """Filter campaigns where startDate is less than or equal to this date."""
+    startDateLte: DateTime
+
+    """Field to sort advertiser campaigns by"""
+    sortBy: SortByField = CreatedAt
+
+    """Direction to sort advertiser campaigns"""
+    sortDirection: SortDirection = Desc
+  ): [AdvertiserCampaign!]!
+
+  """Get an advertiser campaign by provider details"""
+  advertiserCampaignByProvider(
+    """The provider ID of the advertiser campaign"""
+    providerId: AffiliateProviderEnum!
+
+    """The provider reference ID of the advertiser campaign"""
+    providerReferenceId: String!
+  ): AdvertiserCampaign
+  advertiserCampaignsPagination(
+    page: Int! = 1
+    pageSize: Int! = 10
+
+    """Filter advertiser campaigns by advertiser ID"""
+    advertiserId: String
+
+    """Filter advertiser campaigns by advertiser slug"""
+    advertiserSlug: String
+
+    """Filter advertiser campaigns by provider reference ID"""
+    providerReferenceId: String
+
+    """Filter advertiser campaigns by provider ID"""
+    providerId: AffiliateProviderEnum
+
+    """Filter advertiser campaigns by status ID"""
+    statusId: AdvertiserCampaignStatusEnum
+
+    """Filter campaigns where endDate is greater than this date."""
+    endDateGt: DateTime
+
+    """Filter campaigns where startDate is less than or equal to this date."""
+    startDateLte: DateTime
+
+    """Field to sort advertiser campaigns by"""
+    sortBy: SortByField = CreatedAt
+
+    """Direction to sort advertiser campaigns"""
+    sortDirection: SortDirection = Desc
+  ): AdvertiserCampaignPagination!
+  advertiserProviderReferences(
+    """Filter by advertiser ID"""
+    advertiserId: String
+
+    """Filter by provider ID"""
+    providerId: AffiliateProviderEnum
+
+    """Filter by active advertisers only"""
+    isActive: Boolean
+  ): [AdvertiserProviderReference!]!
+
+  """Get all available advertiser categories"""
+  advertiserCategories: [AdvertiserCategory!]!
+
+  """Get all advertiser categories with active advertiser counts"""
+  advertiserCategoriesWithCounts: [AdvertiserCategoryWithCount!]!
+  myBonuses: [BonusEligibility!]!
+  myBonusTransactions: [BonusTransaction!]!
+  myBonusTransactionsPaginated(page: Int! = 1, pageSize: Int! = 25): BonusTransactionConnection!
+  bonusTypes: [BonusType!]!
+  bonusType(id: String!): BonusType
+
+  """Get all languages with optional filtering by support status"""
+  languages(
+    """Filter languages by supported status"""
+    isSupported: Boolean
+  ): [Language!]!
+  media(id: String!): Media!
+
+  """Get the site information"""
+  site: Site!
+
+  """Get the site settings"""
+  siteSettings: SiteSettings
+  posts(page: Int! = 1, pageSize: Int! = 10, statusId: String): [Post!]!
+  post(id: String, slug: String): Post
+  postsPagination(page: Int! = 1, pageSize: Int! = 10, statusId: String): PostsPagination!
+}
+
+"""Fields to sort by"""
+enum SortByField {
+  CreatedAt
+  StartDate
+}
+
+"""Direction to sort"""
+enum SortDirection {
+  Asc
+  Desc
+}
+
+type Mutation {
+  generateImage(input: ImageGenerationInput!): ImageGenerationResponse!
+  createCarousel(data: CreateCarouselInput!): Carousel!
+  updateCarousel(id: String!, data: UpdateCarouselInput!): Carousel!
+
+  """Create a new advertiser with provider references"""
+  createAdvertiser(data: CreateAdvertiserInput!): Advertiser!
+  updateAdvertiser(id: String!, data: UpdateAdvertiserInput!): Advertiser!
+
+  """
+  Refreshes the advertiser search index. If no advertiserId is provided, all active advertisers will be re-indexed.
+  """
+  refreshAdvertiserSearchIndex(data: RefreshAdvertiserSearchIndexInput!): RefreshAdvertiserSearchIndexOutput!
+
+  """
+  Fetch an advertiser from the provider API by name and trigger AWS Lambda function
+  """
+  fetchAdvertiser(data: FetchAdvertiserInput!): FetchAdvertiserOutput!
+
+  """Create a new advertiser campaign"""
+  createAdvertiserCampaign(data: CreateAdvertiserCampaignInput!): AdvertiserCampaign!
+
+  """Update an existing advertiser campaign"""
+  updateAdvertiserCampaign(data: UpdateAdvertiserCampaignInput!): AdvertiserCampaign!
+
+  """Update an advertiser provider reference"""
+  updateAdvertiserProviderReference(input: UpdateAdvertiserProviderReferenceInput!): AdvertiserProviderReference!
+
+  """Update an advertiser commission, including its commission rows"""
+  updateAdvertiserCommission(data: UpdateAdvertiserCommissionInput!): AdvertiserCommission
+  createBonusType(input: CreateBonusTypeInput!): BonusType!
+  updateBonusType(id: String!, input: UpdateBonusTypeInput!): BonusType!
+  deleteBonusType(id: String!): Boolean!
+  uploadMedia(data: UploadMediaInput!): Media!
+
+  """Update the site information and metadata"""
+  updateSite(input: UpdateSiteInput!): Site!
+
+  """Update the site settings including logos for light and dark modes"""
+  updateSiteSettings(input: UpdateSiteSettingsInput!): SiteSettings!
+  createPost(data: CreatePostInput!): Post!
+  updatePost(id: String!, data: UpdatePostInput!): Post!
+}
+
+input ImageGenerationInput {
+  prompt: String!
+  systemPrompt: String
+  referenceImages: [String!]
+  provider: ImageProviderType
+  quality: String
+  style: String
+  imageSize: String
+  numInferenceSteps: Int
+  guidanceScale: Float
+  seed: Int
+  numImages: Int
+  enableSafetyChecker: Boolean
+  outputFormat: String
+}
+
+input CreateCarouselInput {
+  title: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  status: CarouselStatusEnum!
+  sortOrder: Int!
+  ctaType: CarouselCtaEnum!
+  ctaPayloadLink: String
+  ctaPayloadAdvertiserId: String
+  metadatas: [CreateCarouselMetadataInput!]!
+}
+
+input CreateCarouselMetadataInput {
+  imageId: String!
+  languageId: LanguageEnum!
+}
+
+input UpdateCarouselInput {
+  title: String
+  startDate: DateTime
+  endDate: DateTime
+  status: CarouselStatusEnum
+  sortOrder: Int
+  ctaType: CarouselCtaEnum
+  ctaPayloadLink: String
+  ctaPayloadAdvertiserId: String
+  metadatas: [CreateCarouselMetadataInput!]
+}
+
+input CreateAdvertiserInput {
+  """The unique slug for the advertiser"""
+  slug: String!
+
+  """The status of the advertiser"""
+  statusId: AdvertiserStatusEnum = Inactive
+
+  """The ID of the logo media"""
+  logoId: String!
+
+  """The advertiser metadata in different languages"""
+  metadatas: [AdvertiserMetadataInput!]!
+
+  """The provider references for the advertiser"""
+  providerReferences: [AdvertiserProviderReferenceInput!]
+
+  """The commissions for the advertiser"""
+  commissions: [CreateAdvertiserCommissionInput!]
+}
+
+input AdvertiserMetadataInput {
+  """The language of the advertiser metadata"""
+  languageId: LanguageEnum!
+
+  """The name of the advertiser"""
+  name: String!
+
+  """The description of the advertiser"""
+  description: String!
+}
+
+input AdvertiserProviderReferenceInput {
+  """The affiliate provider ID"""
+  providerId: AffiliateProviderEnum!
+
+  """The reference ID of the advertiser in the provider system"""
+  providerReferenceId: String!
+}
+
+input CreateAdvertiserCommissionInput {
+  """Advertiser ID that this commission belongs to"""
+  advertiserId: String!
+
+  """Provider reference ID"""
+  providerReferenceId: String!
+
+  """Affiliate provider ID"""
+  providerId: AffiliateProviderEnum!
+
+  """Commission share percentage"""
+  commissionShare: Float!
+
+  """Commission share type"""
+  commissionShareTypeId: AdvertiserCommissionShareTypeEnum!
+
+  """Number of days to validate the commission"""
+  dayToValidate: Float!
+
+  """Number of days to payout the commission"""
+  dayToPayout: Float!
+
+  """Affiliate URL"""
+  url: String!
+
+  """Status of the commission"""
+  statusId: AdvertiserCommissionStatusEnum!
+
+  """Commission rows for this commission"""
+  commissionRows: [CreateCommissionRowInput!]
+}
+
+"""Type of commission share (Percentage or Fixed)"""
+enum AdvertiserCommissionShareTypeEnum {
+  Percentage
+  Fixed
+}
+
+input CreateCommissionRowInput {
+  """Provider reference ID for this commission row"""
+  providerReferenceId: String!
+
+  """Type of the commission (Percentage or Fixed)"""
+  typeId: AdvertiserCommissionTypeEnum!
+
+  """Status of the commission row (Active or Inactive)"""
+  statusId: AdvertiserCommissionRowStatusEnum! = Inactive
+
+  """Commission value"""
+  commission: Float!
+
+  """Metadata translations for the commission row"""
+  metadatas: [CreateCommissionRowMetadataInput!]
+}
+
+input CreateCommissionRowMetadataInput {
+  """Language ID of the metadata"""
+  languageId: LanguageEnum!
+
+  """Name of the commission row in the specified language"""
+  name: String!
+}
+
+input UpdateAdvertiserInput {
+  statusId: AdvertiserStatusEnum
+
+  """The unique slug for the advertiser"""
+  slug: String
+
+  """The advertiser metadata to update in different languages"""
+  metadatas: [UpdateAdvertiserMetadataInput!]
+
+  """The category IDs to assign to the advertiser"""
+  categoryIds: [AdvertiserCategoryEnum!]
+}
+
+input UpdateAdvertiserMetadataInput {
+  """Language ID of the metadata"""
+  languageId: LanguageEnum!
+
+  """Name of the advertiser in the specified language"""
+  name: String!
+}
+
+input RefreshAdvertiserSearchIndexInput {
+  """
+  Optional specific advertiser ID to refresh. If not provided, all advertisers will be re-indexed.
+  """
+  advertiserId: String
+}
+
+input FetchAdvertiserInput {
+  """The name of the advertiser to fetch from the provider API"""
+  name: String!
+}
+
+input CreateAdvertiserCampaignInput {
+  """The ID of the advertiser for this campaign"""
+  advertiserId: String!
+
+  """The ID of the affiliate provider"""
+  providerId: AffiliateProviderEnum!
+
+  """The reference ID of the campaign in the provider system"""
+  providerReferenceId: String!
+
+  """The voucher codes for the campaign"""
+  voucherCodes: [String!]!
+
+  """The start date of the campaign"""
+  startDate: DateTime!
+
+  """The end date of the campaign"""
+  endDate: DateTime!
+
+  """The status of the advertiser campaign"""
+  statusId: AdvertiserCampaignStatusEnum = Active
+
+  """The URL of the advertiser campaign"""
+  url: String!
+
+  """URL-friendly identifier for the campaign"""
+  slug: String!
+
+  """The advertiser campaign metadata in different languages"""
+  metadatas: [AdvertiserCampaignMetadataInput!]!
+}
+
+input AdvertiserCampaignMetadataInput {
+  """The language of the advertiser campaign metadata"""
+  languageId: LanguageEnum!
+
+  """The name of the advertiser campaign"""
+  name: String!
+
+  """The description of the advertiser campaign"""
+  description: String!
+
+  """The ID of the banner image for the advertiser campaign"""
+  bannerId: String
+}
+
+input UpdateAdvertiserCampaignInput {
+  """The ID of the advertiser campaign to update"""
+  id: String!
+
+  """The voucher codes for the campaign"""
+  voucherCodes: [String!]
+
+  """The start date of the campaign"""
+  startDate: DateTime
+
+  """The end date of the campaign"""
+  endDate: DateTime
+
+  """The status of the advertiser campaign"""
+  statusId: AdvertiserCampaignStatusEnum
+
+  """The URL of the advertiser campaign"""
+  url: String
+
+  """URL-friendly identifier for the campaign"""
+  slug: String
+
+  """The advertiser campaign metadata in different languages"""
+  metadatas: [UpdateAdvertiserCampaignMetadataInput!]
+}
+
+input UpdateAdvertiserCampaignMetadataInput {
+  """The language of the advertiser campaign metadata"""
+  languageId: LanguageEnum!
+
+  """The name of the advertiser campaign"""
+  name: String!
+
+  """The description of the advertiser campaign"""
+  description: String!
+
+  """The ID of the banner image for the advertiser campaign"""
+  bannerId: String
+}
+
+input UpdateAdvertiserProviderReferenceInput {
+  """The advertiser ID"""
+  advertiserId: String!
+
+  """The affiliate provider ID"""
+  providerId: AffiliateProviderEnum!
+
+  """The reference ID of the advertiser in the provider system"""
+  providerReferenceId: String!
+}
+
+input UpdateAdvertiserCommissionInput {
+  """Advertiser ID that this commission belongs to"""
+  advertiserId: String
+
+  """Provider reference ID"""
+  providerReferenceId: String
+
+  """Affiliate provider ID"""
+  providerId: AffiliateProviderEnum
+
+  """Commission share percentage"""
+  commissionShare: Float
+
+  """Commission share type"""
+  commissionShareTypeId: AdvertiserCommissionShareTypeEnum
+
+  """Number of days to validate the commission"""
+  dayToValidate: Float
+
+  """Number of days to payout the commission"""
+  dayToPayout: Float
+
+  """Affiliate URL"""
+  url: String
+
+  """Status of the commission"""
+  statusId: AdvertiserCommissionStatusEnum
+
+  """Commission rows that will completely replace all existing rows"""
+  commissionRows: [CreateCommissionRowInput!]
+
+  """Identifier for the advertiser commission to update"""
+  identifier: UpdateAdvertiserCommissionIdentifierInput!
+}
+
+input UpdateAdvertiserCommissionIdentifierInput {
+  """ID of the advertiser commission to update"""
+  id: String
+
+  """Advertiser ID to identify the commission when ID is not provided"""
+  advertiserId: String
+
+  """Provider ID to identify the commission when ID is not provided"""
+  providerId: AffiliateProviderEnum
+
+  """
+  Provider reference ID to identify the commission when ID is not provided
+  """
+  providerReferenceId: String
+}
+
+input CreateBonusTypeInput {
+  codeId: BonusTypeCodeEnum!
+  version: Float
+  priority: Float
+  expiryDays: Float
+  maxUsagePerUser: Float
+  ruleConfig: String!
+  statusId: BonusTypeStatusEnum! = Active
+  effectiveFrom: DateTime
+  effectiveTo: DateTime
+
+  """The metadata for different languages"""
+  metadatas: [BonusTypeMetadataInput!]
+}
+
+"""Bonus type metadata for a specific language"""
+input BonusTypeMetadataInput {
+  """The title of the bonus type in the specific language"""
+  title: String!
+
+  """The description of the bonus type in the specific language"""
+  description: String!
+
+  """The terms and conditions in the specific language"""
+  termsAndConditions: String!
+
+  """The featured image ID for the specific language"""
+  featuredImageId: String
+
+  """The logo ID for the specific language"""
+  logoId: String
+
+  """The language identifier for this metadata"""
+  languageId: LanguageEnum!
+}
+
+input UpdateBonusTypeInput {
+  version: Float
+  priority: Float
+  expiryDays: Float
+  maxUsagePerUser: Float
+  ruleConfig: String
+  statusId: BonusTypeStatusEnum
+  effectiveFrom: DateTime
+  effectiveTo: DateTime
+
+  """The metadata for different languages"""
+  metadatas: [BonusTypeMetadataInput!]
+}
+
+input UploadMediaInput {
+  """Base64 encoded file content"""
+  fileBase64: String!
+
+  """Original filename"""
+  filename: String!
+
+  """Mime type of the file"""
+  mimeType: String!
+
+  """Caption for the media"""
+  caption: String
+
+  """
+  Custom filename pattern (e.g., "logo", "logo-dark"). If provided, will use this instead of original filename with timestamp.
+  """
+  customFilename: String
+}
+
+"""Input for updating site information"""
+input UpdateSiteInput {
+  """The domain of the site"""
+  domain: String
+
+  """The metadata for different languages"""
+  metadatas: [UpdateSiteMetadataInput!]
+}
+
+"""Site metadata update for a specific language"""
+input UpdateSiteMetadataInput {
+  """The name of the site in the specific language"""
+  name: String
+
+  """The description of the site in the specific language"""
+  description: String
+
+  """The logo ID of the site for the specific language"""
+  logoId: String
+
+  """The dark theme logo ID of the site for the specific language"""
+  darkLogoId: String
+
+  """The language identifier for this metadata"""
+  languageId: LanguageEnum!
+}
+
+"""Input for updating site settings"""
+input UpdateSiteSettingsInput {
+  """Google Analytics tracking ID"""
+  googleAnalyticsId: String
+
+  """Google Tag Manager ID"""
+  googleTagManagerId: String
+
+  """Facebook Pixel ID"""
+  facebookPixelId: String
+
+  """Default meta title for pages"""
+  defaultMetaTitle: String
+
+  """Default meta description for pages"""
+  defaultMetaDescription: String
+
+  """Sitemap URL"""
+  sitemapUrl: String
+
+  """Robots.txt content"""
+  robotsTxt: String
+
+  """Facebook page URL"""
+  facebookUrl: String
+
+  """Twitter/X profile URL"""
+  twitterUrl: String
+
+  """Instagram profile URL"""
+  instagramUrl: String
+
+  """LinkedIn profile URL"""
+  linkedinUrl: String
+
+  """Contact email address"""
+  contactEmail: String
+
+  """Support email address"""
+  supportEmail: String
+
+  """Phone number"""
+  phoneNumber: String
+
+  """Physical address"""
+  address: String
+
+  """Whether the site is in maintenance mode"""
+  maintenanceMode: Boolean
+
+  """Whether user registration is allowed"""
+  allowUserRegistration: Boolean
+
+  """Whether comments are enabled"""
+  enableComments: Boolean
+
+  """Whether newsletter signup is enabled"""
+  enableNewsletter: Boolean
+}
+
+input CreatePostInput {
+  """The title of the post"""
+  title: String
+
+  """The main content of the post"""
+  content: String
+
+  """URL-friendly identifier for the post"""
+  slug: String
+
+  """ID of the featured image associated with the post"""
+  featuredImageId: ID
+
+  """Version of the editor used"""
+  editorVersion: Int
+
+  """The date the post was published or scheduled"""
+  postDate: DateTime
+
+  """A short summary or description of the post"""
+  description: String
+
+  """List of tags associated with the post"""
+  tags: [String!]
+
+  """The type of the post (e.g., blog, article)"""
+  postTypeId: PostTypeEnum
+
+  """The status of the post (e.g., draft, published)"""
+  statusId: PostStatusEnum
+}
+
+enum PostTypeEnum {
+  Page
+  Blog
+}
+
+input UpdatePostInput {
+  """The title of the post"""
+  title: String
+
+  """The main content of the post"""
+  content: String
+
+  """URL-friendly identifier for the post"""
+  slug: String
+
+  """ID of the featured image associated with the post"""
+  featuredImageId: ID
+
+  """Version of the editor used"""
+  editorVersion: Int
+
+  """The date the post was published or scheduled"""
+  postDate: DateTime
+
+  """A short summary or description of the post"""
+  description: String
+
+  """List of tags associated with the post"""
+  tags: [String!]
+
+  """The type of the post (e.g., blog, article)"""
+  postTypeId: PostTypeEnum
+
+  """The status of the post (e.g., draft, published)"""
+  statusId: PostStatusEnum
+}

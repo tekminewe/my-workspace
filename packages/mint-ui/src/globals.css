@@ -1,0 +1,361 @@
+@import 'react-toastify/dist/ReactToastify.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --toastify-text-color-light: rgb(var(--color-neutral-800));
+  --color-error: rgb(var(--color-error-500));
+  --color-success: rgb(var(--color-success-500));
+}
+
+* {
+  border-color: rgb(var(--color-neutral-300));
+}
+
+@layer components {
+  /**
+  * Global styles
+  */
+  .overlay {
+    @apply fixed inset-0 bg-neutral-800/50;
+    animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /**
+  * Navbar styles
+  */
+  .navbar {
+    @apply w-full p-4 flex items-center border-b border-neutral-200 dark:border-neutral-300;
+    @apply min-h-[4rem];
+  }
+  .navbar[data-breakpoint='xs'] .mt-navMenu {
+    @apply hidden xs:flex;
+  }
+  .navbar[data-breakpoint='sm'] .mt-navMenu {
+    @apply hidden sm:flex;
+  }
+  .navbar[data-breakpoint='md'] .mt-navMenu {
+    @apply hidden md:flex;
+  }
+  .navbar[data-breakpoint='lg'] .mt-navMenu {
+    @apply hidden lg:flex;
+  }
+  .navbar[data-breakpoint='xl'] .mt-navMenu {
+    @apply hidden xl:flex;
+  }
+
+  .navbar[data-breakpoint='xs'] .mt-mobileNavMenu {
+    @apply xs:hidden;
+  }
+  .navbar[data-breakpoint='sm'] .mt-mobileNavMenu {
+    @apply sm:hidden;
+  }
+  .navbar[data-breakpoint='md'] .mt-mobileNavMenu {
+    @apply md:hidden;
+  }
+  .navbar[data-breakpoint='lg'] .mt-mobileNavMenu {
+    @apply lg:hidden;
+  }
+  .navbar[data-breakpoint='xl'] .mt-mobileNavMenu {
+    @apply xl:hidden;
+  }
+
+  @keyframes overlayShow {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes dialogContentShow {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  /**
+  * Card styles
+  */
+  .card {
+    @apply rounded-lg shadow-2 p-4 bg-neutral-50;
+  }
+
+  .card-title {
+    @apply text-lg font-semibold;
+  }
+
+  /**
+  * Button styles
+  */
+
+  .button {
+    cursor: pointer;
+  }
+
+  /**
+  * Typography styles
+  */
+  .display {
+    @apply text-4xl font-bold;
+  }
+
+  .header {
+    @apply text-2xl font-bold;
+  }
+
+  .title {
+    @apply text-lg font-medium;
+  }
+
+  .text {
+    @apply text-base;
+  }
+
+  .caption {
+    @apply text-sm text-neutral-500;
+  }
+
+  .link {
+    @apply text-primary-600;
+  }
+
+  /**
+  * Scrollbar styles
+  */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  /**
+  * Avatar styles
+  */
+  .avatar {
+    @apply rounded-full w-7 h-7 ml-4 flex items-center justify-center;
+  }
+
+  /**
+  * Admin Layout styles
+  */
+  /**
+  * Admin Layout styles
+  */
+  .admin-layout {
+    @apply grid h-screen;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 'sidebar navbar' 'sidebar content';
+  }
+  /**
+  * Admin Navbar styles
+  */
+  .admin-navbar {
+    @apply border-b border-neutral-200 dark:border-neutral-300 bg-white dark:bg-neutral-100 h-12 flex items-center px-4;
+    grid-area: navbar;
+  }
+  /**
+  * Admin Content styles
+  */
+  .admin-content {
+    @apply p-6 bg-neutral-50 dark:bg-neutral-50 overflow-auto;
+    grid-area: content;
+  }
+  /**
+  * Sidebar styles
+  */
+  .sidebar {
+    @apply w-[280px] h-screen border-r border-neutral-200 dark:border-neutral-300 bg-white dark:bg-neutral-100 px-4 py-6 flex flex-col;
+    grid-area: sidebar;
+  }
+  .sidebar-header {
+    @apply flex items-center gap-3 font-bold text-xl text-neutral-900 dark:text-neutral-900 pb-6 border-b border-neutral-100 dark:border-neutral-200 mb-6;
+  }
+  .sidebar-header img {
+    @apply w-8 h-8 rounded-lg object-contain;
+  }
+  .sidebar-menu {
+    @apply flex-1;
+  }
+  .sidebar-menu-group {
+    @apply mb-6;
+  }
+  .sidebar-menu-group + .sidebar-menu-group {
+    @apply mt-8;
+  }
+  .sidebar-menu-group-title {
+    @apply text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-500 mb-3 px-3;
+  }
+  /**
+  * Search styles
+  */
+  .search-dialog {
+    @apply w-screen h-svh md:h-[50vh] overflow-hidden;
+  }
+  .search-result-input {
+    @apply outline-1 outline outline-neutral-300 focus:outline-2 focus:outline-primary-600 rounded-md p-2 w-full;
+    @apply mb-2;
+  }
+  /**
+  * Drawer styles
+  */
+  .drawer {
+    @apply bg-neutral-50 flex flex-col w-[var(--mt-w-drawer)] fixed outline-none p-4;
+  }
+  .drawer[data-vaul-drawer-direction='right'] {
+    @apply right-0 top-0 h-screen;
+  }
+  .drawer[data-vaul-drawer-direction='left'] {
+    @apply left-0 top-0 h-screen;
+  }
+  .drawer[data-vaul-drawer-direction='bottom'] {
+    @apply bottom-0 left-0 w-screen;
+  }
+  /**
+  * Prose styles for dark mode compatibility
+  */
+  .prose {
+    color: rgb(var(--color-neutral-900));
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6 {
+    color: rgb(var(--color-neutral-900));
+  }
+
+  .prose p,
+  .prose li,
+  .prose blockquote {
+    color: rgb(var(--color-neutral-800));
+  }
+
+  .prose strong {
+    color: rgb(var(--color-neutral-900));
+  }
+
+  .prose a {
+    color: rgb(var(--color-primary-600));
+  }
+
+  .prose blockquote {
+    border-left-color: rgb(var(--color-primary-600));
+    color: rgb(var(--color-neutral-800));
+  }
+
+  .prose code {
+    color: rgb(var(--color-neutral-900));
+    background-color: rgb(var(--color-neutral-100));
+  }
+
+  .prose pre {
+    background-color: rgb(var(--color-neutral-100));
+    color: rgb(var(--color-neutral-900));
+  }
+
+  .prose pre code {
+    background-color: transparent;
+    color: inherit;
+  }
+
+  /* DateRangePicker light mode styles */
+  .rdp-light-mode {
+    @apply bg-transparent text-neutral-900;
+  }
+
+  .rdp-light-mode .rdp-month {
+    @apply bg-transparent;
+  }
+
+  .rdp-light-mode .rdp-table {
+    @apply bg-transparent;
+  }
+
+  .rdp-light-mode .rdp-caption_label {
+    @apply text-neutral-900 font-semibold;
+  }
+
+  .rdp-light-mode .rdp-weekday {
+    @apply text-neutral-700 text-sm font-medium;
+  }
+
+  .rdp-light-mode .rdp-day {
+    @apply text-neutral-900;
+  }
+
+  .rdp-light-mode .rdp-day_button {
+    @apply text-neutral-900 hover:bg-neutral-100 hover:text-neutral-900;
+  }
+
+  .rdp-light-mode .rdp-day:hover:not(.rdp-disabled):not(.rdp-selected) {
+    @apply bg-neutral-100 text-neutral-900;
+  }
+
+  .rdp-light-mode .rdp-day.rdp-selected {
+    @apply bg-primary-500 text-white;
+  }
+
+  .rdp-light-mode .rdp-day.rdp-disabled {
+    @apply text-neutral-400;
+  }
+
+  .rdp-light-mode .rdp-day.rdp-outside {
+    @apply text-neutral-400;
+  }
+
+  /* DateRangePicker dark mode styles using accessible colors */
+  .rdp-dark-mode {
+    @apply bg-transparent text-neutral-900 dark:text-neutral-900;
+  }
+
+  .rdp-dark-mode .rdp-month {
+    @apply bg-transparent;
+  }
+
+  .rdp-dark-mode .rdp-table {
+    @apply bg-transparent;
+  }
+
+  .rdp-dark-mode .rdp-caption_label {
+    @apply text-neutral-900 font-semibold;
+  }
+
+  .rdp-dark-mode .rdp-weekday {
+    @apply text-neutral-700 text-sm font-medium;
+  }
+
+  .rdp-dark-mode .rdp-day {
+    @apply text-neutral-900;
+  }
+
+  .rdp-dark-mode .rdp-day_button {
+    @apply text-neutral-900 hover:bg-neutral-200 hover:text-neutral-900;
+  }
+
+  .rdp-dark-mode .rdp-day:hover:not(.rdp-disabled):not(.rdp-selected) {
+    @apply bg-neutral-200 text-neutral-900;
+  }
+
+  .rdp-dark-mode .rdp-day.rdp-selected {
+    @apply bg-primary-500 text-white;
+  }
+
+  .rdp-dark-mode .rdp-day.rdp-disabled {
+    @apply text-neutral-600;
+  }
+
+  .rdp-dark-mode .rdp-day.rdp-outside {
+    @apply text-neutral-600;
+  }
+}

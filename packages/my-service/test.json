@@ -1,0 +1,39 @@
+{
+  "operationName": "AdminUpdateAdvertiserCommission",
+  "variables": {
+    "data": {
+      "identifier": { "id": "cm5vn3l7f00048b7m5h5726l0" },
+      "statusId": "Active",
+      "commissionRows": [
+        {
+          "providerReferenceId": "cmbcmcn3y0016d0zjevitf0ij",
+          "typeId": "Percentage",
+          "commission": 2.5,
+          "metadatas": [
+            { "languageId": "EN_MY", "name": "Commission" },
+            { "languageId": "ZH_MY", "name": "委员会" }
+          ]
+        },
+        {
+          "providerReferenceId": "cmbfkxfko0004b4m8fis32tox",
+          "typeId": "Percentage",
+          "commission": 2.2,
+          "metadatas": [
+            { "languageId": "EN_MY", "name": "Commission" },
+            { "languageId": "ZH_MY", "name": "委员会" }
+          ]
+        },
+        {
+          "providerReferenceId": "cmbfky6ld0008b4m8bfqgl9bf",
+          "typeId": "Percentage",
+          "commission": 1.9,
+          "metadatas": [
+            { "languageId": "EN_MY", "name": "All3" },
+            { "languageId": "ZH_MY", "name": "委员会" }
+          ]
+        }
+      ]
+    }
+  },
+  "query": "mutation AdminUpdateAdvertiserCommission($data: UpdateAdvertiserCommissionInput!) {\n  updateAdvertiserCommission(data: $data) {\n    id\n    commission\n    providerId\n    statusId\n    commissionRows {\n      id\n      name\n      commission\n      typeId\n      metadatas {\n        languageId\n        name\n        __typename\n      }\n      __typename\n    }\n    url\n    dayToValidate\n    dayToPayout\n    __typename\n  }\n}"
+}

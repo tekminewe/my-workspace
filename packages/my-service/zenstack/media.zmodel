@@ -1,0 +1,37 @@
+import "./post.zmodel"
+import "./company.zmodel"
+import "./affiliate.zmodel"
+import "./site.zmodel"
+import "./wallet.zmodel"
+import "./carousel.zmodel"
+import "./site-settings.zmodel"
+import "./bonus.zmodel"
+
+model Media {
+  id                          String                       @id @default(cuid())
+  filePath                    String
+  mimeType                    String                       @length(1, 50)
+  caption                     String?                      @length(1, 150)
+  createdAt                   DateTime                     @default(now())
+  updatedAt                   DateTime                     @updatedAt
+  postsWithFeatureImage       Post[]                       @relation(name: "featureImages")
+  postsWithOgImage            Post[]                       @relation(name: "ogImages")
+  postVersionWithFeatureImage PostVersion[]                @relation(name: "featureImages")
+  postVersionWithOgImage      PostVersion[]                @relation(name: "ogImages")
+  advertisers                 Advertiser[]
+  advertiserCampaignMetadatas AdvertiserCampaignMetadata[]
+  companyId                   String?
+  company                     Company?                     @relation(fields: [companyId], references: [id])
+  siteLogo                    SiteMetadata[]               @relation(name: "SiteMetadataLogo")
+  siteDarkLogo                SiteMetadata[]               @relation(name: "SiteMetadataDarkLogo")
+  paymentChannelLogos         PaymentChannel[]
+  carouselMetadatas           CarouselMetadata[]
+
+  // Bonus relations
+  bonusMetadataFeatured       BonusTypeMetadata[]          @relation("BonusMetadataFeaturedImage")
+  bonusMetadataLogo           BonusTypeMetadata[]          @relation("BonusMetadataLogo")
+
+  @@index([companyId])
+  @@unique([filePath, companyId])
+  @@allow('create,read', true)
+}

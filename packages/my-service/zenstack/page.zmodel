@@ -1,0 +1,49 @@
+import "./media.zmodel"
+import "./auth.zmodel"
+import "./company.zmodel"
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Page {
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  publishDate    DateTime      @default(now())
+  slug           String        @unique
+  title          String        @length(1, 256)
+  content        String
+  status         PageStatus    @default(DRAFT)
+  description    String?       @length(0, 512)
+  versionHistory PageVersion[]
+  companyId      String
+  company        Company       @relation(fields: [companyId], references: [id])
+
+  @@allow('create', auth() != null)
+  @@allow('read', true)
+  @@allow('update,delete', company.users?[id == auth().id])
+}
+
+model PageVersion {
+  id          String     @id @default(cuid())
+  version     Int        @default(1)
+  slug        String
+  pageId      String
+  page        Page       @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  title       String     @length(1, 256)
+  content     String
+  status      PageStatus @default(DRAFT)
+  description String?    @length(0, 512)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  publishDate DateTime   @default(now())
+  companyId   String
+  company     Company    @relation(fields: [companyId], references: [id])
+
+  @@index([pageId, version])
+  @@allow('create', auth() != null)
+  @@allow('read', true)
+  @@allow('update,delete', company.users?[id == auth().id])
+}

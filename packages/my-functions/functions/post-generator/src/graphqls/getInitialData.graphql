@@ -1,0 +1,10 @@
+query GetInitialData {
+  site {
+    id
+    name
+    logo {
+      id
+      url
+    }
+  }
+}
