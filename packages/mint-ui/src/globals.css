@@ -18,7 +18,7 @@
   * Global styles
   */
   .overlay {
-    @apply fixed inset-0 bg-neutral-800/50;
+    @apply fixed inset-0 bg-neutral-800/50 z-50;
     animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   /**
@@ -193,12 +193,6 @@
   }
   .sidebar-menu-group-title {
     @apply text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-500 mb-3 px-3;
-  }
-  /**
-  * Search styles
-  */
-  .search-dialog {
-    @apply w-screen h-svh md:h-[50vh] overflow-hidden;
   }
   .search-result-input {
     @apply outline-1 outline outline-neutral-300 focus:outline-2 focus:outline-primary-600 rounded-md p-2 w-full;

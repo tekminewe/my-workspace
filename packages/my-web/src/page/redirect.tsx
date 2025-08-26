@@ -128,7 +128,7 @@ export const AdvertiserRedirectPage = async ({
   };
 
   return (
-    <div className="bg-neutral-50 flex flex-col items-center justify-center p-4">
+    <div className="bg-neutral-50 flex flex-col items-center justify-center p-4 h-screen">
       {click?.ok() && <RedirectAfter url={click?.data?.url} delay={3000} />}
       <Card className="max-w-[700px] mt-4 flex flex-col items-center p-4 md:p-8 w-full">
         {renderContent()}
