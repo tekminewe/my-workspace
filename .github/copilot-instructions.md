@@ -142,7 +142,7 @@ import { ControlledSelect } from '@tekminewe/mint-ui/select';
 import { ControlledSwitch } from '@tekminewe/mint-ui/switch';
 import { Card } from '@tekminewe/mint-ui/card';
 import { toast } from '@tekminewe/mint-ui/toast';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation, gql, ApolloError } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 import { useMemo, useCallback } from 'react';
 import { object, string, boolean, coerce } from 'zod';
