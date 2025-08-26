@@ -1,0 +1,40 @@
+# CodeQL configuration for enhanced code scanning
+# https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/customizing-code-scanning
+
+name: "CodeQL Configuration"
+
+# Disable default setup and use custom configuration
+disable-default-setup: false
+
+# Language-specific configurations
+queries:
+  - uses: security-extended
+  - uses: security-and-quality
+
+# Path filters to focus scanning on relevant code
+paths:
+  - "my-service/src/**"
+  - "my-web/src/**"
+  - "mint-ui/src/**"
+  - "my-functions/functions/**"
+
+# Ignore paths that don't need scanning
+paths-ignore:
+  - "**/*.test.ts"
+  - "**/*.test.js"
+  - "**/*.spec.ts"
+  - "**/*.spec.js"
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
+  - "**/.next/**"
+  - "**/coverage/**"
+  - "**/storybook-static/**"
+  - "**/*.d.ts"
+  - "**/prisma/migrations/**"
+
+# Custom queries for specific security patterns
+packs:
+  - "codeql/javascript-queries:Security"
+  - "codeql/javascript-queries:Performance"
+  - "codeql/typescript-queries:Security"

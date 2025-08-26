@@ -1,0 +1,44 @@
+/* Global background styles for light and dark modes */
+html,
+body {
+  background-color: white;
+  color: rgb(23, 23, 23);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dark html,
+.dark body {
+  background-color: rgb(23, 23, 23);
+  color: rgb(245, 245, 245);
+}
+
+:root {
+  --toastify-text-color-light: rgb(0.113 0.125 0.14);
+
+  /* Override mint-ui primary colors with affiliate-optimized orange theme */
+  /* This changes the main brand color throughout all mint-ui components */
+  --color-primary-50: 255 247 237; /* #fff7ed - Lightest backgrounds */
+  --color-primary-100: 255 237 213; /* #ffedd5 - Light backgrounds, badges */
+  --color-primary-200: 254 215 170; /* #fed7aa - Hover states */
+  --color-primary-300: 253 186 116; /* #fdba74 - Borders, secondary elements */
+  --color-primary-400: 251 146 60; /* #fb923c - Secondary CTAs */
+  --color-primary-500: 245 158 11; /* #f59e0b - Primary affiliate color */
+  --color-primary-600: 217 119 6; /* #d97706 - Hover states, active buttons */
+  --color-primary-700: 180 83 9; /* #b45309 - Text on light backgrounds */
+  --color-primary-800: 146 64 14; /* #92400e - High contrast text */
+  --color-primary-900: 120 53 15; /* #78350f - Highest contrast */
+}
+
+/* Dark mode: Override mint-ui primary colors for dark theme */
+.dark {
+  --color-primary-50: 120 53 15; /* Darkest for dark mode */
+  --color-primary-100: 146 64 14; /* Dark background */
+  --color-primary-200: 180 83 9; /* Dark hover states */
+  --color-primary-300: 217 119 6; /* Medium dark */
+  --color-primary-400: 245 158 11; /* Same as light mode base */
+  --color-primary-500: 251 146 60; /* Brighter for dark mode */
+  --color-primary-600: 253 186 116; /* Light borders */
+  --color-primary-700: 254 215 170; /* Text for dark backgrounds */
+  --color-primary-800: 255 237 213; /* Light text */
+  --color-primary-900: 255 247 237; /* Lightest for dark mode */
+}

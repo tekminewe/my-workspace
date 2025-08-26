@@ -1,0 +1,496 @@
+{
+  "common": {
+    "error": {
+      "title": "抱歉，出了点问题。",
+      "message": "我们无法加载内容，请刷新页面重试。"
+    },
+    "languages": {
+      "ZH_MY": "中文",
+      "EN_MY": "English"
+    },
+    "cancel": "取消"
+  },
+  "navbar": {
+    "filters": {
+      "title": "筛选条件：",
+      "categories": "类别",
+      "searchCategories": "搜索类别...",
+      "clearAll": "清除所有筛选条件",
+      "noStoresFound": "未找到商店",
+      "noStoresFoundDescription": "没有商店符合您当前的筛选条件。"
+    },
+    "dropdownMenu": {
+      "admin": "管理员",
+      "myCashback": "我的现金回馈",
+      "myBonuses": "我的奖金",
+      "profile": "我的个人资料",
+      "withdrawMoney": "提款",
+      "signOut": "登出",
+      "signOutError": "登出失败"
+    },
+    "drawer": {
+      "home": "主页",
+      "stores": "商家",
+      "blog": "部落格",
+      "signIn": "登录",
+      "language": "语言",
+      "theme": "主题"
+    }
+  },
+  "search": {
+    "placeholder": "搜索商家",
+    "noResults": "抱歉，没有找到相关商家",
+    "cashback": "{{cashback}}% 现金回馈"
+  },
+  "guestDialog": {
+    "title": "赚取高达 {{cashback}}% 的现金回馈",
+    "signUpButtonLabel": "立即注册",
+    "proceedWithoutSignUpButtonLabel": "不注册继续"
+  },
+  "home": {
+    "heroMessage1": "我再也不用为网购付全价了",
+    "heroMessage2": "- Azizah，经常网购的顾客",
+    "heroCta": "立即加入",
+    "popularStores": "热门商家",
+    "cashback": "现金回馈",
+    "seeAllStores": "查看所有商家",
+    "howItWorks": "如何运作",
+    "howItWorksStep1": "1. 免费加入",
+    "howItWorksStep1Description": "免费创建帐户并开始在您喜欢的商店购物",
+    "howItWorksStep2": "2. 像往常一样购物",
+    "howItWorksStep2Description": "搜索并单击我们的任何合作伙伴商店，然后像往常一样购物",
+    "howItWorksStep3": "3. 获得现金回馈",
+    "howItWorksStep3Description": "我们将记录您的购买并将现金回馈添加到您的帐户",
+    "howItWorksStep4": "4. 提取您的现金回馈",
+    "howItWorksStep4Description": "将现金回馈提取到您的银行帐户、PayPal 或礼品卡",
+    "footer": {
+      "about": "关于",
+      "howItWorks": "如何运作",
+      "privacyPolicy": "隐私政策",
+      "termsOfService": "服务条款",
+      "stores": "商家",
+      "seeAllStores": "查看所有商家",
+      "allRightsReserved": "保留所有权利"
+    },
+    "signInButton": "登陆"
+  },
+  "merchantDetail": {
+    "storeTitle": "{{name}} 销售、优惠券、促销代码和现金回馈",
+    "shopNow": "立即购物",
+    "viewNow": "查看",
+    "cashbackSubtitle": "最高可获得 {{cashback}}% 现金回馈",
+    "cashbackCategories": "现金回馈类别",
+    "coupon": "优惠券",
+    "noCoupons": "目前没有优惠券。请稍后再来。",
+    "campaign": "促销活动",
+    "noCampaigns": "目前没有促销活动。请稍后再来。",
+    "endsIn": "结束于{{endDateString}}",
+    "ongoing": "进行中",
+    "fromTo": "从{{startDate}}到{{endDate}}",
+    "cashbackTimeline": "何时可以获得我的现金回馈？",
+    "cashbackTimelineStep1": "购买",
+    "cashbackTimelineStep1Description": "今天",
+    "cashbackTimelineStep2": "记录",
+    "cashbackTimelineStep2Description": "2 天",
+    "cashbackTimelineStep3": "现金回馈",
+    "cashbackTimelineStep3Description": "{{days}} 天"
+  },
+  "redirect": {
+    "cashbackActivated": "现金回馈已激活",
+    "cashbackDescription": "像往常一样购物和结账",
+    "cashbackDescription2": "最高可获得 {{cashback}}% 现金回馈",
+    "cashbackFooterChunk1": "页面将自动重定向。如果时间太长，请",
+    "cashbackFooterChunk2": "点击这里",
+    "cashbackFooterChunk3": "前往商店"
+  },
+  "sidebar": {
+    "dashboard": "仪表板",
+    "profile": "个人资料",
+    "withdrawMoney": "提款",
+    "bonus": "我的奖励"
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "tabs": {
+      "cashbackHistory": "我的现金回馈",
+      "myClicks": "我的点击",
+      "myWithdrawals": "我的提款"
+    },
+    "myClicks": {
+      "date": "日期",
+      "merchant": "商家"
+    },
+    "myCashbacks": {
+      "date": "日期",
+      "merchant": "商家",
+      "amount": "金额",
+      "status": "状态"
+    },
+    "myWithdrawals": {
+      "date": "日期",
+      "description": "描述",
+      "amount": "金额",
+      "status": "状态"
+    },
+    "balanceStats": {
+      "accountBalance": "帐户余额",
+      "minimumWithdrawal": "最低提款金额: {{currency}}{{amount}}",
+      "withdraw": "提款"
+    },
+    "pendingBalanceStats": {
+      "pendingBalance": "待处理余额",
+      "pendingBalanceDescription": "您的现金回馈正在核实中, 请耐心等待!"
+    }
+  },
+  "withdrawal": {
+    "title": "提款",
+    "tabs": {
+      "bankTransfer": "银行转账"
+    },
+    "userBanks": {
+      "description": "银行转账需要 3-5 个工作日才能反映在您的银行帐户中",
+      "addBank": "添加银行",
+      "addBankDialog": {
+        "title": "添加银行帐户",
+        "description": "请填写以下信息以添加新的银行帐户",
+        "bankLabel": "银行",
+        "bankPlaceholder": "请选择银行",
+        "bankEmptyError": "请选择银行",
+        "bankAccountNameLabel": "银行帐户上的姓名",
+        "bankAccountNamePlaceholder": "请输入银行帐户上的姓名",
+        "bankAccountNameEmptyError": "请输入银行帐户上的姓名",
+        "bankAccountNameTooLongError": "银行帐户上的姓名太长",
+        "bankAccountNumberLabel": "银行帐户号码（不含连字符或空格）",
+        "bankAccountNumberPlaceholder": "请输入银行帐户号码",
+        "bankAccountNumberInvalidError": "银行帐户号码只可以包含数字",
+        "bankAccountNumberEmptyError": "请输入银行帐户号码",
+        "bankAccountNumberTooLongError": "银行帐户号码太长",
+        "addBankSuccess": "银行帐户已成功添加",
+        "addBankError": {
+          "unknownError": "添加银行帐户失败",
+          "invalidPaymentChannel": "所选银行无效，请选择其他银行",
+          "invalidPaymentChannelDirection": "所选银行不支持提款，请选择其他银行",
+          "exceedNumOfUserPaymentMethod": "您已达到允许的银行帐户数量上限"
+        }
+      },
+      "deleteBankDialog": {
+        "title": "删除银行帐户",
+        "description": "您确定要删除此银行帐户吗？",
+        "delete": "删除",
+        "cancel": "取消",
+        "deleteBankSuccess": "银行帐户已成功删除",
+        "deleteBankError": "删除银行帐户失败"
+      }
+    },
+    "withdrawalForm": {
+      "submitLabel": "提款",
+      "amountLabel": "提款金额",
+      "amountDescription": "最低提款金额: {{amount}}",
+      "amountMinimumError": "最低提款金额为 {{amount}}",
+      "success": "恭喜！我们将在处理您的提款后通知您。",
+      "error": {
+        "unknownError": "提款失败，请稍后再试",
+        "insufficientBalance": "余额不足",
+        "invalidWallet": "提款失败，请刷新页面后重试",
+        "invalidPaymentMethod": "提款失败，请刷新页面后重试",
+        "belowMinimumAmount": "提款金额低于最低限额",
+        "unsupportedCurrency": "不支持此货币",
+        "exceedMaximumAmount": "提款金额超过最大限额"
+      }
+    }
+  },
+  "profile": {
+    "title": "我的个人资料",
+    "profileForm": {
+      "firstNameLabel": "名字",
+      "firstNamePlaceholder": "请输入您的名字",
+      "firstNameEmptyError": "请输入您的名字",
+      "firstNameTooLongError": "名字太长",
+      "lastNameLabel": "姓氏",
+      "lastNamePlaceholder": "请输入您的姓氏",
+      "lastNameEmptyError": "请输入您的姓氏",
+      "lastNameTooLongError": "姓氏太长",
+      "languageLabel": "首选语言",
+      "languagePlaceholder": "请选择语言",
+      "languageEmptyError": "请选择语言",
+      "updateProfileSuccess": "个人资料更新成功",
+      "updateProfileError": "更新个人资料失败",
+      "updateProfileButton": "更新"
+    }
+  },
+  "allStores": {
+    "title": "所有商家",
+    "cashback": "现金回馈",
+    "filters": {
+      "title": "筛选条件：",
+      "categories": "分类",
+      "searchCategories": "搜索分类...",
+      "clearAll": "清除所有筛选",
+      "selectAll": "全选",
+      "clearSelection": "清除选择",
+      "noStoresFound": "未找到商家",
+      "noStoresFoundDescription": "没有商家符合您当前的筛选条件。"
+    }
+  },
+  "advertiserCampaign": {
+    "endsIn": "结束于{{days}}天",
+    "viewNow": "查看"
+  },
+  "admin": {
+    "blog": {
+      "post": "文章",
+      "title": "标题",
+      "postDate": "发布日期",
+      "status": "状态",
+      "actions": "操作",
+      "preview": "预览",
+      "edit": "编辑",
+      "new": "新建文章"
+    },
+    "site": {
+      "title": "网站设置",
+      "domainLabel": "域名",
+      "domainPlaceholder": "输入网站域名",
+      "generalInformation": "基本信息",
+      "tabNameLabel": "网站名称",
+      "tabNamePlaceholder": "输入网站名称",
+      "tabDescriptionLabel": "网站描述",
+      "tabDescriptionPlaceholder": "输入网站描述",
+      "tabLogoLabel": "网站标志",
+      "tabLogoDescription": "标志大小应小于5MB",
+      "tabDarkLogoLabel": "深色模式标志",
+      "tabDarkLogoDescription": "深色模式标志应少于 5MB (可选)",
+      "saveButton": "保存更改",
+      "updateSuccessMessage": "网站设置更新成功",
+      "updateErrorMessage": "网站设置更新失败",
+      "validation": {
+        "nameRequired": "名称为必填项"
+      },
+      "settings": {
+        "title": "网站设置",
+        "analytics": "数据分析与追踪",
+        "googleAnalyticsId": "Google Analytics ID",
+        "googleTagManagerId": "Google Tag Manager ID",
+        "facebookPixelId": "Facebook Pixel ID",
+        "seoSettings": "SEO设置",
+        "defaultMetaTitle": "默认页面标题",
+        "defaultMetaDescription": "默认页面描述",
+        "sitemapUrl": "网站地图链接",
+        "robotsTxt": "Robots.txt",
+        "socialMedia": "社交媒体",
+        "facebookUrl": "Facebook 链接",
+        "twitterUrl": "Twitter 链接",
+        "instagramUrl": "Instagram 链接",
+        "linkedinUrl": "LinkedIn 链接",
+        "contactInfo": "联系信息",
+        "contactEmail": "联系邮箱",
+        "supportEmail": "客服邮箱",
+        "phoneNumber": "电话号码",
+        "address": "地址",
+        "featureFlags": "功能开关",
+        "maintenanceMode": "维护模式",
+        "maintenanceModeDescription": "启用后访客将看到维护页面",
+        "allowUserRegistration": "允许用户注册",
+        "allowUserRegistrationDescription": "允许新用户创建账户",
+        "enableComments": "启用评论",
+        "enableCommentsDescription": "允许在博客文章和内容上发表评论",
+        "enableNewsletter": "启用电子报",
+        "enableNewsletterDescription": "允许访客订阅电子报",
+        "settingsSaveButton": "保存设置",
+        "settingsUpdateSuccessMessage": "网站设置更新成功",
+        "settingsUpdateErrorMessage": "网站设置更新失败"
+      }
+    },
+    "carousel": {
+      "list": {
+        "carousel": "轮播",
+        "addCarousel": "添加轮播",
+        "title": "标题",
+        "image": "图片",
+        "startDate": "开始日期",
+        "endDate": "结束日期",
+        "status": "状态",
+        "action": "操作",
+        "active": "进行中",
+        "inactive": "暂停中"
+      },
+      "manage": {
+        "createCarousel": "创建轮播",
+        "updateCarousel": "更新轮播",
+        "titleLabel": "标题",
+        "titlePlaceholder": "请输入标题",
+        "titleEmptyError": "请输入标题",
+        "startDateLabel": "开始日期",
+        "endDateLabel": "结束日期",
+        "ctaTypeLabel": "CTA 类型",
+        "ctaTypeLink": "链接",
+        "ctaTypeCashback": "现金回馈",
+        "ctaPayloadLinkLabel": "链接",
+        "ctaPayloadLinkPlaceholder": "请输入链接",
+        "ctaPayloadAdvertiserIdLabel": "商家ID",
+        "ctaPayloadAdvertiserIdPlaceholder": "请输入商家ID",
+        "statusLabel": "状态",
+        "imageLabel": "图片",
+        "imageEmptyError": "请上传图片",
+        "imageDescription": "图片应为 1920x1080，且小于 5MB",
+        "sortOrderLabel": "排序顺序",
+        "sortOrderEmptyError": "请输入排序顺序",
+        "sortOrderPlaceholder": "请输入排序顺序",
+        "updateSuccessMessage": "轮播更新成功",
+        "createSuccessMessage": "轮播创建成功"
+      }
+    },
+    "advertiser": {
+      "list": {
+        "advertiser": "商家",
+        "nameLabel": "名字",
+        "categoriesLabel": "类别",
+        "logoLabel": "标志",
+        "commissionLabel": "现金回馈率",
+        "createdAtLabel": "创建日期",
+        "statusLabel": "状态",
+        "actionLabel": "操作",
+        "active": "进行中",
+        "inactive": "暂停中",
+        "refreshIndex": "刷新索引"
+      },
+      "manage": {
+        "updateAdvertiser": "更新商家",
+        "statusLabel": "状态",
+        "commissionNameLabel": "佣金类型",
+        "commissionRowStatusLabel": "佣金项目状态",
+        "commissionStatusLabel": "佣金状态",
+        "providerReferenceIdLabel": "提供商参考ID",
+        "commissionValueLabel": "佣金",
+        "providerReferencesLabel": "提供商参考",
+        "updateSuccessMessage": "商家更新成功",
+        "fetchAdvertiser": "获取广告商",
+        "fetchAdvertiserName": "广告商名称",
+        "fetchButton": "获取",
+        "fetchAdvertiserSuccess": "广告商获取成功",
+        "slugLabel": "别名",
+        "metadataLabel": "元数据",
+        "descriptionLabel": "描述",
+        "commissionTypeLabel": "佣金类型",
+        "percentageLabel": "百分比",
+        "fixedLabel": "固定",
+        "categoriesLabel": "类别",
+        "categoriesPlaceholder": "选择类别...",
+        "categoriesLoadError": "无法加载类别。请重试。"
+      }
+    },
+    "campaign": {
+      "list": {
+        "campaign": "活动",
+        "banner": "横幅",
+        "campaignName": "活动名称",
+        "advertiserId": "广告商 ID",
+        "advertiser": "广告商",
+        "providerId": "提供商 ID",
+        "startDate": "开始日期",
+        "endDate": "结束日期",
+        "status": "状态",
+        "slug": "Slug",
+        "url": "URL",
+        "actionLabel": "操作",
+        "active": "活跃",
+        "inactive": "非活跃"
+      },
+      "manage": {
+        "updateCampaign": "更新活动",
+        "statusLabel": "状态",
+        "updateSuccessMessage": "活动更新成功",
+        "campaignDetails": "活动详情",
+        "campaignMetadata": "活动元数据",
+        "slugLabel": "Slug",
+        "slugRequired": "Slug是必需的",
+        "nameLabel": "名称",
+        "nameRequired": "请输入名称",
+        "descriptionLabel": "描述",
+        "descriptionRequired": "请输入描述",
+        "bannerImageLabel": "图片"
+      }
+    },
+    "bonus": {
+      "title": "奖励类型",
+      "list": {
+        "bonusTypes": "奖励类型",
+        "code": "代码",
+        "version": "版本",
+        "status": "状态",
+        "priority": "优先级",
+        "maxUsage": "最大使用次数",
+        "expiryDays": "有效天数",
+        "effectiveFrom": "生效开始日期",
+        "effectiveTo": "生效结束日期",
+        "actions": "操作",
+        "edit": "编辑",
+        "delete": "删除",
+        "createNew": "创建新奖励类型",
+        "loadError": "加载奖励类型失败",
+        "retry": "重试",
+        "noExpiry": "无到期日",
+        "indefinite": "无限期"
+      },
+      "manage": {
+        "createBonusType": "创建奖励类型",
+        "editBonusType": "编辑奖励类型",
+        "update": "更新",
+        "create": "创建",
+        "updating": "正在更新...",
+        "creating": "正在创建...",
+        "updateSuccess": "奖励类型更新成功",
+        "createSuccess": "奖励类型创建成功",
+        "ruleConfig": "规则配置",
+        "maxUsagePerUser": "每用户最大使用次数"
+      },
+      "user": {
+        "title": "我的奖励",
+        "eligibleBonuses": "可用奖励",
+        "bonusHistory": "奖励历史",
+        "eligible": "可用",
+        "noBonuses": "您还没有任何奖励",
+        "browseBonuses": "浏览可用奖励",
+        "version": "版本",
+        "expires": "到期日",
+        "availableFrom": "可用开始日期",
+        "recentActivity": "最近活动",
+        "viewAll": "查看全部",
+        "noActivity": "暂无奖励活动记录",
+        "bonusTransaction": "奖励交易",
+        "totalBonuses": "总奖励数",
+        "totalTransactions": "总交易数",
+        "signInRequired": "请登录以查看您的奖励。",
+        "myBonuses": "我的奖励",
+        "bonuses": "奖励",
+        "bonusLabel": "奖励",
+        "versionLabel": "版本",
+        "availableLabel": "可用",
+        "expiresLabel": "到期",
+        "usedLabel": "已使用",
+        "bonusStatusAvailable": "可使用",
+        "bonusStatusUsed": "已使用",
+        "bonusStatusExpired": "已过期",
+        "bonusStatusUnknown": "未知",
+        "bonusErrorMessage": "无法加载您的奖励，请稍后重试。",
+        "viewLabel": "查看",
+        "descriptionLabel": "关于此奖励",
+        "termsLabel": "条款和条件",
+        "importantInfoLabel": "重要信息",
+        "expiryLabel": "到期日期",
+        "expiryNote": "请在到期日前使用此奖励，避免错失机会。",
+        "closeLabel": "关闭",
+        "bonusTransactions": {
+          "bonusType": "奖励类型",
+          "amount": "金额",
+          "dateUsed": "使用日期",
+          "status": "状态",
+          "statusUsed": "已使用",
+          "unknownBonus": "未知奖励",
+          "noTransactions": "暂无交易",
+          "noTransactionsDescription": "您还没有使用任何奖励。"
+        }
+      }
+    }
+  }
+}

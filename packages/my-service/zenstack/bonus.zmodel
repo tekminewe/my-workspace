@@ -1,0 +1,216 @@
+import "./role.zmodel"
+import "./auth.zmodel"
+import "./currency.zmodel"
+import "./language.zmodel"
+import "./media.zmodel"
+import "./affiliate.zmodel"
+
+// Bonus Type Code Enum
+enum BonusTypeCodeEnum {
+  FirstCashbackMultiplier   // "2x-first-cashback"
+  SpendingThreshold        // For future bonuses like "spend $100 get $10"
+  ReferralBonus           // For future referral bonuses
+  SeasonalBonus          // For future seasonal/holiday bonuses
+}
+
+// Bonus Type Status Enum
+enum BonusTypeStatusEnum {
+  Draft
+  Active
+  Archived
+}
+
+// Bonus Eligibility Status Enum
+enum BonusEligibilityStatusEnum {
+  Available
+  Used
+  Expired
+  Ineligible
+}
+
+// BonusType Model
+model BonusType {
+  id              String              @id @default(cuid())
+  codeId          BonusTypeCodeEnum      // Enum instead of string
+  version         Int                 @default(1)
+  priority        Int                 @default(100)
+  expiryDays      Int?                   // null = no expiry
+  maxUsagePerUser Int                 @default(1)
+  ruleConfig      Json                   // Flexible rule configuration
+  statusId        BonusTypeStatusEnum @default(Draft)
+  status          BonusTypeStatus     @relation(fields: [statusId], references: [id])
+  effectiveFrom   DateTime            @default(now())
+  effectiveTo     DateTime?
+  
+  // Relations
+  metadatas       BonusTypeMetadata[]
+  eligibilities   BonusEligibility[]
+  transactions    BonusTransaction[]  @relation("BonusTypeToBonusTransaction")
+  
+  // Audit fields
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  createdBy       String?
+  updatedBy       String?
+
+  @@unique([codeId, version])
+  @@index([statusId])
+  @@index([effectiveFrom, effectiveTo])
+  @@index([codeId])
+
+  @@allow('read', auth() != null)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageBonuses]])
+}
+
+// BonusType Status Model
+model BonusTypeStatus {
+  id          BonusTypeStatusEnum       @id
+  description String?
+  metadatas   BonusTypeStatusMetadata[]
+  bonusTypes  BonusType[]
+
+  @@allow('read', auth() != null)
+}
+
+// BonusType Status Metadata Model
+model BonusTypeStatusMetadata {
+  statusId   BonusTypeStatusEnum
+  status     BonusTypeStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+// BonusType Metadata Model
+model BonusTypeMetadata {
+  bonusTypeId        String
+  bonusType          BonusType    @relation(fields: [bonusTypeId], references: [id], onDelete: Cascade)
+  languageId         LanguageEnum
+  language           Language     @relation(fields: [languageId], references: [id])
+  title              String
+  description        String           // Rich text content
+  termsAndConditions String           // Separate T&Cs field
+  
+  // Option B: Language-specific images
+  featuredImageId    String?
+  logoId             String?
+  featuredImage      Media?       @relation("BonusMetadataFeaturedImage", fields: [featuredImageId], references: [id])
+  logo               Media?       @relation("BonusMetadataLogo", fields: [logoId], references: [id])
+
+  @@id([bonusTypeId, languageId])
+  @@index([bonusTypeId])
+  @@index([languageId])
+
+  @@allow('read', auth() != null)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageBonuses]])
+}
+
+// BonusEligibility Model
+model BonusEligibility {
+  id                  String                     @id @default(cuid())
+  userId              String
+  user                User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bonusTypeId         String
+  bonusType           BonusType                  @relation(fields: [bonusTypeId], references: [id])
+  bonusVersion        Int                         // Track enrolled version
+  statusId            BonusEligibilityStatusEnum @default(Available)
+  status              BonusEligibilityStatus     @relation(fields: [statusId], references: [id])
+  
+  // Timing
+  availableAt         DateTime                   @default(now())
+  expiresAt           DateTime?                   // Calculated based on bonusType.expiryDays
+  usedAt              DateTime?
+  
+  // Metadata
+  eligibilityMetadata Json?                       // Context for eligibility decisions
+  
+  // Relations
+  transactions        BonusTransaction[]
+  
+  // Audit
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+
+  @@unique([userId, bonusTypeId, bonusVersion])
+  @@index([userId])
+  @@index([bonusTypeId])
+  @@index([statusId])
+  @@index([availableAt])
+  @@index([expiresAt])
+
+  @@allow('read', 
+    auth() != null && auth().id == userId
+    ||
+    auth() != null && auth().roles?[permissions?[name == ViewBonuses]]
+  )
+  @@allow('create,update', auth().roles?[permissions?[name == ManageBonuses]])
+}
+
+// BonusEligibility Status Model
+model BonusEligibilityStatus {
+  id            BonusEligibilityStatusEnum       @id
+  description   String?
+  metadatas     BonusEligibilityStatusMetadata[]
+  eligibilities BonusEligibility[]
+
+  @@allow('read', auth() != null)
+}
+
+// BonusEligibility Status Metadata Model
+model BonusEligibilityStatusMetadata {
+  statusId   BonusEligibilityStatusEnum
+  status     BonusEligibilityStatus     @relation(fields: [statusId], references: [id], onDelete: Cascade)
+  languageId LanguageEnum
+  name       String
+
+  @@id([statusId, languageId])
+  @@allow('read', auth() != null)
+}
+
+// BonusTransaction Model
+model BonusTransaction {
+  id                  String           @id @default(cuid())
+  userId              String
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bonusEligibilityId  String
+  bonusEligibility    BonusEligibility @relation(fields: [bonusEligibilityId], references: [id])
+  bonusTypeId         String
+  bonusType           BonusType        @relation("BonusTypeToBonusTransaction", fields: [bonusTypeId], references: [id])
+  bonusVersion        Int               // Version applied
+  
+  // Financial details
+  amount              Float
+  currencyId          CurrencyEnum
+  currency            Currency         @relation(fields: [currencyId], references: [id])
+  
+  // Source tracking
+  sourceTransactionId String?           // References UserCashback.id
+  sourceCashback      UserCashback?    @relation("BonusSourceCashback", fields: [sourceTransactionId], references: [id])
+  merchantCallbackId  String?           // For callback correlation
+  
+  // Processing
+  processedAt         DateTime         @default(now())
+  walletTransactionId String?           // Reference to actual wallet credit
+  
+  // Metadata
+  processingMetadata  Json?             // Additional context
+  
+  // Audit
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  @@index([userId])
+  @@index([bonusEligibilityId])
+  @@index([sourceTransactionId])
+  @@index([processedAt])
+  @@index([userId, processedAt])
+
+  @@allow('read',
+    auth() != null && auth().id == userId
+    ||
+    auth() != null && auth().roles?[permissions?[name == ViewBonuses]]
+  )
+  @@allow('create,update', auth().roles?[permissions?[name == ManageBonuses]])
+}

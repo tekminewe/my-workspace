@@ -1,0 +1,21 @@
+{
+  "name": "@tekminewe/mint-ui",
+  "sideEffects": false,
+  "type": "module",
+  "module": "./index.js",
+  "main": "./index.cjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.cjs",
+      "types": "./index.d.ts"
+    },
+    "./styles.css": "./styles.css",
+    "./*": {
+      "import": "./*/index.js",
+      "require": "./*/index.cjs",
+      "types": "./*/index.d.ts"
+    }
+  }
+}

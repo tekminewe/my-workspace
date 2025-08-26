@@ -1,0 +1,15 @@
+{
+  "name": "my-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AWS SAM serverless functions for cashback callbacks",
+  "scripts": {
+    "build": "sam build",
+    "deploy": "sam deploy",
+    "local": "sam local start-api",
+    "clean": "rm -rf .aws-sam node_modules"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

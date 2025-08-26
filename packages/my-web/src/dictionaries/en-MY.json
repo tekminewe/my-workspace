@@ -1,0 +1,488 @@
+{
+  "common": {
+    "error": {
+      "title": "Sorry, Something went wrong.",
+      "message": "We are not able to load the content, please refresh the page to try again."
+    },
+    "languages": {
+      "ZH_MY": "中文",
+      "EN_MY": "English"
+    },
+    "cancel": "Cancel"
+  },
+  "navbar": {
+    "dropdownMenu": {
+      "admin": "Admin",
+      "myCashback": "My Cashback",
+      "myBonuses": "My Bonuses",
+      "profile": "My Profile",
+      "withdrawMoney": "Withdraw Money",
+      "signOut": "Sign Out",
+      "signOutError": "Failed to sign out"
+    },
+    "drawer": {
+      "home": "Home",
+      "stores": "Stores",
+      "blog": "Blog",
+      "signIn": "Sign In",
+      "language": "Language",
+      "theme": "Theme"
+    }
+  },
+  "search": {
+    "placeholder": "Search for stores",
+    "noResults": "Sorry, no stores found",
+    "cashback": "{{cashback}}% cashback"
+  },
+  "guestDialog": {
+    "title": "Earn up to {{cashback}}% cashback",
+    "signUpButtonLabel": "Sign up now",
+    "proceedWithoutSignUpButtonLabel": "Proceed without sign up"
+  },
+  "home": {
+    "heroMessage1": "I never pay full price for my online shopping again",
+    "heroMessage2": "- Azizah, frequent online shopper",
+    "heroCta": "Join now",
+    "popularStores": "Popular stores",
+    "cashback": "Cashback",
+    "seeAllStores": "See all stores",
+    "howItWorks": "How it works",
+    "howItWorksStep1": "1. Join for free",
+    "howItWorksStep1Description": "Create account for free and start shopping at your favorite stores",
+    "howItWorksStep2": "2. Shop as usual",
+    "howItWorksStep2Description": "Search and click on any of our partner stores and shop as usual",
+    "howItWorksStep3": "3. Earn cashback!",
+    "howItWorksStep3Description": "We will track your purchases and add cashback to your account",
+    "howItWorksStep4": "4. Get paid!",
+    "howItWorksStep4Description": "Withdraw your cashback to your bank account, PayPal or gift card",
+    "footer": {
+      "about": "About",
+      "howItWorks": "How it works",
+      "privacyPolicy": "Privacy policy",
+      "termsOfService": "Terms of service",
+      "stores": "Stores",
+      "seeAllStores": "See all stores",
+      "allRightsReserved": "All rights reserved"
+    },
+    "signInButton": "Sign in"
+  },
+  "merchantDetail": {
+    "storeTitle": "{{name}} Sales, Coupons, Promo Codes & Cashback",
+    "shopNow": "Shop now",
+    "viewNow": "View Now",
+    "cashbackSubtitle": "Earn up to {{cashback}}% cashback",
+    "cashbackCategories": "Cashback categories",
+    "coupon": "Coupon",
+    "noCoupons": "No coupons available at the moment. Please come back later.",
+    "campaign": "Deals & Promotions",
+    "noCampaigns": "No deals & promotions available at the moment. Please come back later.",
+    "endsIn": "Ends {{endDateString}}",
+    "ongoing": "Ongoing",
+    "fromTo": "From {{startDate}} to {{endDate}}",
+    "cashbackTimeline": "When will I get my cashback?",
+    "cashbackTimelineStep1": "Purchase",
+    "cashbackTimelineStep1Description": "Today",
+    "cashbackTimelineStep2": "Tracked In",
+    "cashbackTimelineStep2Description": "2 days",
+    "cashbackTimelineStep3": "Cashback In",
+    "cashbackTimelineStep3Description": "{{days}} days"
+  },
+  "redirect": {
+    "cashbackActivated": "Cashback activated",
+    "cashbackDescription": "Shop and checkout as usual",
+    "cashbackDescription2": "Earn up to {{cashback}}% cashback",
+    "cashbackFooterChunk1": "The page will redirect automatically. If it's taking too long, ",
+    "cashbackFooterChunk2": "click here",
+    "cashbackFooterChunk3": " to go to the store"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "profile": "My Profile",
+    "withdrawMoney": "Withdraw Money",
+    "bonus": "My Bonuses"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "tabs": {
+      "cashbackHistory": "My Cashbacks",
+      "myClicks": "My Clicks",
+      "myWithdrawals": "My Withdrawals"
+    },
+    "myClicks": {
+      "date": "Date",
+      "merchant": "Merchant"
+    },
+    "myCashbacks": {
+      "date": "Date",
+      "merchant": "Merchant",
+      "amount": "Amount",
+      "status": "Status"
+    },
+    "myWithdrawals": {
+      "date": "Date",
+      "description": "Description",
+      "amount": "Amount",
+      "status": "Status"
+    },
+    "balanceStats": {
+      "accountBalance": "Account Balance",
+      "minimumWithdrawal": "Minimum withdrawal: {{currency}}{{amount}}",
+      "withdraw": "Withdraw"
+    },
+    "pendingBalanceStats": {
+      "pendingBalance": "Pending Balance",
+      "pendingBalanceDescription": "Your cashback is pending and will be available soon!"
+    }
+  },
+  "withdrawal": {
+    "title": "Withdraw Money",
+    "tabs": {
+      "bankTransfer": "Bank Transfer"
+    },
+    "userBanks": {
+      "description": "Bank transfer takes 3-5 working days to reflect in your bank account",
+      "addBank": "Add Bank",
+      "addBankDialog": {
+        "title": "Add Bank",
+        "description": "Add a new bank account for withdrawal",
+        "bankLabel": "Bank",
+        "bankPlaceholder": "Please select a bank",
+        "bankEmptyError": "Please select a bank",
+        "bankAccountNameLabel": "Name as on Bank Account",
+        "bankAccountNamePlaceholder": "Please enter the name as on bank account",
+        "bankAccountNameEmptyError": "Please enter the name as on bank account",
+        "bankAccountNameTooLongError": "Name as on bank account is too long",
+        "bankAccountNumberLabel": "Bank Account Number (without hyphens or spaces)",
+        "bankAccountNumberPlaceholder": "Please enter the bank account number",
+        "bankAccountNumberInvalidError": "Bank account should only contain numbers",
+        "bankAccountNumberEmptyError": "Please enter the bank account number",
+        "bankAccountNumberTooLongError": "Bank account number is too long",
+        "addBankSuccess": "Bank account added successfully",
+        "addBankError": {
+          "unknownError": "Failed to add bank account",
+          "invalidPaymentChannel": "The selected bank is invalid, please choose another bank",
+          "invalidPaymentChannelDirection": "The selected bank is not supported for withdrawal, please choose another bank",
+          "exceedNumOfUserPaymentMethod": "You have reached the maximum number of bank accounts allowed"
+        }
+      },
+      "deleteBankDialog": {
+        "title": "Delete Bank",
+        "description": "Are you sure you want to delete this bank account?",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "deleteBankSuccess": "Bank account deleted successfully",
+        "deleteBankError": "Failed to delete bank account"
+      }
+    },
+    "withdrawalForm": {
+      "submitLabel": "Withdraw",
+      "amountLabel": "Withdrawal Amount",
+      "amountDescription": "Minimum withdrawal amount: {{amount}}",
+      "amountMinimumError": "Minimum withdrawal amount is {{amount}}",
+      "success": "Congratulation! we will update you once we processed your withdrawal.",
+      "error": {
+        "unknownError": "Failed to withdraw money, please try again later",
+        "insufficientBalance": "Insufficient balance",
+        "invalidWallet": "Failed to withdraw money, please refresh the page and try again",
+        "invalidPaymentMethod": "Failed to withdraw money, please refresh the page and try again",
+        "belowMinimumAmount": "Withdrawal amount is below the minimum limit",
+        "unsupportedCurrency": "Unsupported currency",
+        "exceedMaximumAmount": "Withdrawal amount exceeds the maximum limit"
+      }
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "profileForm": {
+      "firstNameLabel": "First Name",
+      "firstNamePlaceholder": "Please enter your first name",
+      "firstNameEmptyError": "Please enter your first name",
+      "firstNameTooLongError": "First name is too long",
+      "lastNameLabel": "Last Name",
+      "lastNamePlaceholder": "Please enter your last name",
+      "lastNameEmptyError": "Please enter your last name",
+      "lastNameTooLongError": "Last name is too long",
+      "languageLabel": "Preferred Language",
+      "languagePlaceholder": "Please select a language",
+      "languageEmptyError": "Please select a language",
+      "updateProfileSuccess": "Profile updated successfully",
+      "updateProfileError": "Failed to update profile",
+      "updateProfileButton": "Update"
+    }
+  },
+  "allStores": {
+    "title": "All Stores",
+    "cashback": "Cashback",
+    "filters": {
+      "title": "Filters:",
+      "categories": "Categories",
+      "searchCategories": "Search categories...",
+      "clearAll": "Clear all filters",
+      "selectAll": "Select All",
+      "clearSelection": "Clear All",
+      "noStoresFound": "No stores found",
+      "noStoresFoundDescription": "No stores match your current filter selection."
+    }
+  },
+  "advertiserCampaign": {
+    "endsIn": "Ends in {{days}} days",
+    "viewNow": "View Now"
+  },
+  "admin": {
+    "blog": {
+      "post": "Posts",
+      "title": "Title",
+      "postDate": "Post Date",
+      "status": "Status",
+      "actions": "Actions",
+      "preview": "Preview",
+      "edit": "Edit",
+      "new": "New Post"
+    },
+    "site": {
+      "title": "Site",
+      "domainLabel": "Domain",
+      "domainPlaceholder": "Enter the site domain",
+      "generalInformation": "General Information",
+      "tabNameLabel": "Site Name",
+      "tabNamePlaceholder": "Enter the site name",
+      "tabDescriptionLabel": "Description",
+      "tabDescriptionPlaceholder": "Enter the site description",
+      "tabLogoLabel": "Logo",
+      "tabLogoDescription": "The logo should be less than 5MB",
+      "tabDarkLogoLabel": "Dark Mode Logo",
+      "tabDarkLogoDescription": "The dark mode logo should be less than 5MB (optional)",
+      "saveButton": "Save Changes",
+      "updateSuccessMessage": "Site settings updated successfully",
+      "updateErrorMessage": "Failed to update site settings",
+      "validation": {
+        "nameRequired": "Name is required"
+      },
+      "settings": {
+        "title": "Site Settings",
+        "analytics": "Analytics & Tracking",
+        "googleAnalyticsId": "Google Analytics ID",
+        "googleTagManagerId": "Google Tag Manager ID",
+        "facebookPixelId": "Facebook Pixel ID",
+        "seoSettings": "SEO Settings",
+        "defaultMetaTitle": "Default Meta Title",
+        "defaultMetaDescription": "Default Meta Description",
+        "sitemapUrl": "Sitemap URL",
+        "robotsTxt": "Robots.txt",
+        "socialMedia": "Social Media",
+        "facebookUrl": "Facebook URL",
+        "twitterUrl": "Twitter URL",
+        "instagramUrl": "Instagram URL",
+        "linkedinUrl": "LinkedIn URL",
+        "contactInfo": "Contact Information",
+        "contactEmail": "Contact Email",
+        "supportEmail": "Support Email",
+        "phoneNumber": "Phone Number",
+        "address": "Address",
+        "featureFlags": "Feature Flags",
+        "maintenanceMode": "Maintenance Mode",
+        "maintenanceModeDescription": "Enable to show maintenance page to visitors",
+        "allowUserRegistration": "Allow User Registration",
+        "allowUserRegistrationDescription": "Allow new users to create accounts",
+        "enableComments": "Enable Comments",
+        "enableCommentsDescription": "Allow comments on blog posts and content",
+        "enableNewsletter": "Enable Newsletter",
+        "enableNewsletterDescription": "Enable newsletter signup for visitors",
+        "settingsSaveButton": "Save Settings",
+        "settingsUpdateSuccessMessage": "Site settings updated successfully",
+        "settingsUpdateErrorMessage": "Failed to update site settings"
+      }
+    },
+    "carousel": {
+      "list": {
+        "carousel": "Carousel",
+        "addCarousel": "Add Carousel",
+        "title": "Title",
+        "image": "Image",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "status": "Status",
+        "action": "Action",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "manage": {
+        "createCarousel": "Create Carousel",
+        "updateCarousel": "Update Carousel",
+        "titleLabel": "Title",
+        "titlePlaceholder": "Please enter the title",
+        "titleEmptyError": "Please enter the title",
+        "startDateLabel": "Start Date",
+        "endDateLabel": "End Date",
+        "ctaTypeLabel": "CTA Type",
+        "ctaTypeLink": "Link",
+        "ctaTypeCashback": "Cashback",
+        "ctaPayloadLinkLabel": "Link",
+        "ctaPayloadLinkPlaceholder": "Please enter the link",
+        "ctaPayloadAdvertiserIdLabel": "Advertiser ID",
+        "ctaPayloadAdvertiserIdPlaceholder": "Please enter the advertiser ID",
+        "statusLabel": "Status",
+        "imageLabel": "Image",
+        "imageEmptyError": "Please upload an image",
+        "imageDescription": "The image should be 1920x1080, less than 5MB",
+        "sortOrderLabel": "Sort Order",
+        "sortOrderEmptyError": "Please enter the sort order",
+        "sortOrderPlaceholder": "Please enter the sort order",
+        "updateSuccessMessage": "Carousel updated successfully",
+        "createSuccessMessage": "Carousel created successfully"
+      }
+    },
+    "advertiser": {
+      "list": {
+        "advertiser": "Advertiser",
+        "nameLabel": "Name",
+        "categoriesLabel": "Categories",
+        "logoLabel": "Logo",
+        "commissionLabel": "Commission Rate",
+        "createdAtLabel": "Created Date",
+        "statusLabel": "Status",
+        "actionLabel": "Action",
+        "active": "Active",
+        "inactive": "Inactive",
+        "refreshIndex": "Refresh Index"
+      },
+      "manage": {
+        "updateAdvertiser": "Update Advertiser",
+        "statusLabel": "Status",
+        "commissionNameLabel": "Commission Name",
+        "commissionRowStatusLabel": "Commission Row Status",
+        "commissionStatusLabel": "Commission Status",
+        "providerReferenceIdLabel": "Provider Reference ID",
+        "commissionValueLabel": "Commission",
+        "providerReferencesLabel": "Provider References",
+        "updateSuccessMessage": "Advertiser updated successfully",
+        "fetchAdvertiser": "Fetch Advertiser",
+        "fetchAdvertiserName": "Advertiser Name",
+        "fetchButton": "Fetch",
+        "fetchAdvertiserSuccess": "Advertiser fetched successfully",
+        "slugLabel": "Slug",
+        "metadataLabel": "Metadata",
+        "descriptionLabel": "Description",
+        "commissionTypeLabel": "Commission Type",
+        "percentageLabel": "Percentage",
+        "fixedLabel": "Fixed",
+        "categoriesLabel": "Categories",
+        "categoriesPlaceholder": "Select categories...",
+        "categoriesLoadError": "Failed to load categories. Please try again."
+      }
+    },
+    "campaign": {
+      "list": {
+        "campaign": "Campaign",
+        "banner": "Banner",
+        "campaignName": "Campaign Name",
+        "advertiserId": "Advertiser ID",
+        "advertiser": "Advertiser",
+        "providerId": "Provider ID",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "status": "Status",
+        "slug": "Slug",
+        "url": "URL",
+        "actionLabel": "Action",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "manage": {
+        "updateCampaign": "Update Campaign",
+        "statusLabel": "Status",
+        "updateSuccessMessage": "Campaign updated successfully",
+        "campaignDetails": "Campaign Details",
+        "campaignMetadata": "Campaign Metadata",
+        "slugLabel": "Slug",
+        "slugRequired": "Slug is required",
+        "nameLabel": "Name",
+        "nameRequired": "Name is required",
+        "descriptionLabel": "Description",
+        "descriptionRequired": "Description is required",
+        "bannerImageLabel": "Banner Image"
+      }
+    },
+    "bonus": {
+      "title": "Bonus Types",
+      "list": {
+        "bonusTypes": "Bonus Types",
+        "code": "Code",
+        "version": "Version",
+        "status": "Status",
+        "priority": "Priority",
+        "maxUsage": "Max Usage",
+        "expiryDays": "Expiry Days",
+        "effectiveFrom": "Effective From",
+        "effectiveTo": "Effective To",
+        "actions": "Actions",
+        "edit": "Edit",
+        "delete": "Delete",
+        "createNew": "Create New Bonus Type",
+        "loadError": "Failed to load bonus types",
+        "retry": "Retry",
+        "noExpiry": "No expiry",
+        "indefinite": "Indefinite"
+      },
+      "manage": {
+        "createBonusType": "Create Bonus Type",
+        "editBonusType": "Edit Bonus Type",
+        "update": "Update",
+        "create": "Create",
+        "updating": "Updating...",
+        "creating": "Creating...",
+        "updateSuccess": "Bonus type updated successfully",
+        "createSuccess": "Bonus type created successfully",
+        "ruleConfig": "Rule Configuration",
+        "maxUsagePerUser": "Max Usage Per User"
+      },
+      "user": {
+        "title": "My Bonuses",
+        "eligibleBonuses": "Eligible Bonuses",
+        "bonusHistory": "Bonus History",
+        "eligible": "eligible",
+        "noBonuses": "You don't have any bonuses yet",
+        "browseBonuses": "Browse Available Bonuses",
+        "version": "Version",
+        "expires": "Expires",
+        "availableFrom": "Available from",
+        "recentActivity": "Recent Activity",
+        "viewAll": "View All",
+        "noActivity": "No recent bonus activity",
+        "bonusTransaction": "Bonus Transaction",
+        "totalBonuses": "Total Bonuses",
+        "totalTransactions": "Total Transactions",
+        "signInRequired": "Please sign in to view your bonuses.",
+        "myBonuses": "My Bonuses",
+        "bonuses": "bonuses",
+        "bonusLabel": "Bonus",
+        "versionLabel": "Version",
+        "availableLabel": "Available",
+        "expiresLabel": "Expires",
+        "usedLabel": "Used",
+        "bonusStatusAvailable": "Ready to Use",
+        "bonusStatusUsed": "Used",
+        "bonusStatusExpired": "Expired",
+        "bonusStatusUnknown": "Unknown",
+        "bonusErrorMessage": "Unable to load your bonuses. Please try again later.",
+        "viewLabel": "View",
+        "descriptionLabel": "About this Bonus",
+        "termsLabel": "Terms & Conditions",
+        "importantInfoLabel": "Important Information",
+        "expiryLabel": "Expiry Date",
+        "expiryNote": "Make sure to use this bonus before the expiry date to avoid missing out.",
+        "closeLabel": "Close",
+        "bonusTransactions": {
+          "bonusType": "Bonus Type",
+          "amount": "Amount",
+          "dateUsed": "Date Used",
+          "status": "Status",
+          "statusUsed": "Used",
+          "unknownBonus": "Unknown Bonus",
+          "noTransactions": "No Transactions",
+          "noTransactionsDescription": "You haven't used any bonuses yet."
+        }
+      }
+    }
+  }
+}

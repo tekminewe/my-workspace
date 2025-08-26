@@ -1,0 +1,35 @@
+.rte {
+  :global .tiptap *.is-empty::before {
+    color: var(--gray-9);
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+  
+  :global .ProseMirror {
+    outline: none;
+  }
+  
+ :global .prose {
+    figure {
+      img {
+        margin: 0 auto;
+      }
+    }
+  
+    code::before {
+      content: "";
+    }
+  
+    :not(pre) > code {
+      background-color: var(--gray-a3);
+      padding: 0.15em 0.3em;
+      border-radius: 0.25em;
+    }
+  
+    code::after {
+      content: "";
+    }
+  }
+} 

@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:ap-southeast-1:605134458710:mintdeal-my-ses-feedbacks:4783ac3c-9280-4cd7-9b3f-f7db34909f08",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "dbeaf906-c4e3-5fa8-8c6c-9916a19ffcd2",
+        "TopicArn": "arn:aws:sns:ap-southeast-1:605134458710:mintdeal-my-ses-feedbacks",
+        "Subject": "Amazon SES Email Event Notification",
+        "Message": "{\"eventType\":\"Complaint\",\"complaint\":{\"feedbackId\":\"010e0194a373a483-85e3735b-d646-4bbb-a2f5-d5c5d3982b6e-000000\",\"complaintSubType\":null,\"complainedRecipients\":[{\"emailAddress\":\"complaint@simulator.amazonses.com\"}],\"timestamp\":\"2025-01-26T16:30:52.601Z\",\"userAgent\":\"Amazon SES Mailbox Simulator\",\"complaintFeedbackType\":\"abuse\",\"arrivalDate\":\"2025-01-26T16:30:52.601Z\"},\"mail\":{\"timestamp\":\"2025-01-26T16:30:48.877Z\",\"source\":\"noreply@mintdeal.my\",\"sourceArn\":\"arn:aws:ses:ap-southeast-1:605134458710:identity/mintdeal.my\",\"sendingAccountId\":\"605134458710\",\"messageId\":\"010e0194a373962d-c012c8f1-525b-47b9-b17d-0a3c62dabc48-000000\",\"destination\":[\"complaint@simulator.amazonses.com\"],\"headersTruncated\":false,\"headers\":[{\"name\":\"From\",\"value\":\"noreply@mintdeal.my\"},{\"name\":\"To\",\"value\":\"complaint@simulator.amazonses.com\"},{\"name\":\"Subject\",\"value\":\"asdasdas\"},{\"name\":\"MIME-Version\",\"value\":\"1.0\"},{\"name\":\"Content-Type\",\"value\":\"multipart/alternative;  boundary=\\\"----=_Part_1386261_815191911.1737909048877\\\"\"}],\"commonHeaders\":{\"from\":[\"noreply@mintdeal.my\"],\"to\":[\"complaint@simulator.amazonses.com\"],\"messageId\":\"010e0194a373962d-c012c8f1-525b-47b9-b17d-0a3c62dabc48-000000\",\"subject\":\"asdasdas\"},\"tags\":{\"ses:source-tls-version\":[\"TLSv1.3\"],\"ses:operation\":[\"SendEmail\"],\"ses:configuration-set\":[\"mintdeal-my-config-set\"],\"ses:recipient-isp\":[\"AmazonSES\"],\"ses:source-ip\":[\"172.226.44.149\"],\"ses:from-domain\":[\"mintdeal.my\"],\"ses:sender-identity\":[\"mintdeal.my\"],\"ses:caller-identity\":[\"root\"]}}}\n",
+        "Timestamp": "2025-01-26T16:30:52.685Z",
+        "SignatureVersion": "1",
+        "Signature": "bV7nWqBof/r06BPoK29fmzEV5oq3PAquE4WGfkIUYXUFgk6j8cc1jBnXgO06f2FOHzaffpfxEXJaE0LsY2w+5DnEnlQNI0ITC3/CpmR/QkvHq59dRuLaDnifV0uQNEUcfFHTMqZEtHfE18FJMI22xXRxd3M9Z6vwRqVPhozUJYSgyVDEJsjITH9iX1On8E4W1KsDAHgjvoDvGFRijsQqf4RPIZ3Z1eJKXdsj2Yj/lTL+hXN5MdHqMjTqVNiaEj10LjrVi3Tlrwfc/9czOG3aFMZJAj+pxLIudhDPyJcrIeB+R61q3LxhypDQoFadasamxKKw+L3NdYOaTcWrzDWggQ==",
+        "SigningCertUrl": "https://sns.ap-southeast-1.amazonaws.com/SimpleNotificationService-9c6465fa7f48f5cacd23014631ec1136.pem",
+        "UnsubscribeUrl": "https://sns.ap-southeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-southeast-1:605134458710:mintdeal-my-ses-feedbacks:4783ac3c-9280-4cd7-9b3f-f7db34909f08",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+import "./auth.zmodel"
+
+enum EmailStatusEnum {
+  ACCEPTED
+  PENDING
+  FAILED
+  DELIVERED
+  BOUNCED
+  SOFT_BOUNCED
+  COMPLAINT
+  REJECTED
+}
+
+enum SuppressionTypeEnum {
+  BOUNCED
+  COMPLAINT
+  MANUAL
+}
+
+enum BounceComplaintTypeEnum {
+  BOUNCED
+  COMPLAINT
+}
+
+model EmailTemplate {
+  id          String     @id @default(cuid())
+  name        String     @unique
+  subject     String
+  htmlContent String     @db.Text
+  textContent String?    @db.Text
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  emails      EmailLog[]
+
+  @@allow('create,read', true)
+}
+
+model EmailLog {
+  id               String                 @id @default(cuid())
+  templateId       String?
+  template         EmailTemplate?         @relation(fields: [templateId], references: [id])
+  emailAddress     String
+  userId           String?
+  user             User?                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject          String
+  htmlContent      String                 @db.Text
+  textContent      String?                @db.Text
+  status           EmailStatusEnum        @default(PENDING)
+  /// AWS SES Message ID or any other email service provider's message ID
+  messageId        String?
+  sentAt           DateTime?
+  errorMessage     String?                @db.Text
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  retryCount       Int                    @default(0)
+  bounceComplaints EmailBounceComplaint[]
+
+  @@unique([messageId])
+  @@allow('create,read,update', true)
+}
+
+model EmailBounceComplaint {
+  id           String                  @id @default(cuid())
+  emailAddress String
+  emailLogId   String
+  email        EmailLog                @relation(fields: [emailLogId], references: [id])
+  type         BounceComplaintTypeEnum
+  timestamp    DateTime                @default(now())
+
+  @@unique([emailAddress])
+  @@allow('create,read', true)
+}
+
+model EmailSuppression {
+  id           String              @id @default(cuid())
+  emailAddress String              @unique
+  reason       SuppressionTypeEnum
+  createdAt    DateTime            @default(now())
+
+  @@index([emailAddress])
+  @@allow('create,read', true)
+}

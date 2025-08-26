@@ -1,0 +1,201 @@
+# Dependabot configuration for automated dependency updates
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Root workspace dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "security"
+
+  # My-Service (NestJS Backend)
+  - package-ecosystem: "npm"
+    directory: "/my-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps(my-service)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "my-service"
+      - "backend"
+
+  # My-Web (Next.js Frontend)
+  - package-ecosystem: "npm"
+    directory: "/my-web"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps(my-web)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "my-web"
+      - "frontend"
+
+  # Mint-UI (React Component Library)
+  - package-ecosystem: "npm"
+    directory: "/mint-ui"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps(mint-ui)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "mint-ui"
+      - "ui-library"
+
+  # My-Functions Lambda functions
+  - package-ecosystem: "npm"
+    directory: "/my-functions/functions/advertisers-pull"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps(advertisers-pull)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "my-functions"
+      - "lambda"
+
+  - package-ecosystem: "npm"
+    directory: "/my-functions/functions/auth"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps(auth)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "my-functions"
+      - "lambda"
+      - "auth"
+
+  - package-ecosystem: "npm"
+    directory: "/my-functions/functions/email-feedback"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps(email-feedback)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "my-functions"
+      - "lambda"
+
+  - package-ecosystem: "npm"
+    directory: "/my-functions/functions/post-generator"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps(post-generator)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "my-functions"
+      - "lambda"
+
+  # GitHub Actions workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "ci-cd"
+
+  # Docker dependencies (for Dockerfiles)
+  - package-ecosystem: "docker"
+    directory: "/my-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "tekminewe"
+    assignees:
+      - "tekminewe"
+    commit-message:
+      prefix: "deps(docker)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "infrastructure"

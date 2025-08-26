@@ -1,0 +1,43 @@
+import "./site.zmodel"
+import "./media.zmodel"
+import "./role.zmodel"
+
+model SiteSettings {
+  id                     String   @id @default(cuid())
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  siteId                 String   @unique
+  site                   Site     @relation(fields: [siteId], references: [id])
+  
+  // Analytics & Tracking
+  googleAnalyticsId      String?
+  googleTagManagerId     String?
+  facebookPixelId        String?
+  
+  // SEO Settings
+  defaultMetaTitle       String?
+  defaultMetaDescription String?
+  sitemapUrl             String?
+  robotsTxt              String?
+  
+  // Social Media
+  facebookUrl            String?
+  twitterUrl             String?
+  instagramUrl           String?
+  linkedinUrl            String?
+  
+  // Contact Information
+  contactEmail           String?
+  supportEmail           String?
+  phoneNumber            String?
+  address                String?
+  
+  // Feature Flags
+  maintenanceMode        Boolean  @default(false)
+  allowUserRegistration  Boolean  @default(true)
+  enableComments         Boolean  @default(true)
+  enableNewsletter       Boolean  @default(false)
+
+  @@allow('read', true)
+  @@allow('create,update', auth().roles?[permissions?[name == ManageSite]])
+}

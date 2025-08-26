@@ -1,0 +1,8 @@
+mutation UpdateAdvertiser($id: String!, $data: UpdateAdvertiserInput!) {
+  updateAdvertiser(id: $id, data: $data) {
+    id
+    name
+    statusId
+    updatedAt
+  }
+}

@@ -1,0 +1,11 @@
+query GetAdvertiserCampaign(
+  $providerId: AffiliateProviderEnum!
+  $providerReferenceId: String!
+) {
+  advertiserCampaignByProvider(
+    providerId: $providerId
+    providerReferenceId: $providerReferenceId
+  ) {
+    id
+  }
+}

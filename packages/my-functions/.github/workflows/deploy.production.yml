@@ -1,0 +1,51 @@
+name: Deploy to SAM Stack
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install aws-sam-cli
+          npm install -g typescript
+          npm install -g esbuild
+
+      - name: Configure AWS CLI
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }}
+
+      - name: Build SAM application
+        run: sam build
+
+      - name: Package SAM application
+        run: sam package --output-template-file packaged.yaml --s3-prefix affiliate-connector-prod-${{ secrets.AWS_REGION }}
+
+      - name: Deploy SAM application
+        run: sam deploy --template-file packaged.yaml --stack-name affiliate-connector-prod-${{ secrets.AWS_REGION }} --s3-prefix affiliate-connector-prod-${{ secrets.AWS_REGION }} --role-arn ${{ secrets.CLOUDFORMATION_ROLE_ARN }} --no-confirm-changeset --parameter-overrides Environment=production DomainName=aff-callback.mintdeal.my EmailFeedbackDomainName=email-feedback.mintdeal.my HostedZoneId=Z086853220HOMO3WDNSE9
+
+      - name: Retrieve Lambda Function ARN
+        id: get-lambda-arn
+        run: |
+          aws cloudformation describe-stacks --stack-name affiliate-connector-prod-${{ secrets.AWS_REGION }} --query "Stacks[0].Outputs[?OutputKey=='PostbackFunctionArn'].OutputValue" --output text

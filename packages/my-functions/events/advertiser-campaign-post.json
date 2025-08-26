@@ -1,0 +1,35 @@
+{
+  "type": "advertiser-campaign",
+  "postId": "",
+  "data": {
+    "title": "Exclusive: Limited Time Offer from Lazada Malaysia 2025 August",
+    "description": "Don't miss out on this incredible limited-time campaign from Lazada Malaysia! Get amazing deals, discounts, and cashback opportunities on a wide range of products. Shop now and save big with this exclusive offer before it expires.",
+    "advertiser": {
+      "name": "Lazada Malaysia",
+      "description": "Lazada is the leading e-commerce platform in Southeast Asia. Launched in Malaysia in 2012, Lazada offers a wide variety of products from electronics to fashion, household goods to toys, and many more. With millions of products available at competitive prices, secure payment options, and extensive logistics network, Lazada ensures that customers get the best shopping experience.",
+      "logoUrl": "https://media-dev.mintdeal.my/advertisers/lazada.webp"
+    },
+    "cashbackRate": "up to 5%",
+    "keywords": [
+      "lazada campaign",
+      "lazada malaysia deals",
+      "lazada promo",
+      "lazada sale",
+      "lazada cashback",
+      "cashback lazada malaysia",
+      "lazada discount"
+    ],
+    "paragraphs": [
+      {
+        "campaign": {
+          "link": "https://invl.me/lazada-campaign",
+          "title": "Lazada 5.25 Payday Sale",
+          "description": "Enjoy massive discounts of up to 90% on electronics, fashion, home appliances, and more during Lazada's 5.25 Payday Sale. Additional vouchers and cashback available for selected payment methods and categories.",
+          "startDate": "2025-05-22",
+          "endDate": "2025-05-26",
+          "voucherCodes": ["PAYDAY25", "NEWUSER10"]
+        }
+      }
+    ]
+  }
+}

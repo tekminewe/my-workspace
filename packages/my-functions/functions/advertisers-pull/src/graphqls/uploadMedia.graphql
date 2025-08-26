@@ -1,0 +1,5 @@
+mutation UploadMedia($data: UploadMediaInput!) {
+  uploadMedia(data: $data) {
+    id
+  }
+}

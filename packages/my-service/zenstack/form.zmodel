@@ -1,0 +1,152 @@
+import "./auth.zmodel"
+import "./company.zmodel"
+
+enum FORM_COLUMN_TYPE_ENUM {
+  LongText
+  Datetime
+  Dropdown
+  SingleChoice
+
+  @@map("FormColumnType")
+}
+
+enum FORM_APPROVAL_STATUS_ENUM {
+  Pending
+  Approved
+  Rejected
+
+  @@map("FormApprovalStatus")
+}
+
+enum FORM_SUBMISSION_ACTION_ENUM {
+  Approval
+}
+
+model Form {
+  id          String           @id @default(cuid())
+  name        String
+  createdById String
+  createdBy   User             @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  columns     FormColumn[]
+  submissions FormSubmission[]
+  actions     FormAction[]
+  expiry      DateTime?
+  companyId   String
+  company     Company          @relation(fields: [companyId], references: [id])
+  deleted     Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@allow('read,create,update', company.users?[id == auth().id])
+}
+
+model FormAction {
+  id             String                      @id @default(cuid())
+  formId         String
+  form           Form                        @relation(fields: [formId], references: [id])
+  actionType     FORM_SUBMISSION_ACTION_ENUM
+  nextActionId   String?                     @unique
+  nextAction     FormAction?                 @relation("nextAction", fields: [nextActionId], references: [id])
+  previousAction FormAction?                 @relation("nextAction")
+  data           Json
+  createdAt      DateTime                    @default(now())
+  updatedAt      DateTime                    @updatedAt
+}
+
+model FormColumn {
+  id               String                @id @default(cuid())
+  formId           String
+  form             Form                  @relation(fields: [formId], references: [id])
+  name             String
+  description      String?
+  required         Boolean               @default(false)
+  type             FORM_COLUMN_TYPE_ENUM
+  options          FormColumnOption[]
+  submissionValues FormSubmissionValue[]
+  order            Int
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  @@allow('read,create,update', form.company.users?[id == auth().id])
+}
+
+model FormColumnOption {
+  id               String                 @id @default(cuid())
+  columnId         String
+  column           FormColumn             @relation(fields: [columnId], references: [id])
+  submissionValues FormSubmissionValue[]
+  value            String
+  order            Int                    @default(0)
+  deleted          Boolean                @default(false)
+  datas            FormColumnOptionData[]
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  @@allow('read,create,update', column.form.company.users?[id == auth().id])
+}
+
+model FormColumnOptionData {
+  id        String                      @id @default(cuid())
+  optionId  String
+  option    FormColumnOption            @relation(fields: [optionId], references: [id])
+  values    FormColumnOptionDataValue[]
+  name      String
+  createdAt DateTime                    @default(now())
+  updatedAt DateTime                    @updatedAt
+
+  @@allow('read,create,update', option.column.form.company.users?[id == auth().id])
+}
+
+model FormColumnOptionDataValue {
+  id        String               @id @default(cuid())
+  dataId    String
+  data      FormColumnOptionData @relation(fields: [dataId], references: [id])
+  value     String
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  @@allow('read,create,update', data.option.column.form.company.users?[id == auth().id])
+}
+
+model FormSubmission {
+  id        String                   @id @default(cuid())
+  formId    String
+  form      Form                     @relation(fields: [formId], references: [id])
+  userId    String?
+  user      User?                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  values    FormSubmissionValue[]
+  approvals FormSubmissionApproval[]
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+
+  @@allow('read,create,update', true)
+}
+
+model FormSubmissionValue {
+  id             String            @id @default(cuid())
+  submissionId   String
+  submission     FormSubmission    @relation(fields: [submissionId], references: [id])
+  columnId       String
+  column         FormColumn        @relation(fields: [columnId], references: [id])
+  columnOptionId String?
+  columnOption   FormColumnOption? @relation(fields: [columnOptionId], references: [id])
+  value          String?
+}
+
+model FormSubmissionApproval {
+  id                 String                    @id @default(cuid())
+  submissionId       String
+  submission         FormSubmission            @relation(fields: [submissionId], references: [id])
+  approverId         String?
+  approver           User?                     @relation(fields: [approverId], references: [id], onDelete: Cascade)
+  guestApproverName  String?
+  guestApproverEmail String?
+  guestToken         String?
+  status             FORM_APPROVAL_STATUS_ENUM @default(Pending)
+  approvedAt         DateTime                  @default(now())
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  @@unique([submissionId, approverId, guestApproverEmail, guestApproverName])
+  @@index([id, guestToken])
+}

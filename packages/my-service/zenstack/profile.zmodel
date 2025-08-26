@@ -1,0 +1,18 @@
+import "./auth.zmodel"
+import "./language.zmodel"
+
+model Profile {
+  userId     String       @id @unique
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName  String
+  lastName   String
+  photoUrl   String?
+  languageId LanguageEnum @default(EN_MY)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@allow('create', true)
+  // Only allow user or user with same company to read profile
+  @@allow('read', auth().id == userId || user.companies?[users?[id == auth().id]])
+  @@allow('update', auth().id == userId)
+}

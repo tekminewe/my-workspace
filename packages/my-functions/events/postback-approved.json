@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:ap-southeast-1:605134458710:mintdealmy-dev-postback-notifications:c1b17788-a796-4291-88c1-2b4900a17e72",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "600accba-54c1-5e04-8982-934f46c85572",
+        "TopicArn": "arn:aws:sns:ap-southeast-1:605134458710:mintdealmy-dev-postback-notifications",
+        "Subject": "Amazon S3 Notification",
+        "Message": "{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"ap-southeast-1\",\"eventTime\":\"2025-01-05T23:03:37.158Z\",\"eventName\":\"ObjectCreated:Put\",\"userIdentity\":{\"principalId\":\"AWS:AROAYZZGTB5LIYMW5KS2E:BackplaneAssumeRoleSession\"},\"requestParameters\":{\"sourceIPAddress\":\"18.138.244.247\"},\"responseElements\":{\"x-amz-request-id\":\"EZXRBMSWBD6PA20R\",\"x-amz-id-2\":\"s1X8+RMpLg435wMALUMu10jw+rIWMMjXBTmqEkXd8JuMKTei6k2QQY6bSeDNQDWMNQ25PfhbNLCHdB8SGVQ6n6Slkw1IFtSx\"},\"s3\":{\"s3SchemaVersion\":\"1.0\",\"configurationId\":\"MmI0YTAzMDYtNmM1NS00MDdiLTljNTYtYmIzZmE2Y2UxNjFl\",\"bucket\":{\"name\":\"mintdealmy-dev-postback-log\",\"ownerIdentity\":{\"principalId\":\"A2JXBVAE0WX9SC\"},\"arn\":\"arn:aws:s3:::mintdealmy-dev-postback-log\"},\"object\":{\"key\":\"1\",\"size\":731,\"eTag\":\"4cb02f6bb904a2a5d857835500126fda\",\"versionId\":\"PAr9xl9yBwZqli8zFgJfVkYh0Adz1zu2\",\"sequencer\":\"00677B0FC921A633DD\"}}}]}",
+        "Timestamp": "2025-01-05T23:03:37.774Z",
+        "SignatureVersion": "1",
+        "Signature": "K0Q8s6Z+wCqs0z1KwaQT565z7OIzJpxa8KL1dFJ9y1c2AadtzZzgrk5UKQaoha+BLOfzsCQZdCEWQPC0yr0sbfCyhyaigaSsJDBz3MJ+iiF6V0Hcqhc8Tr3pnaZMPMHkWmsP1j0/1dBoYK/9blBxXJWcKf99r6a0jxakxZpssz0pH3+09MdzP6QKZsGlsp34mC3e5hYTNKGvRYzbr9/0fQ93L1VVFOMqyGsmQwXmkdQYoIWktebFCu19HHCqlD85ySM21cbWISe23ry0D2djzvtsCq98bhcpR/iGQMG6VSx3vn/El1XVuPU7tvSp1d8GKdknO77V+D0HpVDc87MZaQ==",
+        "SigningCertUrl": "https://sns.ap-southeast-1.amazonaws.com/SimpleNotificationService-9c6465fa7f48f5cacd23014631ec1136.pem",
+        "UnsubscribeUrl": "https://sns.ap-southeast-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:ap-southeast-1:605134458710:mintdealmy-dev-postback-notifications:c1b17788-a796-4291-88c1-2b4900a17e72",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

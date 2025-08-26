@@ -1,0 +1,12 @@
+mutation CreateAdvertiser($data: CreateAdvertiserInput!) {
+  createAdvertiser(data: $data) {
+    id
+    name
+    slug
+    statusId
+    logoId
+    description
+    createdAt
+    updatedAt
+  }
+}

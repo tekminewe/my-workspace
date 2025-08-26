@@ -1,0 +1,10 @@
+query GetAdvertiserProviderReferences(
+  $providerId: AffiliateProviderEnum
+  $isActive: Boolean
+) {
+  advertiserProviderReferences(providerId: $providerId, isActive: $isActive) {
+    advertiserId
+    providerId
+    providerReferenceId
+  }
+}

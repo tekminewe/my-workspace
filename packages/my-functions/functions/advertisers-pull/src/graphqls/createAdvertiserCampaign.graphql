@@ -1,0 +1,16 @@
+mutation CreateAdvertiserCampaign($data: CreateAdvertiserCampaignInput!) {
+  createAdvertiserCampaign(data: $data) {
+    id
+    advertiser {
+      id
+      name
+      description
+      logo {
+        url
+      }
+      commission {
+        commission
+      }
+    }
+  }
+}
