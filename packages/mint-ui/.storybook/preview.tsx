@@ -1,7 +1,7 @@
 import type { Preview } from '@storybook/react-vite';
 import { withThemeByClassName } from '@storybook/addon-themes';
 import { useEffect } from 'react';
-import { Theme } from '../src/components/theme';
+import { ThemeProvider } from '../src/components/theme';
 import { allModes } from './modes';
 import '../src/globals.css';
 import './storybook.css';
@@ -29,9 +29,9 @@ const withThemeBackground = (Story: any, context: any) => {
   }, [theme]);
 
   return (
-    <Theme>
+    <ThemeProvider>
       <Story />
-    </Theme>
+    </ThemeProvider>
   );
 };
 
