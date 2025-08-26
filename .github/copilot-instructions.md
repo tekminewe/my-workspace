@@ -755,7 +755,7 @@ export interface ISessionUser {
 - MUST use `cuid()` for all ID fields.
 - MUST use RBAC (Role-Based Access Control) for all data access.
 
-```
+```prisma
 model MyModel {
   id                     String          @id @default(cuid())
   userId                 String
@@ -800,7 +800,7 @@ model MyModel {
 
 - MUST create `<Model>Metadata` for storing multilingual fields.
 
-```
+```prisma
 model UserWalletStatus {
   id          UserWalletStatusEnum       @id
   description String?
