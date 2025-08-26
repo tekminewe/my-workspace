@@ -20,11 +20,11 @@ This is a monorepo project for a white label single tenant configurable web appl
 
 ## Workspace Structure
 
-This workspace contains the following projects:
+This is a **private monorepo** containing all projects in a unified workspace using pnpm workspaces and Turbo for build orchestration.
 
-### mint-ui
+### packages/mint-ui
 
-Generic OpenSource UI library with Storybook 9. Hosted on Github repository [mint-ui](https://github.com/tekminewe/mint-ui). Deployed to npm registry as `@tekmine/mint-ui`.
+Private UI library with Storybook 9. Previously open source, now part of the private monorepo. Uses workspace linking for hot-reloading during development.
 
 #### Technology Stacks
 
@@ -32,6 +32,7 @@ Generic OpenSource UI library with Storybook 9. Hosted on Github repository [min
 - Built with React 19 and TypeScript 5.5.3.
 - Tailwind CSS v3 for styling.
 - Visual tests with Chromatic.
+- **Private package** - no longer published to npm registry.
 
 #### Available Mint-UI Components
 
@@ -45,9 +46,9 @@ Generic OpenSource UI library with Storybook 9. Hosted on Github repository [min
 **Business:** PostItem, ProductItem, ProductList  
 **Utilities:** IconButton, ThemeProvider, TailwindPlugin
 
-### my-service
+### packages/my-service
 
-NestJS GraphQL API service for user end and admin end. Hosted on Github repository [my-service](https://github.com/tekminewe/my-service).For development, is is running on http://localhost:3020/graphql.
+NestJS GraphQL API service for user end and admin end. For development, it is running on http://localhost:3020/graphql.
 
 #### Technology Stacks
 
@@ -63,23 +64,23 @@ NestJS GraphQL API service for user end and admin end. Hosted on Github reposito
 - Use mailgun.js for email sending.
 - Use AWS Cognito for authentication.
 
-### my-web
+### packages/my-web
 
-Next.js 15 web application with App Router. Contains both user end and admin end. Hosted on Github repository [my-web](https://github.com/tekminewe/my-web).
+Next.js 15 web application with App Router. Contains both user end and admin end. Uses workspace linking to `@tekminewe/mint-ui` for hot-reloading during development.
 
 #### Technology Stacks
 
 - Use pnpm for package management.
 - Built with Next.js 15 and TypeScript 5.5.3.
 - Tailwind CSS v3 for styling.
-- Use mint-ui as the UI library.
+- Use mint-ui as the UI library via workspace dependency (`workspace:*`).
 - Use Apollo Client for GraphQL data fetching.
 - Use React Hook Form for form handling.
 - Use next-auth and AWS Cognito Managed Login for authentication. AWS Cognito Managed Login takes care of user management, including sign-up, sign-in, and password recovery.
 
-### my-functions
+### packages/my-functions
 
-AWS SAM serverless functions for cashback callbacks, email callbacks, etc. Hosted on Github repository [my-functions](https://github.com/tekminewe/my-functions).
+AWS SAM serverless functions for cashback callbacks, email callbacks, etc.
 
 #### Technology Stacks
 
@@ -599,14 +600,12 @@ className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-7
 
 ```markdown
 - **Primary Colors** (Blue-based brand colors):
-
   - `primary-50` to `primary-900` - Use for buttons, links, focus states, selections
   - Main brand color: `primary-500` (`bg-primary-500`, `text-primary-500`)
 
 - **Neutral Colors** (Gray scale for UI framework):
 
   **Light Mode Values (RGB):**
-
   - `neutral-50` (252, 252, 252) - Page backgrounds, subtle off-white surfaces (`bg-neutral-50`)
   - `neutral-100` (245, 245, 245) - Elevated surfaces, very light dividers (`bg-neutral-100`)
   - `neutral-200` (229, 229, 229) - Default borders, dividers, disabled states (`border-neutral-200`)
@@ -619,7 +618,6 @@ className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-7
   - `neutral-900` (23, 23, 23) - Primary text, highest contrast, headings (`text-neutral-900`)
 
   **Dark Mode Values (RGB) - Smart Inversion:**
-
   - `neutral-50` (23, 23, 23) - Darkest background for page backgrounds (`bg-neutral-50`)
   - `neutral-100` (38, 38, 38) - Main card/panel backgrounds in dark mode (`bg-neutral-100`)
   - `neutral-200` (64, 64, 64) - Elevated backgrounds, subtle borders (`bg-neutral-200`)
@@ -632,13 +630,11 @@ className="bg-white dark:bg-neutral-800 border-neutral-200 dark:border-neutral-7
   - `neutral-900` (250, 250, 250) - Primary text, highest contrast in dark mode (`text-neutral-900`)
 
   **Usage Guidelines:**
-
   - Same Tailwind class produces different colors in light vs dark mode (smart inversion)
   - Always test components in both themes using centralized color utilities
   - Use `SURFACE_COLORS`, `TEXT_COLORS`, `BORDER_COLORS` from `component-colors.ts` for consistency
 
 - **Status Colors**:
-
   - **Success**: `success-100` (backgrounds), `success-500` (buttons/text), `success-600` (borders)
   - **Error**: `error-100` (backgrounds), `error-500` (destructive actions), `error-600` (borders)
   - **Warning**: `warning-100` (backgrounds), `warning-500` (indicators), `warning-600` (borders)
@@ -938,8 +934,8 @@ export const AdminAdvertiserLogo = ({
 
 ### Environment Variables
 
-- MUST update the `.env.template` in `/my-service` if any new environment variables are introduced.
-- MUST update the `.env.example` file in `/my-web` if any new environment variables are introduced.
+- MUST update the `.env.template` in `/packages/my-service` if any new environment variables are introduced.
+- MUST update the `.env.example` file in `/packages/my-web` if any new environment variables are introduced.
 
 ### Localisation
 
@@ -948,27 +944,60 @@ export const AdminAdvertiserLogo = ({
 
 ## Commonly Used CLI Commands
 
-### my-web
+### Workspace Root (Monorepo)
 
 ```bash
-pnpm dev              # Next.js development
-pnpm gen:graphql      # Generate GraphQL types after done GraphQL changes
-pnpm build            # Production build
+pnpm install           # Install all workspace dependencies
+pnpm build             # Build all packages in correct order (uses Turbo)
+pnpm dev               # Start all development servers concurrently
+pnpm lint              # Lint all packages
+pnpm typecheck         # Type check all packages
+pnpm test              # Run tests in all packages
+pnpm clean             # Clean build artifacts in all packages
+pnpm fresh-install     # Clean install (removes node_modules and reinstalls)
 ```
 
-### my-service
+### packages/my-web
 
 ```bash
-pnpm dev              # Start development server
-pnpm gen:prisma       # Generate Prisma client after made any changes in *.zmodel files
+cd packages/my-web
+pnpm dev              # Next.js development server
+pnpm gen:graphql      # Generate GraphQL types after GraphQL changes
 pnpm build            # Production build
+pnpm typecheck        # Type check
+pnpm lint             # Lint code
 ```
 
-### mint-ui
+### packages/my-service
 
 ```bash
+cd packages/my-service
+pnpm dev              # Start NestJS development server
+pnpm gen:prisma       # Generate Prisma client after *.zmodel changes
+pnpm build            # Production build
+pnpm test             # Run unit tests
+pnpm typecheck        # Type check
+pnpm lint             # Lint code
+```
+
+### packages/mint-ui
+
+```bash
+cd packages/mint-ui
 pnpm dev              # Start Storybook development server
-pnpm build            # Build library
+pnpm build            # Build library (required before using in my-web)
+pnpm typecheck        # Type check
+pnpm lint             # Lint code
+pnpm chromatic        # Run visual tests
+```
+
+### packages/my-functions
+
+```bash
+cd packages/my-functions
+sam build             # Build SAM application
+sam local start-api   # Start local API Gateway
+sam deploy            # Deploy to AWS
 ```
 
 ## Development Workflow
@@ -979,14 +1008,14 @@ When working on a new feature or bug fix, follow these steps:
 
 1. Identify the problem or feature request. Clarify the requirements and gather any necessary information. Use research tool like `perplexity` to assist with gathering information. When planning for frontend, you must consider the user interface and user experience for both desktop and mobile.
 2. Create a new branch from `main` using `feature/<feature-name>` format.
-3. Update the database schema (if any changes are needed) in `/my-service/zenstack/*.zmodel`.
-4. Run `pnpm gen:prisma` inside `/my-service` to generate Prisma client.
+3. Update the database schema (if any changes are needed) in `/packages/my-service/zenstack/*.zmodel`.
+4. Run `pnpm gen:prisma` inside `/packages/my-service` to generate Prisma client.
 5. Develop the backend GraphQL API to support the new feature or changes.
-6. After implementing the backend, run `pnpm test` inside `/my-service` to ensure all tests pass. All tests must be passing before proceeding.
-7. After implementing the backend, run `pnpm typecheck` inside `/my-service` to ensure all types are correct.
-8. (If necessary) Make the changes in `my-functions`.
-9. (If necessary) Create a new generic UI component in `mint-ui` to support the new feature or changes.
-10. Run `pnpm build` inside `/mint-ui` to build the library.
-11. Run `pnpm install` inside `/my-web` to install the updated `mint-ui` package.
-12. Make changes to the `my-web` for the new feature or changes.
-13. When updating any GraphQL queries or mutations, run `pnpm gen:graphql` inside `/my-web` to generate GraphQL types. Make sure the `my-service` development server is running before running the command.
+6. After implementing the backend, run `pnpm test` inside `/packages/my-service` to ensure all tests pass. All tests must be passing before proceeding.
+7. After implementing the backend, run `pnpm typecheck` inside `/packages/my-service` to ensure all types are correct.
+8. (If necessary) Make the changes in `packages/my-functions`.
+9. (If necessary) Create a new generic UI component in `packages/mint-ui` to support the new feature or changes.
+10. Run `pnpm build` inside `/packages/mint-ui` to build the library.
+11. Run `pnpm install` inside `/packages/my-web` to install the updated `mint-ui` package.
+12. Make changes to the `packages/my-web` for the new feature or changes.
+13. When updating any GraphQL queries or mutations, run `pnpm gen:graphql` inside `/packages/my-web` to generate GraphQL types. Make sure the `my-service` development server is running before running the command.

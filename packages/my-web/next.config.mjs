@@ -22,6 +22,18 @@ const nextConfig = {
       },
     ],
   },
+  turbopack: {
+    root: '/Users/tekminewe/Documents/Github/my-workspace',
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+    resolveAlias: {
+      '@tekminewe/mint-ui': '../mint-ui/dist',
+    },
+  },
 };
 
 export default nextConfig;
