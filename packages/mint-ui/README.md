@@ -1,27 +1,20 @@
-# Mint UI (Under development)
+# Mint UI - Private Component Library
 
-The UI library with consistent behavior and theming capabilities for React applications.
+The private UI library with consistent behavior and theming capabilities for React applications within the my-workspace monorepo.
 
-It has successfully powered the following websites:
+**Note**: This is now a private package and is not published to npm. It's part of the monorepo workspace and used internally by the my-web application.
 
-- tekminewe.com
-- onsentalent.com
+## Development Usage in Monorepo
 
-# Usage
+Since this is a workspace package, it's automatically linked via pnpm workspaces. No installation needed.
 
-1. Install the package
-
-```bash
-$ pnpm add @tekminewe/mint-ui
-```
-
-2. Import the CSS styles at the root of your application
+1. Import CSS styles in your application:
 
 ```jsx
 import "@tekminewe/mint-ui/styles.css";
 ```
 
-3. Update your `tailwind.config.ts` to include the plugin and path:
+2. Update your `tailwind.config.ts` to include the plugin and path:
 
 ```js
 import type { Config } from "tailwindcss";
@@ -30,7 +23,7 @@ import mintPlugin from "@tekminewe/mint-ui/tailwind-plugin";
 const config: Config = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@tekminewe/mint-ui/**/*.js", // Add this line
+    "../mint-ui/src/**/*.{js,ts,jsx,tsx,mdx}", // Workspace reference
   ],
   theme: {
     extend: {},
@@ -40,7 +33,7 @@ const config: Config = {
 export default config;
 ```
 
-4. Wrap your root Client component with the `ThemeProvider` component.
+3. Wrap your root Client component with the `ThemeProvider` component.
 
 ```jsx
 "use client";

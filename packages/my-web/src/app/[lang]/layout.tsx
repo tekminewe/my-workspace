@@ -1,4 +1,4 @@
-import '@tekminewe/mint-ui/styles.css';
+import '@tekminewe/mint-ui/globals.css';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Metadata } from 'next';

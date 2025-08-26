@@ -22,17 +22,11 @@ const nextConfig = {
       },
     ],
   },
-  turbopack: {
-    root: '/Users/tekminewe/Documents/Github/my-workspace',
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
-    },
-    resolveAlias: {
-      '@tekminewe/mint-ui': '../mint-ui/dist',
-    },
+  // Enable transpilation of the mint-ui package for hot-reloading
+  transpilePackages: ['@tekminewe/mint-ui'],
+  // Configure experimental features for better monorepo support
+  experimental: {
+    externalDir: true,
   },
 };
 

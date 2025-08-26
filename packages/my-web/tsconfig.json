@@ -25,6 +25,13 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@tekminewe/mint-ui": [
+        "../mint-ui/src"
+      ],
+      "@tekminewe/mint-ui/*": [
+        "../mint-ui/src/*",
+        "../mint-ui/src/components/*"
       ]
     },
     "target": "ES2017"

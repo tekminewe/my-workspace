@@ -4,7 +4,7 @@ import mintPlugin from '@tekminewe/mint-ui/tailwind-plugin';
 const config: Config = {
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@tekminewe/mint-ui/**/*.js',
+    '../mint-ui/src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   plugins: [mintPlugin()],
 };

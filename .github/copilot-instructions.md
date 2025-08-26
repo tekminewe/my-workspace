@@ -1009,13 +1009,11 @@ When working on a new feature or bug fix, follow these steps:
 1. Identify the problem or feature request. Clarify the requirements and gather any necessary information. Use research tool like `perplexity` to assist with gathering information. When planning for frontend, you must consider the user interface and user experience for both desktop and mobile.
 2. Create a new branch from `main` using `feature/<feature-name>` format.
 3. Update the database schema (if any changes are needed) in `/packages/my-service/zenstack/*.zmodel`.
-4. Run `pnpm gen:prisma` inside `/packages/my-service` to generate Prisma client.
+4. Run `pnpm gen:prisma` to generate Prisma client.
 5. Develop the backend GraphQL API to support the new feature or changes.
-6. After implementing the backend, run `pnpm test` inside `/packages/my-service` to ensure all tests pass. All tests must be passing before proceeding.
-7. After implementing the backend, run `pnpm typecheck` inside `/packages/my-service` to ensure all types are correct.
+6. After implementing the backend, run `pnpm test:service` to ensure all tests pass for backend GraphQL API. All tests must be passing before proceeding.
+7. After implementing the backend, run `pnpm typecheck:all` to ensure all types are correct.
 8. (If necessary) Make the changes in `packages/my-functions`.
 9. (If necessary) Create a new generic UI component in `packages/mint-ui` to support the new feature or changes.
-10. Run `pnpm build` inside `/packages/mint-ui` to build the library.
-11. Run `pnpm install` inside `/packages/my-web` to install the updated `mint-ui` package.
-12. Make changes to the `packages/my-web` for the new feature or changes.
-13. When updating any GraphQL queries or mutations, run `pnpm gen:graphql` inside `/packages/my-web` to generate GraphQL types. Make sure the `my-service` development server is running before running the command.
+10. Make changes to the `packages/my-web` for the new feature or changes.
+11. When updating any GraphQL queries or mutations, run `pnpm gen:graphql` inside `/packages/my-web` to generate GraphQL types. Make sure the `my-service` development server is running before running the command.
