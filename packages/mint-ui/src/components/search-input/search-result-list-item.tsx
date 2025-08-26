@@ -4,7 +4,7 @@ import { Command } from 'cmdk';
 import { forwardRef, ReactNode, useContext } from 'react';
 import { cn } from '../utils';
 import { TEXT_COLORS, BORDER_COLORS } from '../utils/component-colors';
-import { SearchContext } from './search-root';
+import { SearchContext } from './search-context';
 
 export interface SearchResultListItemProps
   extends Omit<

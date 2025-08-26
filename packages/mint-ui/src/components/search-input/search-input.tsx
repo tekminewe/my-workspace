@@ -3,7 +3,7 @@
 import { useContext } from 'react';
 import { TextInput, TextInputProps } from '../text-input';
 import { cn } from '../utils';
-import { SearchContext } from './search-root';
+import { SearchContext } from './search-context';
 import { INTERACTION_COLORS } from '../utils/component-colors';
 
 export interface SearchInputProps extends Omit<TextInputProps, 'readOnly'> {}

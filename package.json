@@ -26,7 +26,12 @@
     "fresh-install": "pnpm clean && rm -rf node_modules packages/*/node_modules && pnpm install"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
     "concurrently": "^8.2.2",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.0",
     "turbo": "^2.0.0"
   },
   "engines": {

@@ -1,9 +1,4 @@
-export {
-  Theme,
-  ThemeProvider,
-  type ThemeProviderProps,
-  type ThemeContextType,
-  type Theme as ThemeType,
-} from "./theme";
-export { useTheme } from "./use-theme";
-export { ThemeToggle } from "./theme-toggle";
+export { ThemeProvider, type ThemeProviderProps, type Theme } from './theme';
+export { type ThemeContextType } from './theme-context';
+export { useTheme } from './use-theme';
+export { ThemeToggle } from './theme-toggle';

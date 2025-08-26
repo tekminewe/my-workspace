@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
+import { SearchContext } from './search-context';
 
 export interface SearchRootProps {
   /**
@@ -26,16 +27,6 @@ export interface SearchRootProps {
    */
   onOpenChange?: (isOpen: boolean) => void;
 }
-
-export interface SearchContext {
-  isOpen?: boolean;
-  onOpenChange?: (isOpen: boolean) => void;
-}
-
-export const SearchContext = React.createContext<SearchContext>({
-  isOpen: false,
-  onOpenChange: undefined,
-});
 
 export const SearchRoot = ({
   children,

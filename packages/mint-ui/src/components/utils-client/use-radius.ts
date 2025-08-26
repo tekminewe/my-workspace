@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { RadiusContext, RadiusContextValue } from "./radius-provider";
+import { useContext } from 'react';
+import { RadiusContext, type RadiusContextValue } from './radius-context';
 
 /**
  * Hook to access the current radius context.

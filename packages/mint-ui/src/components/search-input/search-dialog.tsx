@@ -2,7 +2,7 @@
 
 import { Command } from 'cmdk';
 import { forwardRef, ReactNode, useContext, useEffect, useState } from 'react';
-import { SearchContext } from './search-root';
+import { SearchContext } from './search-context';
 import { useDebouncedCallback } from 'use-debounce';
 import { cn } from '../utils';
 import {
