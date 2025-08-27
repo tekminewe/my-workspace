@@ -65,7 +65,7 @@
     "@tiptap/starter-kit": "^2.6.6",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.1.0",
     "highlight.js": "^11.10.0",
     "lowlight": "^3.1.0",
     "react-day-picker": "^8.10.1",
