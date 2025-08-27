@@ -3,6 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "inputs": ["**/*", "!**/*.stories.*"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".aws-sam/**"]
     },
     "dev": {
