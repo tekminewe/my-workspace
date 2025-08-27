@@ -24,8 +24,8 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
   /**
    * The border radius for the card.
-   * If not provided, uses the global default radius from RadiusProvider.
-   * @default "md" (from global context)
+   * If not provided, uses "xl" as the default for cards.
+   * @default "xl"
    * @example "lg"
    */
   radius?: Radius;
@@ -34,7 +34,7 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 export const Card = (props: CardProps) => {
   const { asChild, shadow = 'none', radius, ...rest } = props;
   const Comp = asChild ? Slot : 'div';
-  const radiusClass = getStaticRadiusClass(radius);
+  const radiusClass = getStaticRadiusClass(radius ?? 'xl'); // Use xl as default for cards
 
   return (
     <Comp

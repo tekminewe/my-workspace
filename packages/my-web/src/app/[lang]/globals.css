@@ -3,7 +3,9 @@ html,
 body {
   background-color: white;
   color: rgb(23, 23, 23);
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .dark html,
@@ -15,30 +17,30 @@ body {
 :root {
   --toastify-text-color-light: rgb(0.113 0.125 0.14);
 
-  /* Override mint-ui primary colors with affiliate-optimized orange theme */
+  /* Override mint-ui primary colors with green theme */
   /* This changes the main brand color throughout all mint-ui components */
-  --color-primary-50: 255 247 237; /* #fff7ed - Lightest backgrounds */
-  --color-primary-100: 255 237 213; /* #ffedd5 - Light backgrounds, badges */
-  --color-primary-200: 254 215 170; /* #fed7aa - Hover states */
-  --color-primary-300: 253 186 116; /* #fdba74 - Borders, secondary elements */
-  --color-primary-400: 251 146 60; /* #fb923c - Secondary CTAs */
-  --color-primary-500: 245 158 11; /* #f59e0b - Primary affiliate color */
-  --color-primary-600: 217 119 6; /* #d97706 - Hover states, active buttons */
-  --color-primary-700: 180 83 9; /* #b45309 - Text on light backgrounds */
-  --color-primary-800: 146 64 14; /* #92400e - High contrast text */
-  --color-primary-900: 120 53 15; /* #78350f - Highest contrast */
+  --color-primary-50: 240 253 244; /* #f0fdf4 - Lightest backgrounds */
+  --color-primary-100: 220 252 231; /* #dcfce7 - Light backgrounds, badges */
+  --color-primary-200: 187 247 208; /* #bbf7d0 - Hover states */
+  --color-primary-300: 134 239 172; /* #86efac - Borders, secondary elements */
+  --color-primary-400: 74 222 128; /* #4ade80 - Secondary CTAs */
+  --color-primary-500: 34 197 94; /* #22c55e - Primary green color */
+  --color-primary-600: 22 163 74; /* #16a34a - Hover states, active buttons */
+  --color-primary-700: 21 128 61; /* #15803d - Text on light backgrounds */
+  --color-primary-800: 22 101 52; /* #166534 - High contrast text */
+  --color-primary-900: 20 83 45; /* #14532d - Highest contrast */
 }
 
 /* Dark mode: Override mint-ui primary colors for dark theme */
 .dark {
-  --color-primary-50: 120 53 15; /* Darkest for dark mode */
-  --color-primary-100: 146 64 14; /* Dark background */
-  --color-primary-200: 180 83 9; /* Dark hover states */
-  --color-primary-300: 217 119 6; /* Medium dark */
-  --color-primary-400: 245 158 11; /* Same as light mode base */
-  --color-primary-500: 251 146 60; /* Brighter for dark mode */
-  --color-primary-600: 253 186 116; /* Light borders */
-  --color-primary-700: 254 215 170; /* Text for dark backgrounds */
-  --color-primary-800: 255 237 213; /* Light text */
-  --color-primary-900: 255 247 237; /* Lightest for dark mode */
+  --color-primary-50: 20 83 45; /* Darkest for dark mode */
+  --color-primary-100: 22 101 52; /* Dark background */
+  --color-primary-200: 21 128 61; /* Dark hover states */
+  --color-primary-300: 22 163 74; /* Medium dark */
+  --color-primary-400: 34 197 94; /* Same as light mode base */
+  --color-primary-500: 74 222 128; /* Brighter for dark mode */
+  --color-primary-600: 134 239 172; /* Light borders */
+  --color-primary-700: 187 247 208; /* Text for dark backgrounds */
+  --color-primary-800: 220 252 231; /* Light text */
+  --color-primary-900: 240 253 244; /* Lightest for dark mode */
 }

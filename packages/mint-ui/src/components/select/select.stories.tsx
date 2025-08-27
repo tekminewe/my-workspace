@@ -85,6 +85,16 @@ export const AllVariants: Story = {
             />
 
             <Select
+              label="Auto Min Width"
+              autoMinWidth
+              options={defaultOptions}
+              value={singleValue}
+              onChange={(value) => setSingleValue(value as string)}
+              placeholder="Select a framework"
+              description="Width adapts to longest option"
+            />
+
+            <Select
               label="Disabled"
               disabled
               options={defaultOptions}
@@ -274,6 +284,115 @@ export const AllVariants: Story = {
                 label="With Error"
                 error="Please enter a valid value"
                 placeholder="Enter a value"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  },
+};
+
+export const MinWidth: Story = {
+  render: () => {
+    const [value, setValue] = useState<string>('en');
+
+    const languageOptions = [
+      { label: 'EN', value: 'en' },
+      { label: '中文', value: 'zh' },
+      { label: 'Español', value: 'es' },
+      { label: 'Français', value: 'fr' },
+      { label: 'Português', value: 'pt' },
+      {
+        label: 'Very Long Option Name That Should Expand Width',
+        value: 'long',
+      },
+    ];
+
+    const shortOptions = [
+      { label: 'A', value: 'a' },
+      { label: 'B', value: 'b' },
+      { label: 'C', value: 'c' },
+    ];
+
+    return (
+      <div className="space-y-8 p-6">
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Minimum Width Examples</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="space-y-4">
+              <h3 className="font-medium text-sm">Default (No minWidth)</h3>
+              <Select
+                label="Language"
+                value={value}
+                onChange={(newValue) => setValue(newValue as string)}
+                options={languageOptions}
+                placeholder="Select language"
+                description="Width adjusts to selected value"
+              />
+            </div>
+            <div className="space-y-4">
+              <h3 className="font-medium text-sm">Manual minWidth="250px"</h3>
+              <Select
+                label="Language"
+                value={value}
+                onChange={(newValue) => setValue(newValue as string)}
+                options={languageOptions}
+                placeholder="Select language"
+                minWidth="250px"
+                description="Fixed minimum width"
+              />
+            </div>
+            <div className="space-y-4">
+              <h3 className="font-medium text-sm">Auto minWidth</h3>
+              <Select
+                label="Language"
+                value={value}
+                onChange={(newValue) => setValue(newValue as string)}
+                options={languageOptions}
+                placeholder="Select language"
+                autoMinWidth
+                description="Dynamically calculates based on options"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-4">
+              <h3 className="font-medium text-sm">Short Options (Default)</h3>
+              <Select
+                label="Letter"
+                value={value}
+                onChange={(newValue) => setValue(newValue as string)}
+                options={shortOptions}
+                placeholder="Select"
+                description="Very narrow without autoMinWidth"
+              />
+            </div>
+            <div className="space-y-4">
+              <h3 className="font-medium text-sm">Short Options (Auto)</h3>
+              <Select
+                label="Letter"
+                value={value}
+                onChange={(newValue) => setValue(newValue as string)}
+                options={shortOptions}
+                placeholder="Select"
+                autoMinWidth
+                description="Maintains readable minimum width"
+              />
+            </div>
+            <div className="space-y-4">
+              <h3 className="font-medium text-sm">Combined (Auto + Manual)</h3>
+              <Select
+                label="Letter"
+                value={value}
+                onChange={(newValue) => setValue(newValue as string)}
+                options={shortOptions}
+                placeholder="Select"
+                autoMinWidth
+                minWidth="300px"
+                description="Uses larger of auto or manual width"
               />
             </div>
           </div>

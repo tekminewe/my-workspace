@@ -9,6 +9,8 @@ import {
   TEXT_COLORS,
   BORDER_COLORS,
 } from '../utils/component-colors';
+import { useEffectiveRadius } from '../utils-client/use-effective-radius';
+import { Radius } from '../utils-client/radius';
 
 export interface TextInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
@@ -52,6 +54,12 @@ export interface TextInputProps
    * @default "2"
    */
   size?: '1' | '2' | '3';
+
+  /**
+   * Border radius of the input
+   * @default undefined (uses global default)
+   */
+  radius?: Radius;
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
@@ -70,12 +78,14 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       type,
       onChange,
       className,
+      radius,
       ...props
     },
     ref,
   ) => {
     const customId = useId();
     const inputId = id ?? customId;
+    const radiusClass = useEffectiveRadius(radius);
     const renderDescription = () => {
       if (error) {
         return <Caption className="text-error">{error}</Caption>;
@@ -117,7 +127,8 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             }}
             type={inputType as string}
             className={cn(
-              'w-full border rounded-md',
+              'w-full border',
+              radiusClass,
               SURFACE_COLORS.surface,
               TEXT_COLORS.primary,
               BORDER_COLORS.default,

@@ -24,7 +24,7 @@ This is a **private monorepo** containing all projects in a unified workspace us
 
 ### packages/mint-ui
 
-Private UI library with Storybook 9. Previously open source, now part of the private monorepo. Uses workspace linking for hot-reloading during development.
+Private UI library with Storybook 9. Previously open source, now part of the private monorepo.
 
 #### Technology Stacks
 
@@ -32,7 +32,6 @@ Private UI library with Storybook 9. Previously open source, now part of the pri
 - Built with React 19 and TypeScript 5.5.3.
 - Tailwind CSS v3 for styling.
 - Visual tests with Chromatic.
-- **Private package** - no longer published to npm registry.
 
 #### Available Mint-UI Components
 
@@ -94,11 +93,10 @@ AWS SAM serverless functions for cashback callbacks, email callbacks, etc.
 
 - MUST build the component that support light mode and dark mode.
 - MUST only have generic components in the library.
-- MUST NOT include business logic or components.
+- MUST put all presentation components in the library.
 
 ### my-web
 
-- MUST build the business components in this project.
 - MUST use `RichTextEditor` from `mint-ui` for rich text editing and `RichTextPreview` from `mint-ui` for displaying rich text.
 
 ### Naming Conventions

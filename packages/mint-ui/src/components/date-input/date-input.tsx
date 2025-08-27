@@ -17,6 +17,8 @@ import { SURFACE_COLORS, BORDER_COLORS } from '../utils/component-colors';
 import { Caption, Text } from '../typography';
 import { FormLabel } from '../form';
 import { cn } from '../utils';
+import { useEffectiveRadius } from '../utils-client/use-effective-radius';
+import { Radius } from '../utils-client/radius';
 
 export interface DateInputProps
   extends Omit<ButtonProps, 'value' | 'onChange' | 'children'> {
@@ -77,6 +79,12 @@ export interface DateInputProps
    * @example false
    */
   clearable?: boolean;
+
+  /**
+   * Border radius of the date input
+   * @default undefined (uses global default)
+   */
+  radius?: Radius;
 }
 
 export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
@@ -91,11 +99,13 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
       error,
       disabled,
       clearable = true,
+      radius,
       ...props
     },
     ref,
   ) => {
     const [timeValue, setTimeValue] = useState<string>('00:00');
+    const radiusClass = useEffectiveRadius(radius);
 
     const handleTimeChange: React.ChangeEventHandler<HTMLInputElement> = (
       e,
@@ -182,7 +192,8 @@ export const DateInput = forwardRef<HTMLButtonElement, DateInputProps>(
           <PopoverPrimitive.Portal>
             <PopoverPrimitive.Content
               className={cn(
-                'p-4 rounded-md shadow-md z-50',
+                'p-4 shadow-md z-50',
+                radiusClass,
                 SURFACE_COLORS.surfaceElevated,
                 BORDER_COLORS.default,
               )}

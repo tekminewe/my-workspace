@@ -10,7 +10,7 @@ The radius system includes:
 - **Special values**: `none` for sharp corners
 - **Global control** via `RadiusProvider`
 - **Component-level override** via `radius` prop
-- **Default value**: `md` (8px)
+- **Default value**: `full` (fully rounded borders)
 
 ## Radius Scale
 
@@ -154,11 +154,11 @@ Set a global radius that matches your design system:
 // Conservative, professional look
 <RadiusProvider defaultRadius="sm">
 
-// Balanced, modern look (default)
+// Balanced, modern look
 <RadiusProvider defaultRadius="md">
 
-// Friendly, approachable look
-<RadiusProvider defaultRadius="lg">
+// Friendly, approachable look (default)
+<RadiusProvider defaultRadius="full">
 ```
 
 ### 2. Strategic Overrides

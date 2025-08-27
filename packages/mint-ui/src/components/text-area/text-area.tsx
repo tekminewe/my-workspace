@@ -8,6 +8,8 @@ import {
   TEXT_COLORS,
   INTERACTION_COLORS,
 } from '../utils/component-colors';
+import { useEffectiveRadius } from '../utils-client/use-effective-radius';
+import { Radius } from '../utils-client/radius';
 
 export interface ITextAreaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -25,6 +27,12 @@ export interface ITextAreaProps
    * Description text to display below the label.
    */
   description?: string;
+
+  /**
+   * Border radius of the textarea
+   * @default undefined (uses global default)
+   */
+  radius?: Radius;
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, ITextAreaProps>(
@@ -36,10 +44,13 @@ export const TextArea = forwardRef<HTMLTextAreaElement, ITextAreaProps>(
       description,
       required,
       className,
+      radius,
       ...props
     },
     ref,
   ) => {
+    const radiusClass = useEffectiveRadius(radius);
+
     return (
       <label className={cn('flex flex-col', label && 'gap-1')}>
         {label && <FormLabel label={label} required={required} />}
@@ -48,7 +59,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, ITextAreaProps>(
           placeholder={placeholder}
           required={required}
           className={cn(
-            'w-full p-2 rounded-md border focus:outline-none focus:ring-2 focus:border-transparent',
+            'w-full p-2 border focus:outline-none focus:ring-2 focus:border-transparent',
+            radiusClass,
             SURFACE_COLORS.surface,
             BORDER_COLORS.default,
             TEXT_COLORS.primary,

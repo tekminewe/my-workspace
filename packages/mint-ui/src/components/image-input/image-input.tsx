@@ -4,6 +4,8 @@ import { Caption } from '../typography';
 import { Button } from '../button';
 import { cn } from '../utils';
 import { BORDER_COLORS } from '../utils/component-colors';
+import { useEffectiveRadius } from '../utils-client/use-effective-radius';
+import { Radius } from '../utils-client/radius';
 
 export interface ImageInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
@@ -48,6 +50,12 @@ export interface ImageInputProps
    * @example "https://example.com/image.jpg"
    */
   value?: string;
+
+  /**
+   * Border radius of the image preview
+   * @default undefined (uses global default)
+   */
+  radius?: Radius;
 }
 
 export const ImageInput = forwardRef<HTMLInputElement, ImageInputProps>(
@@ -62,12 +70,14 @@ export const ImageInput = forwardRef<HTMLInputElement, ImageInputProps>(
       id,
       accept = 'image/*',
       value,
+      radius,
       ...props
     },
     ref,
   ) => {
     const customId = useId();
     const inputId = id ?? customId;
+    const radiusClass = useEffectiveRadius(radius);
 
     const renderDescription = () => {
       if (error) {
@@ -115,7 +125,8 @@ export const ImageInput = forwardRef<HTMLInputElement, ImageInputProps>(
                 src={value}
                 alt="Uploaded image preview"
                 className={cn(
-                  'w-full max-w-xs h-32 object-cover rounded-lg border',
+                  'w-full max-w-xs h-32 object-cover border',
+                  radiusClass,
                   BORDER_COLORS.default,
                 )}
               />
