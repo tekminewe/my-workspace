@@ -1,5 +1,5 @@
 // Storybook mode configuration interface
-interface StorybookMode {
+export interface StorybookMode {
   backgrounds: { value: string };
   theme: 'light' | 'dark';
   viewport?: string;
