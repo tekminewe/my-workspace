@@ -14,7 +14,7 @@
     "clean": "rm -rf .next node_modules"
   },
   "dependencies": {
-    "@apollo/client": "^3.13.1",
+    "@apollo/client": "^4.0.1",
     "@apollo/experimental-nextjs-app-support": "^0.12.1",
     "@aws-sdk/client-cognito-identity-provider": "^3.614.0",
     "@formatjs/intl-localematcher": "^0.5.8",
