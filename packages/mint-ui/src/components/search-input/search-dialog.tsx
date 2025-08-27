@@ -75,7 +75,7 @@ export const SearchDialog = forwardRef<HTMLDivElement, SearchDialogProps>(
         className={cn(
           // Dialog positioning and styling
           'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
-          'w-full max-w- h-full sm:max-h-[80vh]',
+          'w-full max-w-xl h-full sm:max-h-[80vh]',
           SURFACE_COLORS.surfaceElevated, // bg-white dark:bg-neutral-100
           'sm:rounded-lg shadow-lg',
           BORDER_COLORS.default, // border-neutral-200 dark:border-neutral-300
