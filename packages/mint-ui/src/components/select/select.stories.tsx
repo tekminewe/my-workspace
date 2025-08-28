@@ -288,6 +288,70 @@ export const AllVariants: Story = {
             </div>
           </div>
         </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-4">
+            Size Padding Consistency with TextInput
+          </h2>
+          <p className="text-sm text-neutral-600 mb-4">
+            Compare Select and TextInput components across different sizes to
+            verify consistent padding
+          </p>
+          <div className="space-y-6">
+            {(
+              [
+                { select: 'sm', textInput: '1', label: 'Small' },
+                { select: 'md', textInput: '2', label: 'Medium' },
+                { select: 'lg', textInput: '3', label: 'Large' },
+              ] as const
+            ).map(({ select, textInput, label }) => (
+              <div
+                key={select}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+              >
+                <div className="space-y-2">
+                  <h3 className="font-medium text-sm">{label} Select</h3>
+                  <Select
+                    size={select}
+                    options={defaultOptions.slice(0, 3)}
+                    placeholder={`Select (${label.toLowerCase()})`}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-medium text-sm">{label} TextInput</h3>
+                  <TextInput
+                    size={textInput}
+                    placeholder={`TextInput (${label.toLowerCase()})`}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Dark Mode Menu Styling</h2>
+          <p className="text-sm text-neutral-600 mb-4">
+            Test the select menu in dark mode to ensure proper contrast and
+            subtle hover effects
+          </p>
+          <div className="dark bg-neutral-50 p-6 rounded-lg">
+            <div className="space-y-4">
+              <Select
+                label="Framework (Dark Mode)"
+                options={defaultOptions}
+                placeholder="Choose a framework"
+                description="Select your preferred framework"
+              />
+              <Select
+                label="Multi-select (Dark Mode)"
+                multiple
+                options={defaultOptions}
+                placeholder="Choose multiple frameworks"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     );
   },

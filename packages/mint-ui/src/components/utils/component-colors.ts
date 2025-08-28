@@ -285,6 +285,26 @@ export const CALENDAR_COLORS = {
 } as const;
 
 /**
+ * Menu/Dropdown specific colors for consistent theming with buttons
+ */
+export const MENU_COLORS = {
+  /** Menu container background and border */
+  container: `${SURFACE_COLORS.surfaceElevated} border ${BORDER_COLORS.default}`,
+
+  /** Menu item default state */
+  item: `${TEXT_COLORS.primary} bg-transparent`,
+
+  /** Menu item hover state - matches button hover */
+  itemHover: `${INTERACTION_COLORS.hover} hover:text-neutral-900`,
+
+  /** Menu item selected state */
+  itemSelected: `${INTERACTION_COLORS.hover} text-neutral-900`,
+
+  /** Menu item disabled state */
+  itemDisabled: `${TEXT_COLORS.disabled} cursor-not-allowed pointer-events-none`,
+} as const;
+
+/**
  * Helper function to get consistent button colors
  * @param variant - The button variant
  * @param color - The button color
@@ -308,4 +328,13 @@ export function getIconButtonColors(
   color: keyof typeof ICON_BUTTON_COLORS.solid,
 ): string {
   return ICON_BUTTON_COLORS[variant][color];
+}
+
+/**
+ * Helper function to get consistent menu colors
+ * @param element - The menu element type
+ * @returns Tailwind classes string
+ */
+export function getMenuColors(element: keyof typeof MENU_COLORS): string {
+  return MENU_COLORS[element];
 }

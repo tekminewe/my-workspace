@@ -4,7 +4,7 @@ import { OptionProps } from 'react-select';
 import { GroupBase } from 'react-select';
 import { SelectOption } from '../select';
 import { cn } from '../../utils';
-import { TEXT_COLORS } from '../../utils/component-colors';
+import { getMenuColors } from '../../utils/component-colors';
 import { AnimatedTick } from '../animated-tick';
 import { getStaticRadiusClass } from '../../utils-client/get-radius-class';
 
@@ -21,7 +21,7 @@ export const Option = <
   selectProps,
 }: OptionProps<SelectOption, IsMulti, Group>) => {
   const { size, radius } = selectProps as any;
-  const optionRadiusClass = getStaticRadiusClass(radius ?? '2xl'); // Use 2xl as default for option
+  const optionRadiusClass = getStaticRadiusClass(radius ?? 'lg'); // Use lg as default for option
   const { ...safeProps } = innerProps || {};
 
   return (
@@ -36,25 +36,19 @@ export const Option = <
           : size === 'lg'
             ? 'py-4 px-5' // Increased from py-3 px-4
             : 'py-3 px-4', // Increased from py-2 px-3
-        // Background colors - primary background on hover
-        isFocused && !isDisabled
-          ? `bg-primary-500 text-white ${optionRadiusClass}`
-          : 'bg-transparent',
-        // Text colors
+        // Apply different styling based on state
         isDisabled
-          ? TEXT_COLORS.disabled
-          : isFocused
-            ? 'text-white'
-            : TEXT_COLORS.primary,
-        // Cursor
-        isDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
+          ? getMenuColors('itemDisabled')
+          : isSelected
+            ? `${getMenuColors('itemSelected')} ${optionRadiusClass}`
+            : isFocused
+              ? `${getMenuColors('itemHover')} ${optionRadiusClass}`
+              : getMenuColors('item'),
       )}
     >
       {/* Always reserve space for tick to maintain alignment */}
       <div className="mr-3 w-4 h-4 flex items-center justify-center">
-        {isSelected && (
-          <AnimatedTick isFocused={isFocused} isSelected={isSelected} />
-        )}
+        {isSelected && <AnimatedTick isSelected={isSelected} />}
       </div>
       <span className="flex-1">{children}</span>
     </div>

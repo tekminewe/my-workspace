@@ -6,7 +6,6 @@ import { FiCheck } from 'react-icons/fi';
 interface AnimatedTickProps {
   isSelected: boolean | null | undefined;
   shouldReduceMotion?: boolean;
-  isFocused?: boolean;
 }
 
 /**
@@ -16,7 +15,6 @@ interface AnimatedTickProps {
 export const AnimatedTick = ({
   isSelected,
   shouldReduceMotion = false,
-  isFocused = false,
 }: AnimatedTickProps) => {
   if (!isSelected) return null;
 
@@ -49,10 +47,7 @@ export const AnimatedTick = ({
       }}
       className="flex items-center justify-center"
     >
-      <FiCheck
-        className={isFocused ? 'text-white' : 'text-primary-500'}
-        size={16}
-      />
+      <FiCheck className="text-primary-500" size={16} />
     </motion.div>
   );
 };

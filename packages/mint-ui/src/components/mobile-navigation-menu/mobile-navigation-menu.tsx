@@ -24,7 +24,7 @@ export const MobileNavigationMenu = forwardRef<
 >(({ open, onOpenChange, ...props }, ref) => {
   return (
     <DrawerRoot open={open} onOpenChange={onOpenChange}>
-      <DrawerTrigger className="mt-mobileNavMenu">
+      <DrawerTrigger className="block md:hidden">
         <HamburgerMenuIcon width={28} height={28} />
       </DrawerTrigger>
       <Drawer

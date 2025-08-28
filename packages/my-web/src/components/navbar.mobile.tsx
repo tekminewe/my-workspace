@@ -52,7 +52,7 @@ export const NavbarMobile = async ({
 
   return (
     <NavbarRoot>
-      <MintNavbar containerClassName="shadow-3 border-0">
+      <MintNavbar containerClassName="shadow-3">
         <div className="w-full">
           <div className="flex justify-between items-center mb-3">
             <MintNavbarBrand>

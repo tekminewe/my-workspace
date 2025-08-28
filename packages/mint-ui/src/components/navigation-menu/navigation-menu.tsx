@@ -12,7 +12,7 @@ export const NavigationMenu = forwardRef<HTMLDivElement, NavigationMenuProps>(
         ref={ref}
         {...props}
         className={cn(
-          'mt-navMenu flex-1 flex justify-end gap-6',
+          'hidden md:flex flex-1 justify-end gap-6',
           props.className,
         )}
       />

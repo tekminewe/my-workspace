@@ -21,44 +21,6 @@
     @apply fixed inset-0 bg-neutral-800/50 z-50;
     animation: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  /**
-  * Navbar styles
-  */
-  .navbar {
-    @apply w-full p-4 flex items-center border-b border-neutral-200 dark:border-neutral-300;
-    @apply min-h-[4rem];
-  }
-  .navbar[data-breakpoint='xs'] .mt-navMenu {
-    @apply hidden xs:flex;
-  }
-  .navbar[data-breakpoint='sm'] .mt-navMenu {
-    @apply hidden sm:flex;
-  }
-  .navbar[data-breakpoint='md'] .mt-navMenu {
-    @apply hidden md:flex;
-  }
-  .navbar[data-breakpoint='lg'] .mt-navMenu {
-    @apply hidden lg:flex;
-  }
-  .navbar[data-breakpoint='xl'] .mt-navMenu {
-    @apply hidden xl:flex;
-  }
-
-  .navbar[data-breakpoint='xs'] .mt-mobileNavMenu {
-    @apply xs:hidden;
-  }
-  .navbar[data-breakpoint='sm'] .mt-mobileNavMenu {
-    @apply sm:hidden;
-  }
-  .navbar[data-breakpoint='md'] .mt-mobileNavMenu {
-    @apply md:hidden;
-  }
-  .navbar[data-breakpoint='lg'] .mt-mobileNavMenu {
-    @apply lg:hidden;
-  }
-  .navbar[data-breakpoint='xl'] .mt-mobileNavMenu {
-    @apply xl:hidden;
-  }
 
   @keyframes overlayShow {
     from {

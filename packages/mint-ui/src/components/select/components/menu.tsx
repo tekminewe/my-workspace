@@ -4,7 +4,7 @@ import { MenuProps } from 'react-select';
 import { GroupBase } from 'react-select';
 import { SelectOption } from '../select';
 import { cn } from '../../utils';
-import { SURFACE_COLORS } from '../../utils/component-colors';
+import { getMenuColors } from '../../utils/component-colors';
 import { motion } from 'motion/react';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { getStaticRadiusClass } from '../../utils-client/get-radius-class';
@@ -86,10 +86,10 @@ export const Menu = <
       className={cn(
         // Base styles - positioned but with flexible width
         'absolute top-full left-0 mt-1 z-[9999]',
-        // Background and styling with more padding
-        SURFACE_COLORS.surfaceElevated,
-        'shadow-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden',
-        getStaticRadiusClass(radius ?? '2xl'), // Use 2xl as default for select menu
+        // Background and styling with more padding - using centralized menu colors
+        getMenuColors('container'),
+        'shadow-lg overflow-hidden',
+        getStaticRadiusClass(radius ?? 'lg'), // Use lg as default for select menu
         // Isolation for z-index
         'isolate',
       )}
