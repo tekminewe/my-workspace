@@ -126,34 +126,3 @@ export const AllVariants: Story = {
     </div>
   ),
 };
-
-export const Default: Story = {
-  args: {
-    name: 'Example Store',
-    logoUrl: '/images/example-logo.png',
-    cashbackPercentage: 5.0,
-  },
-};
-
-export const WithoutLogo: Story = {
-  args: {
-    name: 'Store Without Logo',
-    cashbackPercentage: 3.5,
-  },
-};
-
-export const WithoutCashback: Story = {
-  args: {
-    name: 'Store Without Cashback',
-    logoUrl: '/images/example-logo.png',
-  },
-};
-
-export const NonClickable: Story = {
-  args: {
-    name: 'Display Only',
-    logoUrl: '/images/example-logo.png',
-    cashbackPercentage: 2.0,
-    clickable: false,
-  },
-};

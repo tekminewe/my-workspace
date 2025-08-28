@@ -16,7 +16,7 @@ export const SURFACE_COLORS = {
   surfaceElevated: 'bg-white dark:bg-neutral-100',
 
   /** Subtle surface background (section backgrounds, subtle cards) */
-  surfaceSubtle: 'bg-neutral-50 dark:bg-neutral-50',
+  surfaceSubtle: 'bg-neutral-100 dark:bg-neutral-50',
 } as const;
 
 /**

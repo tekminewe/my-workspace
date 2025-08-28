@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'motion/react';
 import { Badge } from '../badge';
 import { cn } from '../utils';
 import { SURFACE_COLORS, TEXT_COLORS } from '../utils/component-colors';
@@ -67,9 +68,9 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
       typeof cashbackPercentage === 'number' && cashbackPercentage > 0;
 
     const cardContent = (
-      <div
+      <motion.div
         className={cn(
-          'flex flex-col h-full rounded-lg overflow-hidden shadow-sm transition-all duration-200',
+          'flex flex-col h-full rounded-lg overflow-hidden shadow-sm transition-shadow duration-200',
           SURFACE_COLORS.surface,
           clickable && 'hover:shadow-md cursor-pointer',
           clickable &&
@@ -90,12 +91,19 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
             : undefined
         }
         ref={ref}
+        whileHover={clickable ? { scale: 1.025 } : undefined}
+        whileTap={clickable ? { scale: 0.98 } : undefined}
+        transition={{
+          type: 'spring',
+          stiffness: 300,
+          damping: 20,
+        }}
         {...props}
       >
         {/* Top section - Subtle surface background with logo */}
         <div
           className={cn(
-            'relative flex-1 flex flex-col',
+            'relative flex-1 flex flex-col m-2 rounded-lg',
             SURFACE_COLORS.surfaceSubtle,
           )}
         >
@@ -150,7 +158,7 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
             {name}
           </h3>
         </div>
-      </div>
+      </motion.div>
     );
 
     return clickable ? (
