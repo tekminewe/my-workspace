@@ -7,6 +7,7 @@ import { cn } from '../../utils';
 import { SURFACE_COLORS } from '../../utils/component-colors';
 import { motion } from 'motion/react';
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { getStaticRadiusClass } from '../../utils-client/get-radius-class';
 
 export const Menu = <
   IsMulti extends boolean = false,
@@ -17,7 +18,7 @@ export const Menu = <
   innerRef,
   selectProps,
 }: MenuProps<SelectOption, IsMulti, Group>) => {
-  const { calculatedMinWidth, controlRef } = (selectProps as any) || {};
+  const { calculatedMinWidth, controlRef, radius } = (selectProps as any) || {};
   const [menuWidth, setMenuWidth] = useState<number | undefined>(undefined);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -26,21 +27,23 @@ export const Menu = <
     if (!controlRef?.current) return;
 
     const controlWidth = controlRef.current.getBoundingClientRect().width;
-    const calculatedWidth = calculatedMinWidth ? parseFloat(calculatedMinWidth.replace('px', '')) : 0;
+    const calculatedWidth = calculatedMinWidth
+      ? parseFloat(calculatedMinWidth.replace('px', ''))
+      : 0;
     const finalWidth = Math.max(controlWidth, calculatedWidth);
-    
+
     setMenuWidth(finalWidth);
   }, [calculatedMinWidth, controlRef]);
 
   // Calculate width on mount and when calculatedMinWidth changes
   useEffect(() => {
     calculateMenuWidth();
-    
+
     // Recalculate on window resize in case the control width changes
     const handleResize = () => {
       calculateMenuWidth();
     };
-    
+
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [calculateMenuWidth]);
@@ -85,7 +88,8 @@ export const Menu = <
         'absolute top-full left-0 mt-1 z-[9999]',
         // Background and styling with more padding
         SURFACE_COLORS.surfaceElevated,
-        'shadow-lg rounded-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden',
+        'shadow-lg border border-neutral-200 dark:border-neutral-700 overflow-hidden',
+        getStaticRadiusClass(radius ?? '2xl'), // Use 2xl as default for select menu
         // Isolation for z-index
         'isolate',
       )}

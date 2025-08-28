@@ -195,6 +195,8 @@ export default () => {
           '--radius-md': '0.5rem' /* 8px - Default for most components */,
           '--radius-lg': '0.75rem' /* 12px - Large cards, modals */,
           '--radius-xl': '1rem' /* 16px - Hero sections, prominent cards */,
+          '--radius-2xl':
+            '1.5rem' /* 24px - Extra large cards, hero sections */,
           '--radius-full': '9999px' /* Fully rounded - Pills, avatars */,
 
           // === BOX SHADOWS ===
@@ -465,6 +467,7 @@ export default () => {
           md: 'var(--radius-md)',
           lg: 'var(--radius-lg)',
           xl: 'var(--radius-xl)',
+          '2xl': 'var(--radius-2xl)',
           full: 'var(--radius-full)',
           // Legacy support for existing numbered classes
           '1': 'var(--radius-sm)',

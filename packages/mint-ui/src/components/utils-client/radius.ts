@@ -1,4 +1,4 @@
-export type Radius = 'none' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
+export type Radius = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full';
 
 /**
  * Map radius tokens to CSS variable names
@@ -9,6 +9,7 @@ export const radiusMap: Record<Radius, string> = {
   md: 'var(--radius-md)',
   lg: 'var(--radius-lg)',
   xl: 'var(--radius-xl)',
+  '2xl': 'var(--radius-2xl)',
   full: 'var(--radius-full)',
 };
 
@@ -21,6 +22,7 @@ export const radiusClasses: Record<Radius, string> = {
   md: 'rounded-md',
   lg: 'rounded-lg',
   xl: 'rounded-xl',
+  '2xl': 'rounded-2xl',
   full: 'rounded-full',
 };
 

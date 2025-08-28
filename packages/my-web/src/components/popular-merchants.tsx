@@ -1,6 +1,6 @@
 import { ErrorMessage } from '@tekminewe/mint-ui/error-message';
 import { getPopularAdvertisers } from '../services/advertiser';
-import { PopularMerchantsItem } from './popular-merchants-item';
+import { MerchantCard } from '@tekminewe/mint-ui/merchant-card';
 import { getDictionary } from '@/dictionaries';
 import { LuArrowRight } from 'react-icons/lu';
 import Link from 'next/link';
@@ -30,11 +30,20 @@ export const PopularMerchants = async ({ language }: { language: string }) => {
           {result.ok() &&
             result.data.map((advertiser) => {
               return (
-                <PopularMerchantsItem
-                  language={language}
+                <MerchantCard
                   key={advertiser.id}
-                  advertiser={advertiser}
+                  name={advertiser.name}
+                  logoUrl={advertiser.logo?.url}
+                  cashbackPercentage={
+                    advertiser.commission?.calculatedCommission
+                  }
                   cashbackLabel={dictionary.home.cashback}
+                  onClick={() =>
+                    window.open(
+                      `/${language}/store/${advertiser.slug}`,
+                      '_self',
+                    )
+                  }
                 />
               );
             })}

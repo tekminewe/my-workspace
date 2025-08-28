@@ -12,6 +12,7 @@ export const SearchInput = ({
   placeholder = 'Search...',
   className,
   onClick,
+  radius = 'full',
   ...props
 }: SearchInputProps) => {
   const { onOpenChange } = useContext(SearchContext);
@@ -27,6 +28,7 @@ export const SearchInput = ({
     <TextInput
       readOnly
       placeholder={placeholder}
+      radius={radius}
       className={cn(
         '[&_input]:cursor-pointer',
         'cursor-pointer',

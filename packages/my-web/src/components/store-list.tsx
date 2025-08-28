@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { PopularMerchantsItem } from './popular-merchants-item';
+import { MerchantCard } from '@tekminewe/mint-ui/merchant-card';
 import { Dictionary } from '@/dictionaries';
 import { useAllAdvertisersGQL } from '@/hooks/use-all-advertisers-gql';
 import { useCategoryFilter } from '@/hooks/use-category-filter';
@@ -128,12 +128,22 @@ export const StoreList = ({
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-1">
                 {advertisers.map((advertiser) => (
-                  <PopularMerchantsItem
-                    language={locale}
-                    key={advertiser.id}
-                    advertiser={advertiser}
-                    cashbackLabel={dictionary.cashback}
-                  />
+                  <div key={advertiser.id} className="h-48">
+                    <MerchantCard
+                      name={advertiser.name}
+                      logoUrl={advertiser.logo?.url}
+                      cashbackPercentage={
+                        advertiser.commission?.calculatedCommission
+                      }
+                      cashbackLabel={dictionary.cashback}
+                      onClick={() =>
+                        window.open(
+                          `/${locale}/store/${advertiser.slug}`,
+                          '_self',
+                        )
+                      }
+                    />
+                  </div>
                 ))}
               </div>
             </InfiniteScroll>

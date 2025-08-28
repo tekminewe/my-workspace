@@ -11,6 +11,9 @@ import {
   BORDER_COLORS,
   OVERLAY_COLORS,
 } from '../utils/component-colors';
+import { useEffectiveRadius } from '../utils-client/use-effective-radius';
+import { Radius } from '../utils-client/radius';
+import { getStaticRadiusClass } from '../utils-client/get-radius-class';
 
 export interface SearchDialogProps
   extends Pick<React.HTMLAttributes<HTMLDivElement>, 'className'> {
@@ -44,6 +47,13 @@ export interface SearchDialogProps
    * @returns
    */
   onQueryChange?: (query: string) => Promise<void> | void;
+
+  /**
+   * The border radius for the search dialog and its input.
+   * @default "2xl"
+   * @example "sm" | "md" | "lg" | "xl" | "2xl" | "full" | "none"
+   */
+  radius?: Radius;
 }
 
 export const SearchDialog = forwardRef<HTMLDivElement, SearchDialogProps>(
@@ -54,12 +64,15 @@ export const SearchDialog = forwardRef<HTMLDivElement, SearchDialogProps>(
       searchInputPlaceholder = 'Search...',
       onQueryChange = () => {},
       className,
+      radius,
     },
     ref,
   ) => {
     const { isOpen, onOpenChange } = useContext(SearchContext);
     const [query, setQuery] = useState('');
     const debounceQueryChange = useDebouncedCallback(onQueryChange, 300);
+    const radiusClass = useEffectiveRadius(radius ?? '2xl');
+    const dialogRadiusClass = getStaticRadiusClass(radius ?? '2xl');
 
     useEffect(() => {
       debounceQueryChange?.(query);
@@ -77,7 +90,7 @@ export const SearchDialog = forwardRef<HTMLDivElement, SearchDialogProps>(
           'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
           'w-full max-w-xl h-full sm:max-h-[80vh]',
           SURFACE_COLORS.surfaceElevated, // bg-white dark:bg-neutral-100
-          'sm:rounded-lg shadow-lg',
+          `sm:${dialogRadiusClass} shadow-lg`,
           BORDER_COLORS.default, // border-neutral-200 dark:border-neutral-300
           'border z-50 overflow-hidden p-4',
           className,
@@ -94,6 +107,7 @@ export const SearchDialog = forwardRef<HTMLDivElement, SearchDialogProps>(
             // When updating TextInput styles, also update this SearchDialog input
             // Both should use the same: SURFACE_COLORS, TEXT_COLORS, BORDER_COLORS, focus states
             'w-full border py-2 px-3 mb-4',
+            radiusClass,
             SURFACE_COLORS.surface,
             TEXT_COLORS.primary,
             BORDER_COLORS.default,

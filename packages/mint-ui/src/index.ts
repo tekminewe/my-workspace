@@ -23,6 +23,7 @@ export * from './components/icon-button';
 export * from './components/image-input';
 export * from './components/link';
 export * from './components/list';
+export * from './components/merchant-card';
 export * from './components/mobile-navigation-menu';
 export * from './components/navbar';
 export * from './components/navigation-menu';

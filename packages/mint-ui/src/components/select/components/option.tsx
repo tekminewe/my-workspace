@@ -6,6 +6,7 @@ import { SelectOption } from '../select';
 import { cn } from '../../utils';
 import { TEXT_COLORS } from '../../utils/component-colors';
 import { AnimatedTick } from '../animated-tick';
+import { getStaticRadiusClass } from '../../utils-client/get-radius-class';
 
 export const Option = <
   IsMulti extends boolean = false,
@@ -19,16 +20,9 @@ export const Option = <
   isSelected,
   selectProps,
 }: OptionProps<SelectOption, IsMulti, Group>) => {
-  const { size } = selectProps as any;
-  const {
-    onDrag,
-    onDragStart,
-    onDragEnd,
-    onAnimationStart,
-    onAnimationEnd,
-    onTransitionEnd,
-    ...safeProps
-  } = innerProps || {};
+  const { size, radius } = selectProps as any;
+  const optionRadiusClass = getStaticRadiusClass(radius ?? '2xl'); // Use 2xl as default for option
+  const { ...safeProps } = innerProps || {};
 
   return (
     <div
@@ -44,7 +38,7 @@ export const Option = <
             : 'py-3 px-4', // Increased from py-2 px-3
         // Background colors - primary background on hover
         isFocused && !isDisabled
-          ? 'bg-primary-500 text-white rounded-md'
+          ? `bg-primary-500 text-white ${optionRadiusClass}`
           : 'bg-transparent',
         // Text colors
         isDisabled

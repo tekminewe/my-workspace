@@ -5,6 +5,15 @@ import { GroupBase } from 'react-select';
 import { SelectOption } from '../select';
 import { cn } from '../../utils';
 import { SURFACE_COLORS, BORDER_COLORS } from '../../utils/component-colors';
+import { useEffectiveRadius } from '../../utils-client/use-effective-radius';
+import { Radius } from '../../utils-client/radius';
+
+interface CustomSelectProps {
+  error?: string;
+  size?: 'sm' | 'md' | 'lg';
+  controlRef?: React.RefObject<HTMLDivElement>;
+  radius?: Radius;
+}
 
 export const Control = <
   IsMulti extends boolean = false,
@@ -17,13 +26,14 @@ export const Control = <
   isFocused,
   selectProps,
 }: ControlProps<SelectOption, IsMulti, Group>) => {
-  const { error, size, controlRef } = selectProps as any;
+  const { error, size, controlRef, radius } = selectProps as CustomSelectProps;
+  const radiusClass = useEffectiveRadius(radius);
 
   return (
     <div
       ref={(node) => {
         // Set both our ref and the react-select ref
-        if (controlRef) {
+        if (controlRef && node) {
           controlRef.current = node;
         }
         if (typeof innerRef === 'function') {
@@ -35,7 +45,8 @@ export const Control = <
       {...innerProps}
       className={cn(
         // Base styles
-        'relative flex items-center border rounded-lg transition-all duration-200',
+        'relative flex items-center border transition-all duration-200',
+        radiusClass,
         // Background: match SURFACE_COLORS.surface
         SURFACE_COLORS.surface,
         // Border and focus states

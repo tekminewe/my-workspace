@@ -15,6 +15,7 @@ import { FormLabel } from '../form';
 import { Caption } from '../typography';
 import { cn } from '../utils';
 import { customComponents } from './components';
+import { Radius } from '../utils-client/radius';
 
 export interface SelectOption {
   label: string;
@@ -92,6 +93,13 @@ export interface SelectProps {
    * @default undefined
    */
   className?: string;
+
+  /**
+   * Border radius for the select control
+   * @default "2xl"
+   * @example "sm" | "md" | "lg" | "xl" | "2xl" | "full" | "none"
+   */
+  radius?: Radius;
 
   /**
    * Whether to allow multiple selections
@@ -217,6 +225,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
       description,
       clearable = true,
       className,
+      radius,
       multiple = false,
       disabled = false,
       loading = false,
@@ -347,6 +356,7 @@ export const Select = forwardRef<HTMLDivElement, SelectProps>(
     const selectProps = {
       error,
       size,
+      radius,
       calculatedMinWidth, // Keep this for Menu component
       controlRef, // Pass control ref for width calculation
     };
