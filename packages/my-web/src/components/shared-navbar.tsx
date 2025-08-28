@@ -71,10 +71,7 @@ export const Navbar = async ({
                 />
               </Link>
             </MintNavbarBrand>
-            <NavbarSearchInput
-              placeholder={dictionary.search.placeholder}
-              className="w-[300px]"
-            />
+            <NavbarSearchInput placeholder={dictionary.search.placeholder} />
           </div>
           <div className="flex gap-4 items-center">
             <NavigationMenu className="mr-4">

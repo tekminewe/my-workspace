@@ -135,7 +135,7 @@ export const StoreList = ({
                       cashbackPercentage={
                         advertiser.commission?.calculatedCommission
                       }
-                      cashbackLabel={dictionary.cashback}
+                      cashbackLabel={dictionary.cashbackUpTo}
                       onClick={() =>
                         window.open(
                           `/${locale}/store/${advertiser.slug}`,

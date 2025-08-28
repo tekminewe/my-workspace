@@ -53,6 +53,7 @@
     "heroCta": "立即加入",
     "popularStores": "热门商家",
     "cashback": "现金回馈",
+    "cashbackUpTo": "现金回馈高达",
     "seeAllStores": "查看所有商家",
     "howItWorks": "如何运作",
     "howItWorksStep1": "1. 免费加入",
@@ -221,6 +222,7 @@
   "allStores": {
     "title": "所有商家",
     "cashback": "现金回馈",
+    "cashbackUpTo": "现金回馈高达",
     "filters": {
       "title": "筛选条件：",
       "categories": "分类",

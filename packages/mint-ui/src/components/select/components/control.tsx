@@ -4,7 +4,7 @@ import { ControlProps } from 'react-select';
 import { GroupBase } from 'react-select';
 import { SelectOption } from '../select';
 import { cn } from '../../utils';
-import { SURFACE_COLORS, BORDER_COLORS } from '../../utils/component-colors';
+import { INPUT_COLORS } from '../../utils/component-colors';
 import { useEffectiveRadius } from '../../utils-client/use-effective-radius';
 import { Radius } from '../../utils-client/radius';
 
@@ -23,7 +23,6 @@ export const Control = <
   innerProps,
   innerRef,
   isDisabled,
-  isFocused,
   selectProps,
 }: ControlProps<SelectOption, IsMulti, Group>) => {
   const { error, size, controlRef, radius } = selectProps as CustomSelectProps;
@@ -45,22 +44,24 @@ export const Control = <
       {...innerProps}
       className={cn(
         // Base styles
-        'relative flex items-center border transition-all duration-200',
+        'relative flex items-center transition-all duration-200',
         radiusClass,
-        // Background: match SURFACE_COLORS.surface
-        SURFACE_COLORS.surface,
-        // Border and focus states
+        // Background
+        INPUT_COLORS.background,
+        // Error border
+        error ? INPUT_COLORS.errorBorder : '',
+        // Focus ring
         error
-          ? 'border-error-500'
-          : isFocused
-            ? 'border-primary-500 ring-1 ring-primary-500'
-            : BORDER_COLORS.default,
-        // Hover styles
-        !error && !isFocused && 'hover:border-neutral-300',
+          ? 'focus-within:ring-2 focus-within:ring-error-500 focus-within:outline-none'
+          : 'focus-within:ring-2 focus-within:ring-primary-500 focus-within:outline-none',
         // Size-specific height
         size === 'sm' ? 'min-h-8' : size === 'lg' ? 'min-h-11' : 'min-h-9',
         // Disabled styles
-        isDisabled && 'opacity-60 cursor-not-allowed',
+        isDisabled && [
+          'opacity-60',
+          INPUT_COLORS.disabled.cursor,
+          INPUT_COLORS.disabled.containerCursor,
+        ],
       )}
     >
       {children}

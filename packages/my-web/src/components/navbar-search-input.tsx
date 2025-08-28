@@ -1,7 +1,16 @@
-"use client";
+'use client';
 
-import { SearchInput, SearchInputProps } from "@tekminewe/mint-ui/search-input";
+import { cn } from '@tekminewe/mint-ui/components/utils';
+import { SearchInput, SearchInputProps } from '@tekminewe/mint-ui/search-input';
 
-export const NavbarSearchInput = ({ ...props }: SearchInputProps) => {
-  return <SearchInput {...props} />;
+export const NavbarSearchInput = ({
+  inputContainerClassName,
+  ...props
+}: SearchInputProps) => {
+  return (
+    <SearchInput
+      {...props}
+      inputContainerClassName={cn(`md:w-[300px]`, inputContainerClassName)}
+    />
+  );
 };

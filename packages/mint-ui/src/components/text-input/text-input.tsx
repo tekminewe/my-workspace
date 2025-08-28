@@ -4,20 +4,21 @@ import { forwardRef, useId, InputHTMLAttributes } from 'react';
 import { Caption } from '../typography';
 import { FormLabel } from '../form';
 import { cn } from '../utils';
-import {
-  SURFACE_COLORS,
-  TEXT_COLORS,
-  BORDER_COLORS,
-} from '../utils/component-colors';
+import { INPUT_COLORS } from '../utils/component-colors';
 import { useEffectiveRadius } from '../utils-client/use-effective-radius';
 import { Radius } from '../utils-client/radius';
 
 export interface TextInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /**
-   * Icon to display inside the input
+   * Icon to display on the left side of the input
    */
   icon?: React.ReactNode;
+
+  /**
+   * Icon to display on the right side of the input
+   */
+  rightIcon?: React.ReactNode;
 
   /**
    * Label for the input
@@ -38,6 +39,11 @@ export interface TextInputProps
    * Additional className for the container
    */
   containerClassName?: string;
+
+  /**
+   * Additional className for the input container (wrapper around input and icons)
+   */
+  inputContainerClassName?: string;
 
   /**
    * Additional className for the label
@@ -67,9 +73,11 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
     {
       containerClassName,
       labelClassName,
+      inputContainerClassName,
       error,
       label,
       icon,
+      rightIcon,
       size = '2',
       placeholder = 'Please enter the field',
       required,
@@ -113,7 +121,13 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         }[size as '1' | '2' | '3'] || 'py-2 px-3';
 
       return (
-        <div className="relative w-full">
+        <div
+          className={cn(
+            'relative w-full',
+            props.disabled && INPUT_COLORS.disabled.containerCursor,
+            inputContainerClassName,
+          )}
+        >
           <input
             id={inputId}
             ref={ref}
@@ -127,17 +141,19 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             }}
             type={inputType as string}
             className={cn(
-              'w-full border',
+              'w-full',
               radiusClass,
-              SURFACE_COLORS.surface,
-              TEXT_COLORS.primary,
-              BORDER_COLORS.default,
-              'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
+              INPUT_COLORS.background,
+              props.disabled ? INPUT_COLORS.disabled.text : INPUT_COLORS.text,
+              INPUT_COLORS.placeholder,
+              error ? INPUT_COLORS.errorBorder : '',
+              error ? INPUT_COLORS.focusRingError : INPUT_COLORS.focusRing,
+              props.disabled && INPUT_COLORS.disabled.cursor,
               'appearance-none', // Remove default browser styling
               '[&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none', // Remove number input spinners
-              error && 'border-error-500 focus:ring-error-500',
               sizeClass,
               icon && 'pl-10',
+              rightIcon && 'pr-10',
               className,
             )}
             {...props}
@@ -147,9 +163,23 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
               {icon}
             </div>
           )}
+          {rightIcon && (
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-neutral-500">
+              {rightIcon}
+            </div>
+          )}
         </div>
       );
     };
+
+    const textField = renderTextField();
+
+    // If there's no label, description, or error, return the text field directly
+    // to avoid unnecessary wrapper that can interfere with positioning
+    if (!label && !description && !error) {
+      return textField;
+    }
+
     return (
       <label
         className={cn(
@@ -166,7 +196,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             required={required}
           />
         )}
-        {renderTextField()}
+        {textField}
         {renderDescription()}
       </label>
     );

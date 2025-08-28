@@ -38,7 +38,6 @@ export const AllVariants: Story = {
             <MerchantCard
               name="Nike"
               logoUrl="/images/yolofoods.webp"
-              cashbackPercentage={7.0}
               badgeColor="blue"
               onClick={() => console.log('Nike clicked')}
             />

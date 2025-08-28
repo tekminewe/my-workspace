@@ -65,6 +65,39 @@ export const INTERACTION_COLORS = {
 } as const;
 
 /**
+ * Input field colors for borderless design
+ */
+export const INPUT_COLORS = {
+  /** Standard input background */
+  background: 'bg-neutral-100 dark:bg-neutral-100',
+
+  /** Input focus ring */
+  focusRing: 'focus:outline-none focus:ring-2 focus:ring-primary-500',
+
+  /** Error state border (red border) */
+  errorBorder: 'border border-error-500',
+
+  /** Error focus ring */
+  focusRingError: 'focus:outline-none focus:ring-1 focus:ring-error-500',
+
+  /** Input text color */
+  text: TEXT_COLORS.primary,
+
+  /** Placeholder text color */
+  placeholder: 'placeholder:text-neutral-400 dark:placeholder:text-neutral-400',
+
+  /** Disabled state colors */
+  disabled: {
+    /** Disabled input text color (lighter) */
+    text: 'text-neutral-400 dark:text-neutral-400',
+    /** Disabled cursor (not-allowed) */
+    cursor: 'cursor-not-allowed',
+    /** Disabled container cursor for hover */
+    containerCursor: 'hover:cursor-not-allowed',
+  },
+} as const;
+
+/**
  * Loading skeleton colors that are visible in both light and dark modes
  */
 export const SKELETON_COLORS = {

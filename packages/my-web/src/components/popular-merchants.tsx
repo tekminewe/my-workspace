@@ -37,7 +37,7 @@ export const PopularMerchants = async ({ language }: { language: string }) => {
                   cashbackPercentage={
                     advertiser.commission?.calculatedCommission
                   }
-                  cashbackLabel={dictionary.home.cashback}
+                  cashbackLabel={dictionary.home.cashbackUpTo}
                   onClick={() =>
                     window.open(
                       `/${language}/store/${advertiser.slug}`,

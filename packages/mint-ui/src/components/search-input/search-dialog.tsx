@@ -7,9 +7,9 @@ import { useDebouncedCallback } from 'use-debounce';
 import { cn } from '../utils';
 import {
   SURFACE_COLORS,
-  TEXT_COLORS,
   BORDER_COLORS,
   OVERLAY_COLORS,
+  INPUT_COLORS,
 } from '../utils/component-colors';
 import { useEffectiveRadius } from '../utils-client/use-effective-radius';
 import { Radius } from '../utils-client/radius';
@@ -105,13 +105,13 @@ export const SearchDialog = forwardRef<HTMLDivElement, SearchDialogProps>(
           className={cn(
             // NOTE: Keep these styles synchronized with TextInput component
             // When updating TextInput styles, also update this SearchDialog input
-            // Both should use the same: SURFACE_COLORS, TEXT_COLORS, BORDER_COLORS, focus states
-            'w-full border py-2 px-3 mb-4',
+            // Both should use the same borderless design with INPUT_COLORS
+            'w-full py-2 px-3 mb-4',
             radiusClass,
-            SURFACE_COLORS.surface,
-            TEXT_COLORS.primary,
-            BORDER_COLORS.default,
-            'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent',
+            INPUT_COLORS.background,
+            INPUT_COLORS.text,
+            INPUT_COLORS.placeholder,
+            INPUT_COLORS.focusRing,
             'appearance-none',
           )}
           placeholder={searchInputPlaceholder}

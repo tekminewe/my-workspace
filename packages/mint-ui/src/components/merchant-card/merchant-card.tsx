@@ -3,6 +3,7 @@
 import React from 'react';
 import { Badge } from '../badge';
 import { cn } from '../utils';
+import { SURFACE_COLORS, TEXT_COLORS } from '../utils/component-colors';
 
 export interface MerchantCardProps {
   /**
@@ -68,7 +69,8 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
     const cardContent = (
       <div
         className={cn(
-          'flex flex-col h-full rounded-lg overflow-hidden bg-white dark:bg-neutral-100 shadow-sm transition-all duration-200',
+          'flex flex-col h-full rounded-lg overflow-hidden shadow-sm transition-all duration-200',
+          SURFACE_COLORS.surface,
           clickable && 'hover:shadow-md cursor-pointer',
           clickable &&
             'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
@@ -90,19 +92,24 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
         ref={ref}
         {...props}
       >
-        {/* Top section - Gray background with logo */}
-        <div className="relative bg-neutral-100 dark:bg-neutral-200 p-6 flex-shrink-0">
-          {/* Cashback Badge - positioned at top right */}
-          {showCashback && (
-            <div className="absolute top-3 right-3 z-10">
+        {/* Top section - Subtle surface background with logo */}
+        <div
+          className={cn(
+            'relative flex-1 flex flex-col',
+            SURFACE_COLORS.surfaceSubtle,
+          )}
+        >
+          {/* Badge area - always reserve space for consistent height */}
+          <div className="h-8 px-3 pt-2 flex justify-end flex-shrink-0">
+            {showCashback && (
               <Badge variant="solid" color={badgeColor}>
                 {cashbackLabel} {cashbackPercentage}%
               </Badge>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Logo container - centered, fixed height */}
-          <div className="flex items-center justify-center h-28 pt-4">
+          {/* Logo container - centered, takes remaining space */}
+          <div className="flex items-center justify-center flex-1 px-6 pb-4">
             {logoUrl ? (
               <div className="flex items-center justify-center w-20 h-20">
                 <img
@@ -116,7 +123,9 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
               logoFallback
             ) : (
               <div className="w-16 h-16 bg-neutral-300 dark:bg-neutral-400 rounded-lg flex items-center justify-center">
-                <span className="text-neutral-600 dark:text-neutral-700 text-sm font-medium">
+                <span
+                  className={cn('text-sm font-medium', TEXT_COLORS.secondary)}
+                >
                   {name.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -124,11 +133,17 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
           </div>
         </div>
 
-        {/* Bottom section - White background with title */}
-        <div className="bg-white dark:bg-neutral-50 p-4 flex-grow flex items-center justify-center">
+        {/* Bottom section - Main surface background with title */}
+        <div
+          className={cn(
+            'p-3 flex-shrink-0 flex items-center justify-center min-h-[3rem]',
+            SURFACE_COLORS.surface,
+          )}
+        >
           <h3
             className={cn(
-              'text-sm font-medium text-neutral-900 dark:text-neutral-900 text-center leading-tight transition-colors',
+              'text-sm font-medium text-center leading-tight transition-colors',
+              TEXT_COLORS.primary,
               clickable && 'group-hover:text-primary-600',
             )}
           >

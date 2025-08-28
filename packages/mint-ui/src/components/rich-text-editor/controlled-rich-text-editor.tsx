@@ -10,11 +10,7 @@ import { RichTextEditor, RichTextEditorProps } from './rich-text-editor.v2';
 import { FormLabel } from '../form';
 import { Caption } from '../typography';
 import { cn } from '../utils';
-import {
-  SURFACE_COLORS,
-  TEXT_COLORS,
-  BORDER_COLORS,
-} from '../utils/component-colors';
+import { INPUT_COLORS } from '../utils/component-colors';
 
 interface ControlledRichTextEditorProps<T extends FieldValues>
   extends Omit<RichTextEditorProps, 'content' | 'onChange'> {
@@ -56,12 +52,12 @@ export const ControlledRichTextEditor = <T extends FieldValues>({
       {label && <FormLabel htmlFor={name} label={label} required={required} />}
       <div
         className={cn(
-          'border rounded-md overflow-hidden',
-          SURFACE_COLORS.surface,
-          TEXT_COLORS.primary,
-          BORDER_COLORS.default,
-          'focus-within:outline-none focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent',
-          error && 'border-error-500 focus-within:ring-error-500',
+          'rounded-md overflow-hidden',
+          INPUT_COLORS.background,
+          INPUT_COLORS.text,
+          error ? INPUT_COLORS.errorBorder : '',
+          error ? INPUT_COLORS.focusRingError : INPUT_COLORS.focusRing,
+          'focus-within:outline-none',
         )}
       >
         <RichTextEditor

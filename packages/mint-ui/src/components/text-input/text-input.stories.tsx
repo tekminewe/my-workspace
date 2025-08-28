@@ -331,6 +331,61 @@ export const AllVariants: Story = {
         </div>
       </section>
 
+      {/* With Right Icons Section */}
+      <section className="space-y-4">
+        <h2 className={`text-2xl font-bold ${TEXT_COLORS.primary}`}>
+          With Right Icons
+        </h2>
+        <div className="space-y-4">
+          <TextInput
+            label="Search"
+            placeholder="Search..."
+            rightIcon={<SearchIcon />}
+          />
+          <TextInput
+            label="Email Address"
+            type="email"
+            placeholder="your.email@example.com"
+            rightIcon={<MailIcon />}
+          />
+          <TextInput
+            label="Account"
+            placeholder="Enter username"
+            rightIcon={<UserIcon />}
+          />
+          <TextInput
+            label="Amount"
+            type="currency"
+            placeholder="99.99"
+            rightIcon={<DollarIcon />}
+            description="Enter amount in USD"
+          />
+        </div>
+      </section>
+
+      {/* With Both Icons Section */}
+      <section className="space-y-4">
+        <h2 className={`text-2xl font-bold ${TEXT_COLORS.primary}`}>
+          With Both Left and Right Icons
+        </h2>
+        <div className="space-y-4">
+          <TextInput
+            label="Advanced Search"
+            placeholder="Search with filters..."
+            icon={<UserIcon />}
+            rightIcon={<SearchIcon />}
+          />
+          <TextInput
+            label="Secure Payment"
+            type="currency"
+            placeholder="0.00"
+            icon={<LockIcon />}
+            rightIcon={<DollarIcon />}
+            description="Secure transaction"
+          />
+        </div>
+      </section>
+
       {/* Error States Section */}
       <section className="space-y-4">
         <h2 className={`text-2xl font-bold ${TEXT_COLORS.primary}`}>

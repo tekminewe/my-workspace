@@ -2,12 +2,7 @@ import { forwardRef, TextareaHTMLAttributes } from 'react';
 import { Caption } from '../typography';
 import { FormLabel } from '../form';
 import { cn } from '../utils';
-import {
-  SURFACE_COLORS,
-  BORDER_COLORS,
-  TEXT_COLORS,
-  INTERACTION_COLORS,
-} from '../utils/component-colors';
+import { INPUT_COLORS } from '../utils/component-colors';
 import { useEffectiveRadius } from '../utils-client/use-effective-radius';
 import { Radius } from '../utils-client/radius';
 
@@ -52,21 +47,27 @@ export const TextArea = forwardRef<HTMLTextAreaElement, ITextAreaProps>(
     const radiusClass = useEffectiveRadius(radius);
 
     return (
-      <label className={cn('flex flex-col', label && 'gap-1')}>
+      <label
+        className={cn(
+          'flex flex-col',
+          label && 'gap-1',
+          props.disabled && INPUT_COLORS.disabled.containerCursor,
+        )}
+      >
         {label && <FormLabel label={label} required={required} />}
         {description && <Caption>{description}</Caption>}
         <textarea
           placeholder={placeholder}
           required={required}
           className={cn(
-            'w-full p-2 border focus:outline-none focus:ring-2 focus:border-transparent',
+            'w-full p-2',
             radiusClass,
-            SURFACE_COLORS.surface,
-            BORDER_COLORS.default,
-            TEXT_COLORS.primary,
-            error
-              ? 'border-error-500 focus:ring-error-500'
-              : INTERACTION_COLORS.focus,
+            INPUT_COLORS.background,
+            props.disabled ? INPUT_COLORS.disabled.text : INPUT_COLORS.text,
+            INPUT_COLORS.placeholder,
+            error ? INPUT_COLORS.errorBorder : '',
+            error ? INPUT_COLORS.focusRingError : INPUT_COLORS.focusRing,
+            props.disabled && INPUT_COLORS.disabled.cursor,
             'min-h-[80px] resize-y',
             className,
           )}
