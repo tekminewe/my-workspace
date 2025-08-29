@@ -1,15 +1,15 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isMobile } from "@/utils/mobile";
-import { MerchantDetailMobile } from "@/components/merchant-detail.mobile";
-import { MerchantDetail } from "@/components/merchant-detail";
-import { ServerComponentProps } from "@/types";
-import { gql } from "@apollo/client";
-import { query } from "@/services/apollo-client-server";
+import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { isMobile } from '@/utils/mobile';
+import { MerchantDetailMobile } from '@/components/merchant-detail.mobile';
+import { MerchantDetail } from '@/components/merchant-detail';
+import { ServerComponentProps } from '@/types';
+import { gql } from '@apollo/client';
+import { query } from '@/services/apollo-client-server';
 import {
   AdvertiserCampaignStatusEnum,
   GetAdvertiserBySlugQuery,
-} from "@/services/graphql";
+} from '@/services/graphql';
 
 // GraphQL query to get advertiser by slug
 const GET_ADVERTISER_BY_SLUG = gql`
@@ -29,6 +29,10 @@ const GET_ADVERTISER_BY_SLUG = gql`
       logo {
         id
         url
+      }
+      categories {
+        id
+        name
       }
       commission(statusId: Active, rowStatusId: Active) {
         calculatedCommission
@@ -82,14 +86,14 @@ export async function generateMetadata({
     },
     context: {
       headers: {
-        "Accept-Language": lang,
+        'Accept-Language': lang,
       },
     },
   });
 
   if (!result.data?.advertiser) {
     return {
-      title: "Not Found",
+      title: 'Not Found',
     };
   }
 
@@ -131,7 +135,7 @@ export async function AdvertiserPage({
     },
     context: {
       headers: {
-        "Accept-Language": lang,
+        'Accept-Language': lang,
       },
     },
   });

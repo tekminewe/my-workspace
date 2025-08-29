@@ -1,30 +1,33 @@
-import { MerchantHeader } from "./merchant-header";
-import { CashbackCategories } from "./cashback-categories";
-import { CashbackTimeline } from "./cashback-timeline";
-import { getDictionary } from "@/dictionaries";
-import { Coupon } from "./coupon";
-import { Campaign } from "./campaign";
-import { GetAdvertiserBySlugQuery } from "@/services/graphql";
+import { MerchantHero } from './merchant-hero';
+import { MerchantCashbackSection } from './merchant-cashback-section';
+import { CashbackCategories } from './cashback-categories';
+import { CashbackTimeline } from './cashback-timeline';
+import { getDictionary } from '@/dictionaries';
+import { Coupon } from './coupon';
+import { Campaign } from './campaign';
+import { GetAdvertiserBySlugQuery } from '@/services/graphql';
 
 export const MerchantDetailMobile = async ({
   advertiser,
   campaigns,
   language,
 }: {
-  advertiser: NonNullable<GetAdvertiserBySlugQuery["advertiser"]>;
-  campaigns: NonNullable<GetAdvertiserBySlugQuery["advertiserCampaigns"]>;
+  advertiser: NonNullable<GetAdvertiserBySlugQuery['advertiser']>;
+  campaigns: NonNullable<GetAdvertiserBySlugQuery['advertiserCampaigns']>;
   language: string;
 }) => {
   const dictionary = await getDictionary(language);
   return (
-    <div className="flex flex-col gap-4 mb-4">
-      <MerchantHeader
-        name={advertiser.name}
-        logo={advertiser.logo}
-        advertiserSlug={advertiser.slug}
-        commission={advertiser.commission}
+    <div className="flex flex-col gap-6 mb-4 px-4">
+      {/* Hero Section with Feature Image */}
+      <MerchantHero advertiser={advertiser} dictionary={dictionary} />
+
+      {/* Cashback Section */}
+      <MerchantCashbackSection
+        advertiser={advertiser}
         dictionary={dictionary}
       />
+
       {advertiser.commission && (
         <>
           <CashbackCategories
