@@ -5,7 +5,7 @@ import { cn } from '../utils';
 import { TextInput } from '../text-input';
 import { Checkbox } from '../checkbox';
 import { LuSearch } from 'react-icons/lu';
-import { TEXT_COLORS, BORDER_COLORS } from '../utils/component-colors';
+import { TEXT_COLORS, SURFACE_COLORS } from '../utils/component-colors';
 
 export interface SearchableCheckboxListItem {
   /**
@@ -149,7 +149,7 @@ export const SearchableCheckboxList = ({
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={searchPlaceholder}
           icon={<LuSearch className="h-4 w-4" />}
-          className="w-full"
+          className={cn('w-full', SURFACE_COLORS.surfaceElevated)}
         />
       )}
 
@@ -174,10 +174,7 @@ export const SearchableCheckboxList = ({
         </div>
       )}
 
-      <div
-        className={cn('space-y-2 overflow-y-auto', BORDER_COLORS.subtle)}
-        style={{ maxHeight }}
-      >
+      <div className="space-y-2 overflow-y-auto" style={{ maxHeight }}>
         {filteredItems.length === 0 && searchQuery ? (
           <div className={cn('py-4 text-center text-sm', TEXT_COLORS.muted)}>
             No items found for "{searchQuery}"

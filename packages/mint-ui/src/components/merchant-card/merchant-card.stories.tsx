@@ -38,6 +38,7 @@ export const AllVariants: Story = {
             <MerchantCard
               name="Nike"
               logoUrl="/images/yolofoods.webp"
+              cashbackPercentage={4.0}
               badgeColor="blue"
               onClick={() => console.log('Nike clicked')}
             />
@@ -110,14 +111,14 @@ export const AllVariants: Story = {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-4">Custom Cashback Label</h3>
+        <h3 className="text-lg font-semibold mb-4">Different Badge Colors</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl">
           <div className="h-48">
             <MerchantCard
               name="International Store"
               logoUrl="/images/yolofoods.webp"
               cashbackPercentage={6.0}
-              cashbackLabel="Earn up to"
+              badgeColor="green"
               onClick={() => console.log('International Store clicked')}
             />
           </div>

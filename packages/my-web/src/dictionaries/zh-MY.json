@@ -1,7 +1,7 @@
 {
   "common": {
     "error": {
-      "title": "抱歉，出了点问题。",
+      "title": "抱歉",
       "message": "我们无法加载内容，请刷新页面重试。"
     },
     "languages": {
@@ -53,7 +53,7 @@
     "heroCta": "立即加入",
     "popularStores": "热门商家",
     "cashback": "现金回馈",
-    "cashbackUpTo": "现金回馈高达",
+    "cashbackUpTo": "高达X%现金回馈",
     "seeAllStores": "查看所有商家",
     "howItWorks": "如何运作",
     "howItWorksStep1": "1. 免费加入",
@@ -222,7 +222,7 @@
   "allStores": {
     "title": "所有商家",
     "cashback": "现金回馈",
-    "cashbackUpTo": "现金回馈高达",
+    "cashbackUpTo": "高达X%现金回馈",
     "filters": {
       "title": "筛选条件：",
       "categories": "分类",

@@ -45,7 +45,7 @@
     "heroCta": "Join now",
     "popularStores": "Popular stores",
     "cashback": "Cashback",
-    "cashbackUpTo": "Cashback up to",
+    "cashbackUpTo": "Up to X% cashback",
     "seeAllStores": "See all stores",
     "howItWorks": "How it works",
     "howItWorksStep1": "1. Join for free",
@@ -214,7 +214,7 @@
   "allStores": {
     "title": "All Stores",
     "cashback": "Cashback",
-    "cashbackUpTo": "Cashback up to",
+    "cashbackUpTo": "Up to X% cashback",
     "filters": {
       "title": "Filters:",
       "categories": "Categories",

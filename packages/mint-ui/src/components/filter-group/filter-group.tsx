@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '../utils';
-import { SURFACE_COLORS, BORDER_COLORS } from '../utils/component-colors';
+import { SURFACE_COLORS } from '../utils/component-colors';
 
 export interface FilterGroupProps {
   /**
@@ -15,12 +15,6 @@ export interface FilterGroupProps {
   className?: string;
 
   /**
-   * Whether to show a border around the group
-   * @default true
-   */
-  bordered?: boolean;
-
-  /**
    * Spacing between filter sections
    * @default "lg"
    */
@@ -30,7 +24,6 @@ export interface FilterGroupProps {
 export const FilterGroup = ({
   children,
   className,
-  bordered = true,
   spacing = 'lg',
 }: FilterGroupProps) => {
   const spacingClasses = {
@@ -42,9 +35,8 @@ export const FilterGroup = ({
   return (
     <div
       className={cn(
-        'p-4',
+        'p-4 rounded-xl',
         SURFACE_COLORS.surface,
-        bordered && `border rounded-lg ${BORDER_COLORS.default}`,
         spacingClasses[spacing],
         className,
       )}

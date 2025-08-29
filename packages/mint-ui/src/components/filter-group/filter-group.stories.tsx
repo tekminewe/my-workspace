@@ -76,7 +76,7 @@ export const AllVariants: Story = {
         <h3 className="mb-4 text-lg font-semibold">
           Borderless with Tight Spacing
         </h3>
-        <FilterGroup bordered={false} spacing="sm">
+        <FilterGroup spacing="sm">
           <FilterSection title="Brand">
             <SearchableCheckboxList
               items={[

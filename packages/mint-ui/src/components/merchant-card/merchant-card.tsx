@@ -21,12 +21,12 @@ export interface MerchantCardProps {
   cashbackPercentage?: number;
   /**
    * Custom text for cashback badge
-   * @default "Cashback up to"
+   * @default "Up to X% cashback"
    */
   cashbackLabel?: string;
   /**
    * Badge color variant
-   * @default "green"
+   * @default "red"
    */
   badgeColor?: 'gray' | 'green' | 'red' | 'blue' | 'yellow';
   /**
@@ -54,8 +54,8 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
       name,
       logoUrl,
       cashbackPercentage,
-      cashbackLabel = 'Cashback up to',
-      badgeColor = 'green',
+      cashbackLabel = 'Up to X% cashback',
+      badgeColor = 'red',
       onClick,
       clickable = true,
       className,
@@ -70,9 +70,9 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
     const cardContent = (
       <motion.div
         className={cn(
-          'flex flex-col h-full rounded-lg overflow-hidden shadow-sm transition-shadow duration-200',
+          'flex flex-col h-full rounded-xl overflow-hidden',
           SURFACE_COLORS.surface,
-          clickable && 'hover:shadow-md cursor-pointer',
+          clickable && 'cursor-pointer',
           clickable &&
             'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
           className,
@@ -103,15 +103,18 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
         {/* Top section - Subtle surface background with logo */}
         <div
           className={cn(
-            'relative flex-1 flex flex-col m-2 rounded-lg',
-            SURFACE_COLORS.surfaceSubtle,
+            'relative flex-1 flex flex-col m-2 rounded-xl',
+            SURFACE_COLORS.surfaceElevated,
           )}
         >
           {/* Badge area - always reserve space for consistent height */}
-          <div className="h-8 px-3 pt-2 flex justify-end flex-shrink-0">
+          <div className="h-8 px-3 pt-2 flex justify-start flex-shrink-0">
             {showCashback && (
               <Badge variant="solid" color={badgeColor}>
-                {cashbackLabel} {cashbackPercentage}%
+                {cashbackLabel.replace(
+                  'X',
+                  cashbackPercentage?.toString() || '0',
+                )}
               </Badge>
             )}
           </div>
@@ -130,7 +133,7 @@ export const MerchantCard = React.forwardRef<HTMLDivElement, MerchantCardProps>(
             ) : logoFallback ? (
               logoFallback
             ) : (
-              <div className="w-16 h-16 bg-neutral-300 dark:bg-neutral-400 rounded-lg flex items-center justify-center">
+              <div className="w-16 h-16 bg-neutral-300 dark:bg-neutral-400 rounded-xl flex items-center justify-center">
                 <span
                   className={cn('text-sm font-medium', TEXT_COLORS.secondary)}
                 >
