@@ -71,7 +71,12 @@
       "termsOfService": "服务条款",
       "stores": "商家",
       "seeAllStores": "查看所有商家",
-      "allRightsReserved": "保留所有权利"
+      "allRightsReserved": "保留所有权利",
+      "earnCashbackTagline": "在您喜爱的商家购买每一件商品都能获得现金回馈。购物更聪明，省钱更多。",
+      "quickLinks": "快速连结",
+      "support": "支持与法律",
+      "withdrawalMethod": "提取方式：银行转账",
+      "poweredBy": "安全现金回馈平台"
     },
     "signInButton": "登陆"
   },

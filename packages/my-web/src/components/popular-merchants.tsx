@@ -30,21 +30,21 @@ export const PopularMerchants = async ({ language }: { language: string }) => {
           {result.ok() &&
             result.data.map((advertiser) => {
               return (
-                <MerchantCard
+                <Link
                   key={advertiser.id}
-                  name={advertiser.name}
-                  logoUrl={advertiser.logo?.url}
-                  cashbackPercentage={
-                    advertiser.commission?.calculatedCommission
-                  }
-                  cashbackLabel={dictionary.home.cashbackUpTo}
-                  onClick={() =>
-                    window.open(
-                      `/${language}/store/${advertiser.slug}`,
-                      '_self',
-                    )
-                  }
-                />
+                  href={`/${language}/store/${advertiser.slug}`}
+                  className="block h-full"
+                >
+                  <MerchantCard
+                    name={advertiser.name}
+                    logoUrl={advertiser.logo?.url}
+                    cashbackPercentage={
+                      advertiser.commission?.calculatedCommission
+                    }
+                    cashbackLabel={dictionary.home.cashbackUpTo}
+                    clickable={false}
+                  />
+                </Link>
               );
             })}
         </div>

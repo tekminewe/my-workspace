@@ -63,7 +63,12 @@
       "termsOfService": "Terms of service",
       "stores": "Stores",
       "seeAllStores": "See all stores",
-      "allRightsReserved": "All rights reserved"
+      "allRightsReserved": "All rights reserved",
+      "earnCashbackTagline": "Earn cashback on every purchase from your favourite stores. Shop smarter, save more.",
+      "quickLinks": "Quick Links",
+      "support": "Support & Legal",
+      "withdrawalMethod": "Withdrawal: Bank Transfer",
+      "poweredBy": "Secure cashback platform"
     },
     "signInButton": "Sign in"
   },

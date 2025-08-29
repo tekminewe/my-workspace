@@ -535,6 +535,7 @@ export const AdminAdvertiserTable = ({
 };
 ```
 
+- SHOULD use HTML elements like `<header>`, `<footer>`, `<main>`, `<section>`, `<article>`, etc. for structure and semantics.
 - SHOULD use `dayjs(date).format("lll")` for date formatting.
 - SHOULD use `server` components for data fetching and rendering.
 - SHOULD use `client` components for interactive UI elements.
